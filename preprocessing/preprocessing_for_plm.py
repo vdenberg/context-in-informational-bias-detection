@@ -234,7 +234,7 @@ if __name__ == '__main__':
             tokenizer = RobertaTokenizer.from_pretrained('roberta-base', do_lower_case=False, do_basic_tokenize=False)
         label_map = {label: i + 1 for i, label in enumerate(label_list)}
 
-    elif CLF_TASK == 'sent_clf':
+    elif CLF_TASK == 'sent_clf' or CLF_TASK == 'seq_sent_clf':
         spacy_tokenizer = None
         if PLM == 'BERT':
             tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
