@@ -183,6 +183,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     basil = LoadBasil().load_basil_raw()
+    basil.to_csv('data/basil.csv')
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
 
     # ARTICLE & CONTEXT

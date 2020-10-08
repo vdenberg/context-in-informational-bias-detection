@@ -3,9 +3,9 @@ from transformers import RobertaTokenizer, BertTokenizer
 import pickle
 from lib.handle_data.PreprocessForPLM import BinaryClassificationProcessor, InputFeatures
 from lib.handle_data.PreprocessForPLM import convert_basil_for_plm_inputs, convert_example_to_bert_feature, convert_example_to_roberta_feature
-import os, time
 from lib.handle_data.SplitData import split_input_for_plm
 from lib.handle_data.BasilLoader import LoadBasil
+import os, time
 import argparse
 import spacy
 import pandas as pd
@@ -191,6 +191,7 @@ if __name__ == '__main__':
 
     # Load DataFrame with BASIL instances and - selected - annotations
     basil = LoadBasil().load_basil_raw()
+    basil.to_csv('data/basil.csv')
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
     convert_basil_for_plm_inputs(basil, task=CLF_TASK, ofp=f'data/inputs/sent_clf/{CLF_TASK}/plm_basil.tsv')
 
