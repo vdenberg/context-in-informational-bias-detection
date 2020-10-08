@@ -1,10 +1,14 @@
 import pandas as pd
-import numpy as np
 import argparse
 # import tensorflow_hub as hub
 # from sentence_transformers import SentenceTransformer
 from lib.handle_data.BasilLoader import LoadBasil
-LoadBasil
+import spacy
+
+
+def tokenize(x):
+    global nlp
+    return [token.text for token in nlp(x)]
 
 
 def add_use(basil):
@@ -185,6 +189,11 @@ if __name__ == '__main__':
     basil = LoadBasil().load_basil_raw()
     basil.to_csv('data/basil.csv')
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
+
+    # tokenize
+    nlp = spacy.load("en_core_web_sm")
+    basil['tokens'] = basil.sentence.apply(tokenize)
+    basil.to_csv('data/basil_w_tokens.csv')
 
     # ARTICLE & CONTEXT
     # Groups basil instances by story and source, and write .tsv lines
