@@ -26,7 +26,7 @@ def convert_basil_for_plm_inputs(basil, task='sent_clf', ofp='data/tok_clf/plm_b
     basil['id'] = basil['uniq_idx.1'].str.lower()
     basil['alpha'] = ['a'] * len(basil)
 
-    if task == 'sent_clf':
+    if task == 'sent_clf' or task == 'seq_sent_clf':
         basil = basil.rename(columns={'bias': 'label'})
     elif task == 'tok_clf':
         basil = basil.rename(columns={'inf_start_ends': 'label'})
