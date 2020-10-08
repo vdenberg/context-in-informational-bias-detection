@@ -3,7 +3,7 @@ import os
 import sys
 import logging
 import csv
-from lib.handle_data.LoadData import load_basil_spans
+from lib.handle_data.BasilLoader import load_basil_spans
 from lib.utils import standardise_id
 import re
 
@@ -11,6 +11,27 @@ logger = logging.getLogger()
 csv.field_size_limit(2147483647) # Increase CSV reader's field limit incase we have long text.
 
 PAD_TOKEN = '<pad>'
+
+
+def convert_basil_for_plm_inputs(basil, task='sent_clf', ofp='data/tok_clf/plm_basil.tsv'):
+    """
+    Select relevant columns for input to huggingface implementations of Pre-trained Language Models
+    BERT and RoBERTa for Sentence and Token classification.
+    :param
+    basil: original BASIL DataFrame
+    task: token or sentence classification
+    ofp: output file path of all instances
+    :return: None, writes to ofp
+    """
+    basil['id'] = basil['uniq_idx.1'].str.lower()
+    basil['alpha'] = ['a'] * len(basil)
+
+    if task == 'sent_clf':
+        basil = basil.rename(columns={'bias': 'label'})
+    elif task == 'tok_clf':
+        basil = basil.rename(columns={'inf_start_ends': 'label'})
+
+    basil.to_csv(ofp, sep='\t', index=False, header=False)
 
 
 class SpanToBio():

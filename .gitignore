@@ -8,11 +8,11 @@ __pycache__/
 *.pkl
 *.DS_Store
 analysis/
-create_data/emnlp19-BASIL/
 data/embeddings/*
+data/emnlp19-BASIL/
 data/inputs/cim/*
 data/inputs/sent_clf/*
-data/inputs/ssc/*
+data/inputs/seq_sent_clf/*
 data/inputs/tapt/*
 data/inputs/tok_clf/*
 data/predictions/*

@@ -21,10 +21,10 @@ def load_basil_spans(start_ends):
 
 class LoadBasil:
     """
-    This is where basil.csv is created
+    This is where the content of basil.csv is determined
     """
     def __init__(self):
-        self.raw_dir = 'create_data/emnlp19-BASIL/data/'
+        self.raw_dir = 'data/emnlp19-BASIL/data/'
 
     def load_basil_all(self):
         # load exactly as published by authors
@@ -103,8 +103,7 @@ class LoadBasil:
         df['article'] = df.story.astype(str) + df.source
         df['uniq_idx'] = df['story'] + df['source'] + df['sent_idx']
         df = df.set_index(df['uniq_idx'])
-        df.to_csv('data/basil.csv')
+
         return df
 
 
-# df = LoadBasil().load_basil_raw()

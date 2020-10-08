@@ -4,7 +4,7 @@ import numpy as np
 
 from sentence_transformers import SentenceTransformer
 import tensorflow_hub as hub
-from lib.handle_data.LoadData import LoadBasil
+from lib.handle_data.BasilLoader import LoadBasil
 
 
 def convert_for_plm(basil, task='sent_clf', ofp='data/tok_clf/plm_basil.csv'):
@@ -131,62 +131,50 @@ def write_cim_input(basil, ofp="data/sent_clf/cim_basil.tsv"):
                     f.write('\n')
 
 
-def write_tapt_input(basil, train_ofp="data/tapt/basil_train.tsv", test_ofp="data/tapt/basil_test.tsv"):
+class WriteInput:
     """
-    Groups basil instances by story and source, and write .tsv lines of
-    [id + article sent ids + event sent ids + label + index in article]
-    :param
-    basil: DataFrame with BASIL instances and - selected - annotations
-    train_ofp: output file path of train instances
-    test_ofp: output file path of test instances
-    :return: None, writes to train_ofp and test_ofp
+    This is where inputs folder is filled with preprocessed data
     """
 
-    test_size = 250
+    def __init__(self):
+        self.raw_basil = LoadBasil().load_basil_raw()
+        self.write_basil_csv()
+        self.basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
 
-    article_counter = 0
-    for n, gr in basil.groupby('article'):
+    def write_basil_csv(self):
+        self.basil.to_csv('data/basil.csv')
 
-        if article_counter <= test_size:
-            file_path = train_ofp
-        else:
-            file_path = test_ofp
+    def write_baseline_inputs(self):
+        """
+        # 1) Baselines:
+        # Select relevant columns for input to huggingface implementations of Pre-trained Language Models
+        # BERT and RoBERTa for Sentence and Token classification.
+        """
+        convert_for_plm(self.basil, 'sent_clf', ofp='data/inputs/sent_clf/plm_input/plm_basil.tsv')
+        convert_for_plm(self.basil, 'tok_clf', ofp='data/inputs/tok_clf/plm_input/plm_basil.tsv')
 
-        with open(file_path, 'a') as f:
-            sentences = gr.sentence.values
-            for s in sentences:
-                f.write(s)
-                f.write(' ')
-            f.write('\n')
-        article_counter += 1
+    def write_ssc_inputs(self):
+        """
+        # 2) Direct Textual Context:
+        # Uses plm input
+        """
+        raise NotImplementedError
 
+    def write_cim_inputs(self, add_USE=False, add_sbert=False):
+        """
+        # 3) Writes input for Article Context & Event Context
+        # - Optionally adds USE (arXiv:1803.11175) and Sentence-BERT embeddings (arXiv:1908.10084)
+        # - Create CIM input that has target sentence and context information on the same line.
+        """
+        # optionally, add embeddings for experimentation with different CIM base embeddings
+        if add_USE:
+            add_USE(self.basil)
+        if add_sbert:
+            add_sbert(self.basil)
 
-if __name__ == '__main__':
+        write_cim_input(basil, ofp="data/inputs/cim/cim_basil.tsv")
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-SSC', '--n_epochs', type=int, default=10)  # 2,3,4
-    parser.add_argument('-lr', '--learning_rate', type=float, default=2e-5)  # 5e-5, 3e-5, 2e-5
-    parser.add_argument('-bs', '--batch_size', type=int, default=16)  # 16, 21
-    parser.add_argument('-load', '--load_from_ep', type=int, default=0)
-    args = parser.parse_args()
-
-    basil = LoadBasil().load_basil_raw()
-    basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
-
-    # 1) Baselines (Sent clf and Tok clf)
-    convert_for_plm(basil, 'sent_clf', ofp='data/inputs/sent_clf/plm_input/plm_basil.tsv')
-    convert_for_plm(basil, 'tok_clf', ofp='data/inputs/tok_clf/plm_input/plm_basil.tsv')
-
-    # 2) Direct Textual Context:
-    # Uses plm input
-
-    # 3) Article Context & Event Context
-    # 2.1.) Optional: Add USE (arXiv:1803.11175) and Sentence-BERT embeddings (arXiv:1908.10084)
-    # add_USE(basil)
-    # add_sbert(basil)
-    # 2.2.) Create CIM input that has target sentence and context information on the same line.
-    write_cim_input(basil, ofp="data/inputs/cim/cim_basil.tsv")
-
-    # 4) Domain Context
-    # 3.1.) Split train & test input for Task-Adaptation of Roberta on BASIL.
-    write_tapt_input(basil, train_ofp="data/inputs/tapt/tapt_basil_train.tsv", test_ofp="data/inputs/tapt/tapt_basil_test.tsv")
+    def write_domain_inputs(self):
+        # 4) Domain Context
+        # 3.1.) Split train & test input for Task-Adaptation of Roberta on BASIL.
+        write_tapt_input(self.basil, train_ofp="data/inputs/tapt/tapt_basil_train.tsv", test_ofp="data/inputs/tapt/tapt_basil_test.tsv")

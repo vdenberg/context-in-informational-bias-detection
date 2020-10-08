@@ -83,10 +83,10 @@ if DEBUG:
 TASK = 'SSC'
 if WINDOW:
     TASK_NAME = f'WSSC{EX_LEN}'
-    FEAT_DIR = f'data/inputs/ssc/windowed/ssc{EX_LEN}'
+    FEAT_DIR = f'data/inputs/seq_sent_clf/windowed/seq_sent_clf{EX_LEN}'
 else:
     TASK_NAME = f'SSC{EX_LEN}'
-    FEAT_DIR = f'data/inputs/ssc/non_windowed/ssc{EX_LEN}'
+    FEAT_DIR = f'data/inputs/seq_sent_clf/non_windowed/seq_sent_clf{EX_LEN}'
 
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
 REPORTS_DIR = f'reports/{TASK}/{TASK_NAME}/logs'
