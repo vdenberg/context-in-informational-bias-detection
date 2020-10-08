@@ -31,7 +31,7 @@ def convert_basil_for_plm_inputs(basil, task='sent_clf', ofp='data/tok_clf/plm_b
     elif task == 'tok_clf':
         basil = basil.rename(columns={'inf_start_ends': 'label'})
 
-    basil.to_csv(ofp, sep='\t', index=False, header=False)
+    basil[['id', 'label', 'alpha', 'sentence']].to_csv(ofp, sep='\t', index=False, header=False)
 
 
 class SpanToBio():
