@@ -1,14 +1,8 @@
 import torch
 from torch.utils.data import (DataLoader, SequentialSampler, RandomSampler, TensorDataset)
-import os, math, time
+import os
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import ticker
-#plt.switch_backend('agg')
-#import matplotlib.pyplot as plt
-#import matplotlib.ticker as ticker
-import pandas as pd
-import re
+
 
 def standardise_id(basil_id):
     if not basil_id[1].isdigit():

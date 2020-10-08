@@ -10,16 +10,10 @@ github.com/marshallwhiteorg/emnlp19-media-bias/blob/master/emnlp19-BASIL.zip
 3. Run preprocessing script.
 
     ```shell script
-    python3 preprocessing/preprocessing.py --clf_task [sent_clf|tok_clf|seq_sent_clf] 
-                                           --pretrained_lm [BERT|RoBERTa]
-                                           --sequence_length [5|10] # If task is seq_sent_clf: Number of sentences per example
-                                           --windowed # If task is seq_sent_clf: Choose Windowed SSC or not
-                                           --add_use # Add USE to BASIL voor CIM with USE input
-                                           --add_sbert # Add Sentence-BERT to BASIL voor CIM with SBERT input
-    ```
+    sh preprocess.sh
+   ```
 
 4. Choose the experiment you're interested in, and continue instructions.
-
 
 - Sentence Classification & Token Classification 
 - Sentence Classification - BERT: sent_clf/finetune_bert.py
