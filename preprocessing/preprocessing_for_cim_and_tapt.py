@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import tensorflow_hub as hub
+#import tensorflow_hub as hub
 from sentence_transformers import SentenceTransformer
 import argparse
 
@@ -11,11 +11,27 @@ def add_use(basil):
     :param basil: DataFrame with BASIL instances and - selected - annotations
     :return: DataFrame with USE embeddings as a field
     """
+    print('''
+    
+        Install tensorflow-hub by running:
+        
+        pip install "tensorflow>=2.0.0"
+        pip install --upgrade tensorflow-hub
+        
+        And uncomment:
+        #import tensorflow_hub as hub
+        
+        And:
+        
+        #embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+        #em = embed([sent])
+    
+        ''')
 
-    embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+    #embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
     embs = []
     for sent in basil.sentence.values:
-        em = embed([sent])
+        #em = embed([sent])
         em = list(np.array(em[0]))
         embs.append(em)
     basil['USE'] = embs
