@@ -336,7 +336,7 @@ def convert_example_to_roberta_feature(example_row):
     else:
         tokens_a = example.text_a
 
-    encoded = tokenizer.encode_plus(tokens_a, truncation=True, max_length=max_seq_length, padding=True,
+    encoded = tokenizer.encode_plus(tokens_a, truncation=True, max_length=max_seq_length, padding='max_length',
                                     add_special_tokens=True)
 
     input_ids = encoded['input_ids']

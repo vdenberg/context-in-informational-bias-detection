@@ -249,8 +249,6 @@ if __name__ == '__main__':
             tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
         label_map = {label: i for i, label in enumerate(label_list)}
 
-    print(CLF_TASK)
-
     ###
     # write features for whole dataset
     # takes a while!
