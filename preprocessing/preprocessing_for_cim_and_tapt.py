@@ -153,7 +153,7 @@ def preprocess_for_cim(basil, add_use=False, add_sbert=False, ofp="data/inputs/c
                     f.write('\n')
 
 
-def preprocess_for_tapt(basil, train_ofp = "data/tapt/basil_train.tsv", test_ofp = "data/tapt/basil_test.tsv"):
+def preprocess_for_tapt(basil, train_ofp = "data/tapt/basil_train.txt", test_ofp = "data/tapt/basil_test.txt"):
     """
     Split for tapt
     """
@@ -201,4 +201,4 @@ if __name__ == '__main__':
 
     # DOMAIN CONTEXT
     # Split for tapt
-    preprocess_for_tapt(basil, train_ofp="data/tapt/basil_train.tsv", test_ofp="data/tapt/basil_test.tsv")
+    preprocess_for_tapt(basil, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")

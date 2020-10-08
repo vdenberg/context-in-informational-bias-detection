@@ -37,7 +37,7 @@ sent_clf/context_inclusive_model.py
 
     ##### TAPT
     ```
-    /opt/slurm/bin/srun --partition gpushort --gres=gpu:1 --mem 20GB python -m scripts.run_language_modeling --train_data_file basil_train.txt \
+    /opt/slurm/bin/srun --partition gpushort --gres=gpu:1 --mem 20GB python -m scripts.run_language_modeling --train_data_file data/inputs/tapt/basil_train.txt \
                                             --line_by_line \
                                             --output_dir roberta-basil-tapt \
                                             --model_type roberta-base \
@@ -47,7 +47,7 @@ sent_clf/context_inclusive_model.py
                                             --gradient_accumulation_steps 6  \
                                             --model_name_or_path roberta-base \
                                             --do_eval \
-                                            --eval_data_file basil_dev.txt \
+                                            --eval_data_file data/inputs/tapt/basil_test.txt \
                                             --evaluate_during_training  \
                                             --do_train \
                                             --num_train_epochs 100  \
@@ -56,7 +56,7 @@ sent_clf/context_inclusive_model.py
     ```
     ##### DAPTTAPT
     ```
-    /opt/slurm/bin/srun --partition gpushort --gres=gpu:1 --mem 20GB python -m scripts.run_language_modeling --train_data_file basil_train.txt \
+    /opt/slurm/bin/srun --partition gpushort --gres=gpu:1 --mem 20GB python -m scripts.run_language_modeling --train_data_file data/inputs/tapt/basil_train.txt \
                                             --line_by_line \
                                             --output_dir roberta-basil-dapttapt \
                                             --model_type roberta-base \
@@ -66,7 +66,7 @@ sent_clf/context_inclusive_model.py
                                             --gradient_accumulation_steps 6  \
                                             --model_name_or_path ../pretrained_models/news_roberta_base \
                                             --do_eval \
-                                            --eval_data_file basil_dev.txt \
+                                            --eval_data_file data/inputs/tapt/basil_test.txt \
                                             --evaluate_during_training  \
                                             --do_train \
                                             --num_train_epochs 100  \
