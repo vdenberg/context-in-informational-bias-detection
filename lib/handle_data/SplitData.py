@@ -367,7 +367,7 @@ def split_input_for_plm(data_dir, recreate, sv):
 
             pos_cases = fold['test'].label.value_counts().loc[1]
             total = len(fold['test']['label'])
-            print(f'Fold {i+1} Biased instances: \n {pos_cases / total * 100}')
+            #print(f'Fold {i+1} Biased instances: \n {pos_cases / total * 100}')
 
             fold['test'].to_csv(test_ofp, sep='\t', index=False, header=False)
 
