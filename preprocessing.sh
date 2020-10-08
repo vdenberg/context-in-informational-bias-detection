@@ -4,15 +4,15 @@
 # BASELINES
 
 # sentence classification, BERT
-python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm BERT
+python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm bert
 
 # sentence classification, RoBERTa
-python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm RoBERTa
+python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm roberta
 
 # baseline, token classification, BERT
-python3 preprocessing/preprocessing_for_plm.py --clf_task tok_clf -plm BERT
+python3 preprocessing/preprocessing_for_plm.py --clf_task tok_clf -plm bert
 # baseline, token classification, RoBERTa
-python3 preprocessing/preprocessing_for_plm.py --clf_task tok_clf -plm RoBERTa
+python3 preprocessing/preprocessing_for_plm.py --clf_task tok_clf -plm roberta
 
 # SEQUENTIAL SENTENCE CLASSIFICATION
 

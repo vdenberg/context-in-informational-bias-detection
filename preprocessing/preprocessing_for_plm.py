@@ -16,9 +16,9 @@ def preprocess_for_plm(rows, model):
     total = len(rows)
     features = []
     for row in rows:
-        if model == 'BERT':
+        if model == 'bert':
             feats = convert_example_to_bert_feature(row)
-        elif model == 'RoBERTa':
+        elif model == 'roberta':
             feats = convert_example_to_roberta_feature(row)
         features.append(feats)
         count += 1
@@ -207,6 +207,13 @@ if __name__ == '__main__':
     else:
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_{PLM}/'
     DATA_DIR = f'data/inputs/{CLF_TASK}'
+
+    if not os.path.exists(FEAT_DIR):
+        os.makedirs(FEAT_DIR)
+
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
+
     DATA_TSV_IFP = os.path.join(DATA_DIR, f"plm_basil.tsv")
     FEAT_OFP = os.path.join(FEAT_DIR, f"all_features.pkl")
 
@@ -228,17 +235,17 @@ if __name__ == '__main__':
 
     if CLF_TASK == 'tok_clf':
         spacy_tokenizer = spacy.load("en_core_web_sm")
-        if PLM == 'BERT':
+        if PLM == 'bert':
             tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False, do_basic_tokenize=False)
-        elif PLM == 'RoBERTa':
+        elif PLM == 'roberta':
             tokenizer = RobertaTokenizer.from_pretrained('roberta-base', do_lower_case=False, do_basic_tokenize=False)
         label_map = {label: i + 1 for i, label in enumerate(label_list)}
 
     elif CLF_TASK == 'sent_clf' or CLF_TASK == 'seq_sent_clf':
         spacy_tokenizer = None
-        if PLM == 'BERT':
+        if PLM == 'bert':
             tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
-        elif PLM == 'RoBERTa':
+        elif PLM == 'roberta':
             tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
         label_map = {label: i for i, label in enumerate(label_list)}
 
