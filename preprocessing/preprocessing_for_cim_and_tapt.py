@@ -99,9 +99,8 @@ def convert_to_cim_instance(group, art_sent_ids, all_ev_ids):
         full_string = [uniq_id, art_string]
         for ev_str in ev_strings:
             full_string.append(ev_str)
-        full_string.append([label, index])
-        print(full_string)
-        
+        full_string += [label, index]
+
         instance = '\t'.join(full_string)
         instances.append(instance)
 
