@@ -5,7 +5,7 @@ from datetime import datetime
 import torch
 import random, argparse
 import numpy as np
-from Private.OldVersions.PreprocessForBert import *
+from lib.handle_data.PreprocessForPLM import *
 from lib.utils import get_torch_device
 import logging
 

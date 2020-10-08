@@ -269,7 +269,7 @@ if __name__ == '__main__':
            features = pickle.load(f)
            features_dict = {feat.my_id: feat for feat in features}
 
-    print(f"Processed fold all - {len(features)} items, written to {FEAT_DIR}")
+    print(f"Processed all {len(features)} items")
 
     ###
     # write features in seperate files per fold
@@ -292,3 +292,4 @@ if __name__ == '__main__':
                 pickle.dump(features, f)
 
     tokenizer.save_vocabulary(FEAT_DIR)
+    print(f"Saved items and vocabulary to {FEAT_DIR}")

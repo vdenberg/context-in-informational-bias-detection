@@ -1,3 +1,5 @@
 pandas
-transformers
-torch
+transformers==2.3.0
+allennlp==0.9.0
+pytorch cudatoolkit=10.1
+scikit-learn
