@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
     CLF_TASK = args.clf_task
     PLM = args.pretrained_lm
-    WINDOW = args.window
+    WINDOW = args.windowed
     MAX_EX_LEN = args.sequence_length
     MAX_DOC_LEN = 76
     MAX_SENT_LEN = 486
