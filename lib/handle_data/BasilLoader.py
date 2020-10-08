@@ -50,7 +50,8 @@ class LoadBasil:
             with open(self.raw_dir + file) as f:
                 file_content = json.load(f)
 
-                pprint(file_content)
+                # pprint(file_content)
+
                 main_entities = file_content['main-entities']
                 stance = file_content['article-level-annotations']['stance']
 
