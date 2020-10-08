@@ -4,6 +4,7 @@
 # BASELINES
 
 # sentence classification, BERT
+#todo check out why length of preprocessed features is not the same as length of basil
 python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm bert
 
 # sentence classification, RoBERTa
