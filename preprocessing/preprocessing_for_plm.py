@@ -250,7 +250,7 @@ if __name__ == '__main__':
     FORCE = False
     if not os.path.exists(FEAT_OFP) or FORCE:
         examples = dataloader.get_examples(DATA_TSV_IFP, 'train', sep='\t')
-        examples = [(ex, label_map, MAX_SEQ_LENGTH, tokenizer, spacy_tokenizer, CLF_TASK) for ex in examples if ex.text_a]
+        examples = [(ex, label_map, MAX_SEQ_LEN, tokenizer, spacy_tokenizer, CLF_TASK) for ex in examples if ex.text_a]
         features = preprocess_for_plm(examples, model=PLM)
         features_dict = {feat.my_id: feat for feat in features}
 
