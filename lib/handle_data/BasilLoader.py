@@ -14,7 +14,6 @@ def standardise_id(basil_id):
     if not basil_id[1].isdigit():
         basil_id = '0' + basil_id
     if not basil_id[-2].isdigit():
-        print(basil_id)
         basil_id = basil_id[:-1] + '0' + basil_id[-1]
     return basil_id.lower()
 
