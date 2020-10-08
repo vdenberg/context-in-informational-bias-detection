@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
-#import tensorflow_hub as hub
-from sentence_transformers import SentenceTransformer
 import argparse
+# import tensorflow_hub as hub
+# from sentence_transformers import SentenceTransformer
 
 
 def add_use(basil):
@@ -11,6 +11,7 @@ def add_use(basil):
     :param basil: DataFrame with BASIL instances and - selected - annotations
     :return: DataFrame with USE embeddings as a field
     """
+
     print('''
     
         Install tensorflow-hub by running:
@@ -19,23 +20,25 @@ def add_use(basil):
         pip install --upgrade tensorflow-hub
         
         And uncomment:
-        #import tensorflow_hub as hub
+        # import tensorflow_hub as hub
         
         And:
         
-        #embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
-        #em = embed([sent])
+        # embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+        # em = embed([sent])
     
         ''')
 
-    #embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+    '''
+    embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
     embs = []
     for sent in basil.sentence.values:
-        #em = embed([sent])
+        em = embed([sent])
         em = list(np.array(em[0]))
         embs.append(em)
     basil['USE'] = embs
     basil.to_csv('data/w_embed/basil_w_USE.csv')
+    '''
 
 
 def add_sbert(basil):
@@ -45,11 +48,25 @@ def add_sbert(basil):
     :return: DataFrame with Sentence-BERT embeddings as a field
     """
 
+    print('''
+
+        Install sentence-transformers by running:
+
+        pip install sentence-transformers
+
+        And uncomment:
+        # from sentence_transformers import SentenceTransformer
+
+        and this function
+        ''')
+
+    '''
     model = SentenceTransformer('bert-base-nli-mean-tokens')
     embs = model.encode(basil.sentence.values)
     embs = [list(el) for el in embs]
     basil['sbert'] = embs
     basil.to_csv('data/w_embed/basil_w_sbert.csv')
+    '''
 
 
 def convert_to_cim_instance(group, art_sent_ids, all_ev_ids):
