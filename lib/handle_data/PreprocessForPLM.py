@@ -346,7 +346,7 @@ def convert_example_to_roberta_feature(example_row):
     assert len(attention_mask) == max_seq_length
 
     # labels
-    if output_mode == "sent_clf":
+    if output_mode == "sent_clf" or output_mode == "seq_sent_clf":
         label_id = label_map[example.label]
 
     elif output_mode == 'tok_clf':
