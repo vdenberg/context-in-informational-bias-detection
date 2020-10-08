@@ -301,6 +301,7 @@ class Split:
 
         filled_folds = []
         for i, empty_fold in enumerate(empty_folds):
+            print(self.which)
 
             # if bias -> label renaming not executed in other scripts, fix it here
             if 'label' not in self.input_dataframe.columns:
