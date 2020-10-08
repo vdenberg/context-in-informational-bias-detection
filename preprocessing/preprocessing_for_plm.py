@@ -159,7 +159,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-task', '--clf_task', type=str, default='sent_clf',
                         help='Choose classification task between: sent_clf|tok_clf|seq_sent_clf', )
-    parser.add_argument('-plm', '--pretrained_lm', type=str, default='RoBERTa',
+    parser.add_argument('-plm', '--pretrained_lm', type=str, default='roberta',
                         help='BERT|RoBERTa')
 
     parser.add_argument('-seqlen', '--sequence_length', type=int, default=1,
@@ -250,7 +250,7 @@ if __name__ == '__main__':
         label_map = {label: i for i, label in enumerate(label_list)}
 
     print(CLF_TASK)
-    
+
     ###
     # write features for whole dataset
     # takes a while!
