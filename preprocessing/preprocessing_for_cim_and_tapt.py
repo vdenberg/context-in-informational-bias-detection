@@ -100,7 +100,8 @@ def convert_to_cim_instance(group, art_sent_ids, all_ev_ids):
         for ev_str in ev_strings:
             full_string.append(ev_str)
         full_string.append([label, index])
-
+        print(full_string)
+        
         instance = '\t'.join(full_string)
         instances.append(instance)
 
