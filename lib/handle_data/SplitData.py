@@ -320,8 +320,6 @@ class Split:
             if 'label' not in features:
                 features += ['label']
 
-            print(self.input_dataframe.head())
-            print(train_sent_ids[:10])
             train_df = self.input_dataframe.loc[train_sent_ids, features] #+ ['label']
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
             test_df = self.input_dataframe.loc[test_sent_ids, features] #+ ['label']
@@ -355,7 +353,9 @@ def split_input_for_plm(data_dir, recreate, sv):
 
     # load basil data with BERT-relevant columns
     basil_infp = os.path.join(data_dir, 'plm_basil.tsv')
-    data = pd.read_csv(basil_infp, index_col=0, names=['id', 'label', 'alpha', 'sentence'])
+    data = pd.read_csv(basil_infp, sep='\t', index_col=0, names=['id', 'label', 'alpha', 'sentence'])
+    print(data)
+    exit(0)
     data.index = [el.lower() for el in data.index]
 
     # write data into folds
