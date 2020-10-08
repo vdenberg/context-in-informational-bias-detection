@@ -1,3 +1,3 @@
-python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm BERT
+python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm roberta
 
 
