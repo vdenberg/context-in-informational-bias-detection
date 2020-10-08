@@ -23,7 +23,7 @@ def preprocess_for_plm(rows, model):
         features.append(feats)
         count += 1
 
-        if count % 500 == 0:
+        if count % 2000 == 0:
             status = f'Processed {count}/{total} rows'
             print(status)
     return features
@@ -269,7 +269,7 @@ if __name__ == '__main__':
            features = pickle.load(f)
            features_dict = {feat.my_id: feat for feat in features}
 
-    print(f"Processed fold all - {len(features)} items")
+    print(f"Processed fold all - {len(features)} items, written to {FEAT_DIR}")
 
     ###
     # write features in seperate files per fold
@@ -286,10 +286,9 @@ if __name__ == '__main__':
             if CLF_TASK == 'seq_sent_clf':
                 features = redistribute_feats(features, cls=0, pad=1, max_sent=MAX_EX_LEN, max_len=MAX_SEQ_LEN,
                                           window=WINDOW)
-            print(f"Processed fold {fold_name} {set_type} - {len(features)} items and writing to {FEAT_OFP}")
+            # print(f"Processed fold {fold_name} {set_type} - {len(features)} items to {FEAT_OFP}")
 
             with open(FEAT_OFP, "wb") as f:
                 pickle.dump(features, f)
 
     tokenizer.save_vocabulary(FEAT_DIR)
-
