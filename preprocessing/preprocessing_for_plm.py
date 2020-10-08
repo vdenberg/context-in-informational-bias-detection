@@ -137,7 +137,7 @@ def redistribute_feats(features, cls=0, pad=1, max_sent=10, max_len=None, window
             else:
                 sequence_rows.append(s)
 
-    print(sum(nr_sequences_agg) / len(article_rows))
+    # print('Av seq len of this fold:',sum(nr_sequences_agg) / len(article_rows))
 
     # help measure what the maxlen should be
     for row in sequence_rows:
@@ -145,7 +145,7 @@ def redistribute_feats(features, cls=0, pad=1, max_sent=10, max_len=None, window
         exlen = sum([len(t) for t in toks])
         if exlen > max_len:
             max_len = exlen
-            print('MAX EX LEN:', max_len)
+            # print('MAX EX LEN of this fold:', max_len)
 
     finfeats = []
     for row in sequence_rows:
