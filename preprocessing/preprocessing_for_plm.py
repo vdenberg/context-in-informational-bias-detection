@@ -205,9 +205,9 @@ if __name__ == '__main__':
         else:
             FEAT_DIR = f'data/inputs/{CLF_TASK}/non_windowed/ssc{MAX_EX_LEN}/'
     else:
-        DATA_DIR = f'data/inputs/{CLF_TASK}/plm_input'
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_{PLM}/'
-    DATA_TSV_IFP = os.path.join(DATA_DIR, f"plm_basil.tsv")
+    DATA_DIR = f'data/inputs/{CLF_TASK}/plm_input'
+    DATA_TSV_IFP = os.path.join(DATA_DIR, f"plm_input/plm_basil.tsv")
     FEAT_OFP = os.path.join(FEAT_DIR, f"all_features.pkl")
 
     ###
