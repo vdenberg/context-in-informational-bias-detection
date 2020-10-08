@@ -193,7 +193,7 @@ if __name__ == '__main__':
     basil = LoadBasil().load_basil_raw()
     basil.to_csv('data/basil.csv')
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
-    convert_basil_for_plm_inputs(basil, task=CLF_TASK, ofp=f'data/inputs/sent_clf/{CLF_TASK}/plm_basil.tsv')
+    convert_basil_for_plm_inputs(basil, task=CLF_TASK, ofp=f'data/inputs/{CLF_TASK}/plm_basil.tsv')
 
     #############
     ### BASELINES
