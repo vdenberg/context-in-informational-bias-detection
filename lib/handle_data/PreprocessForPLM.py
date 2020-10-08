@@ -34,6 +34,7 @@ def convert_basil_for_plm_inputs(basil, task='sent_clf', ofp='data/tok_clf/plm_b
     basil[['id', 'label', 'alpha', 'sentence']].to_csv(ofp, sep='\t', index=False, header=False)
 
 
+
 class SpanToBio():
     """ Gives BIO tags corresponding to spans """
 
