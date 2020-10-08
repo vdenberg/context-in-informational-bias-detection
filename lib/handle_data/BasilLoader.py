@@ -14,6 +14,7 @@ def standardise_id(basil_id):
     if not basil_id[1].isdigit():
         basil_id = '0' + basil_id
     if not basil_id[-2].isdigit():
+        print(basil_id)
         basil_id = basil_id[:-1] + '0' + basil_id[-1]
     return basil_id.lower()
 
@@ -111,6 +112,7 @@ class LoadBasil:
         df = pd.DataFrame(pre_df, columns=columns)
         df['article'] = df.story.astype(str) + df.source
         df['uniq_idx'] = standardise_id(df['story'] + df['source'] + df['sent_idx'])
+        df['uniq_idx'] = df['uniq_idx'].apply(standardise_id)
         df = df.set_index(df['uniq_idx'])
 
         return df
