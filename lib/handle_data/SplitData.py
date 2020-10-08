@@ -320,11 +320,7 @@ class Split:
             if 'label' not in features:
                 features += ['label']
 
-            test_df = self.input_dataframe.loc[test_sent_ids, features ] #+ ['label']
-
-            train_sent_ids = empty_fold['train']
-            dev_sent_ids = empty_fold['dev']
-
+            test_df = self.input_dataframe.loc[test_sent_ids, features] #+ ['label']
             train_df = self.input_dataframe.loc[train_sent_ids, features] #+ ['label']
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
 

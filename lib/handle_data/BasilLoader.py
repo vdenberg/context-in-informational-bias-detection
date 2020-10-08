@@ -10,6 +10,14 @@ import re
 import spacy
 
 
+def standardise_id(basil_id):
+    if not basil_id[1].isdigit():
+        basil_id = '0' + basil_id
+    if not basil_id[-2].isdigit():
+        basil_id = basil_id[:-1] + '0' + basil_id[-1]
+    return basil_id.lower()
+
+
 def load_basil_spans(start_ends):
     start_ends = start_ends[2:-2]
     if list(start_ends):
@@ -102,7 +110,7 @@ class LoadBasil:
                    'lex_start_ends', 'inf_start_ends', 'stance', 'inf_quote']
         df = pd.DataFrame(pre_df, columns=columns)
         df['article'] = df.story.astype(str) + df.source
-        df['uniq_idx'] = df['story'] + df['source'] + df['sent_idx']
+        df['uniq_idx'] = standardise_id(df['story'] + df['source'] + df['sent_idx'])
         df = df.set_index(df['uniq_idx'])
 
         return df
