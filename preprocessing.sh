@@ -5,6 +5,8 @@
 
 # sentence classification, BERT
 python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm BERT
+
+'''
 # sentence classification, RoBERTa
 python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm RoBERTa
 
@@ -27,6 +29,6 @@ touch data/inputs/tapt/basil_train.tsv
 touch data/inputs/tapt/basil_test.tsv
 python3 preprocessing/preprocessing_for_cim_and_tapt.py # --add_use --add_sbert
 
-
+'''
 
 

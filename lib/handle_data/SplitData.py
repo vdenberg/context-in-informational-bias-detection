@@ -301,7 +301,6 @@ class Split:
 
         filled_folds = []
         for i, empty_fold in enumerate(empty_folds):
-            print(self.which)
 
             # if bias -> label renaming not executed in other scripts, fix it here
             if 'label' not in self.input_dataframe.columns:
@@ -354,7 +353,7 @@ def split_input_for_plm(data_dir, recreate, sv):
 
     # load basil data with BERT-relevant columns
     basil_infp = os.path.join(data_dir, 'plm_basil.tsv')
-    data = pd.read_csv(basil_infp, sep='\t', index_col=0) #, names=['id', 'label', 'alpha', 'sentence'])
+    data = pd.read_csv(basil_infp, sep='\t', index_col=0, names=['id', 'label', 'alpha', 'sentence'])
     data.index = [el.lower() for el in data.index]
 
     # write data into folds
