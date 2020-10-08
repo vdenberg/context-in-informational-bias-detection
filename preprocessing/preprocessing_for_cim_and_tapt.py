@@ -3,6 +3,8 @@ import numpy as np
 import argparse
 # import tensorflow_hub as hub
 # from sentence_transformers import SentenceTransformer
+from lib.handle_data.BasilLoader import LoadBasil
+LoadBasil
 
 
 def add_use(basil):
@@ -180,6 +182,7 @@ if __name__ == '__main__':
                         help='Add Sentence-BERT to BASIL voor CIM with SBERT input')
     args = parser.parse_args()
 
+    basil = LoadBasil().load_basil_raw()
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
 
     # ARTICLE & CONTEXT
