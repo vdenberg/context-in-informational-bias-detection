@@ -257,7 +257,7 @@ class SentenceSplit:
         """
         train_sents, dev_sents, test_sents = self.match_story()
         #return [{'train': train_sents, 'dev': dev_sents, 'test': test_sents}]
-        return [{'train': [train_sents], 'dev': [dev_sents], 'test': test_sents}]
+        return [{'train': train_sents, 'dev': dev_sents, 'test': test_sents}]
 
 
 class Split:
@@ -319,11 +319,6 @@ class Split:
 
             if 'label' not in features:
                 features += ['label']
-
-            print(self.input_dataframe.loc[['94fox14', '61fox31']])
-            print(type(['94fox14', '61fox31']))
-            print(type(train_sent_ids))
-            print(train_sent_ids)
 
             train_df = self.input_dataframe.loc[train_sent_ids, features] #+ ['label']
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
