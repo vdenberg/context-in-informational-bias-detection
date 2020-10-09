@@ -37,7 +37,7 @@ models = [args.model] if args.model else ['bert']
 seeds = [args.sv] if args.sv else [11, 22]  # [49, 6, 34]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [2e-5]
-folds = [args.fold] if args.fold else ['sentence-split'] + [str(el+1) for el in range(10)]
+folds = [args.fold] if args.fold else ['sentence_split'] + [str(el+1) for el in range(10)]
 SAMPLER = args.sampler
 
 torch.backends.cudnn.deterministic = True

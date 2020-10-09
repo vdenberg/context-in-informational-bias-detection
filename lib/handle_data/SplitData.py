@@ -351,11 +351,11 @@ class Split:
             test_df = self.input_dataframe.loc[test_sent_ids, features] #+ ['label']
 
             if self.which == 'sentence':
-                name = 'sentence'
+                name = 'sentence_split'
             elif self.which == 'story':
                 name = i+1
             elif self.which == 'both':
-                name = 'sentence' if i == 0 else i
+                name = 'sentence_split' if i == 0 else i
 
             filled_fold = {'train': train_df,
                            'dev': dev_df,
