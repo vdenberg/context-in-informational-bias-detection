@@ -323,6 +323,7 @@ class Split:
             print(self.input_dataframe.loc[['94fox14', '61fox31']])
             print(type(['94fox14', '61fox31']))
             print(type(train_sent_ids))
+            print(train_sent_ids)
 
             train_df = self.input_dataframe.loc[train_sent_ids, features] #+ ['label']
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
