@@ -320,7 +320,7 @@ class Split:
             if 'label' not in features:
                 features += ['label']
 
-            print(self.input_dataframe.loc['94fox14'])
+            print(self.input_dataframe.loc[['94fox14', '61fox31']])
 
             train_df = self.input_dataframe.loc[train_sent_ids, features] #+ ['label']
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
