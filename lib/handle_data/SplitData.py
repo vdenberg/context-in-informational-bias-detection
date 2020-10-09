@@ -4,7 +4,7 @@ import os, re
 import pandas as pd
 
 
-# Sentence split helpers
+# Story split helpers
 
 def order_stories(basil):
     sizes = basil.story.value_counts()
@@ -45,7 +45,7 @@ def mix_into_ten_folds(list_of_non_random_stories):
     return randomized_stories
 
 
-# Story split helpers
+# sentence split helpers
 
 def strip_totally(s):
     if isinstance(s, list):
@@ -118,8 +118,8 @@ def collect_sent_ids(set_type_stories, sent_by_story):
     return set_type_sent_ids
 
 
-class SentenceSplit:
-    def __init__(self, split_input, split_dir='data/splits/sentence_split', subset=1.0):
+class StorySplit:
+    def __init__(self, split_input, split_dir='data/splits/story_split', subset=1.0):
         split_fn = 'split.json'
         self.split_fp = os.path.join(split_dir, split_fn)
         self.split_input = split_input
@@ -179,7 +179,7 @@ class SentenceSplit:
 
         return splits_json
 
-    def load_sentence_story_split(self, recreate, sv):
+    def load_story_split(self, recreate, sv):
         if not os.path.exists(self.split_fp) or recreate:
             self.create_split(sv)
 
@@ -196,7 +196,7 @@ class SentenceSplit:
         :return: list of dicts with keys "train", "dev" & "test" and associated sentence ids.
         """
         # ...
-        story_split = self.load_sentence_story_split(recreate=recreate, sv=sv)
+        story_split = self.load_story_split(recreate=recreate, sv=sv)
 
         sent_by_story = self.map_stories_to_sentences()
 
@@ -225,7 +225,7 @@ class SentenceSplit:
         return splits_w_sent_ids
 
 
-class storySplit:
+class SentenceSplit:
     def __init__(self, split_input, split_dir, subset=1.0):
         self.split_input = split_input
         self.basil = load_basil_w_tokens().sample(frac=subset)
@@ -261,12 +261,12 @@ class storySplit:
 
 
 class Split:
-    def __init__(self, input_dataframe, which='sentence', split_loc='data/splits/', tst=False, subset=1.0, recreate=False, sv=99):
+    def __init__(self, input_dataframe, which='story', split_loc='data/splits/', tst=False, subset=1.0, recreate=False, sv=99):
         """
         Splits input basil-like dataframe into folds.
 
         :param input_dataframe: dataframe with at least all the same fields as basil_raw
-        :param which: string specifying whether story split or own split should be used
+        :param which: string specifying whether sentence split or own split should be used
         """
         assert isinstance(input_dataframe, pd.DataFrame)
 
@@ -274,20 +274,20 @@ class Split:
         self.which = which
         self.tst = tst
 
-        if self.which == 'story':
-            splitter = storySplit(input_dataframe, subset=subset, split_dir=os.path.join(split_loc, 'story_split'))
+        if self.which == 'sentence':
+            splitter = SentenceSplit(input_dataframe, subset=subset, split_dir=os.path.join(split_loc, 'sentence_split'))
             self.spl = splitter.return_split()
 
-        elif self.which == 'sentence':
-            splitter = SentenceSplit(input_dataframe, subset=subset, split_dir=os.path.join(split_loc, 'sentence_split'))
+        elif self.which == 'story':
+            splitter = StorySplit(input_dataframe, subset=subset, split_dir=os.path.join(split_loc, 'story_split'))
             self.spl = splitter.return_split(recreate, sv=sv)
 
         elif self.which == 'both':
-            story_splitter = storySplit(input_dataframe, subset=subset, split_dir=os.path.join(split_loc, 'story_split'))
             sentence_splitter = SentenceSplit(input_dataframe, subset=subset, split_dir=os.path.join(split_loc, 'sentence_split'))
-            story_spl = story_splitter.return_split()
-            sentence_spl = sentence_splitter.return_split(recreate, sv=sv)
-            self.spl = story_spl + sentence_spl
+            story_splitter = StorySplit(input_dataframe, subset=subset, split_dir=os.path.join(split_loc, 'story_split'))
+            sentence_spl = sentence_splitter.return_split()
+            story_spl = story_splitter.return_split(recreate, sv=sv)
+            self.spl = sentence_spl + story_spl
 
     def apply_split(self, features):
         """
@@ -324,12 +324,12 @@ class Split:
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
             test_df = self.input_dataframe.loc[test_sent_ids, features] #+ ['label']
 
-            if self.which == 'story':
-                name = 'story'
-            elif self.which == 'sentence':
+            if self.which == 'sentence':
+                name = 'sentence'
+            elif self.which == 'story':
                 name = i+1
             elif self.which == 'both':
-                name = 'story' if i == 0 else i
+                name = 'sentence' if i == 0 else i
 
             filled_fold = {'train': train_df,
                            'dev': dev_df,
@@ -349,7 +349,7 @@ class Split:
 
 def split_input_for_plm(data_dir, recreate, sv):
     ''' This function loads basil, selects those columns which are relevant for creating input for finetuning BERT to
-    our data, and saves them for each sentence-fold seperately. '''
+    our data, and saves them for each fold seperately. '''
 
     # load basil data with BERT-relevant columns
     basil_infp = os.path.join(data_dir, 'plm_basil.tsv')
@@ -357,7 +357,7 @@ def split_input_for_plm(data_dir, recreate, sv):
     data['id'] = data.index
 
     # write data into folds
-    spl = Split(data, which='sentence', recreate=recreate, sv=sv)
+    spl = Split(data, which='both', recreate=recreate, sv=sv)
     folds = spl.apply_split(features=['id', 'label', 'alpha', 'sentence'])
 
     # write data for each fold with only BERT-relevant columns to all.tsv
