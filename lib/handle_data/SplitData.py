@@ -70,19 +70,19 @@ def match_set_to_basil(tokens, basil):
         handmade_mapping = {'TheFBIdirectorshouldbedrawnfromtheranksofcareerlawenforcementprosecutorsortheFBIitselfnotpoliticiansDurbintoldHuffPostlater': ['28hpo21'],
                             'ImonlyinterestedinLibyaifwegettheoilTrumpsaid': ['84fox26', '84hpo24'],
                             'HisconductisunbecomingofamemberofCongress': ['48nyt14','48fox12'],
-                            'Iamtryingtosavelivesandpreventthenextterroristattack': ['64hpo6', '64nyt15'],
-                            'Andyouexemplifyit': ['73hpo4', '73nyt2'],
+                            'Iamtryingtosavelivesandpreventthenextterroristattack': ['64hpo06', '64nyt15'],
+                            'Andyouexemplifyit': ['73hpo04', '73nyt02'],
                             'AndwhenyoursonlooksatyouandsaysMommalookyouwonBulliesdontwin': ['63nyt22', '63fox12'],
-                            'Todaysrulingprovidescertaintyandclearcoherenttaxfilingguidanceforalllegallymarriedsamesexcouplesnationwide': ['66fox6', '66nyt7'],
-                            'EricisagoodfriendandIhavetremendousrespectforhim': ['83fox8', '83hpo8'],
-                            'ThecampaignandthestatepartyintendtocooperatewiththeUSAttorneysofficeandthestatelegislativecommitteeandwillrespondtothesubpoenasaccordingly': ['97fox4', '97hpo4'],
-                            'AmericansdontbelievetheirleadersinWashingtonarelisteningandnowisthetimetochangethat': ['83fox4', '83fox12'],
-                            'Icanthelpbutthinkthatthoseremarksarewellovertheline': ['50fox11', '50nyt6'],
-                            'FaithmadeAmericastrongItcanmakeherstrongagain': ['87hpo4', '87nyt6'],
-                            'ThefinalwordingwontbereleaseduntiltheNAACPsnationalboardofdirectorsapprovestheresolutionduringitsmeetinginOctober': ['42HPO7', '42FOX15'],
-                            'Heobtainedatleastfivemilitarydefermentsfromtoandtookrepeatedstepsthatenabledhimtoavoidgoingtowaraccordingtorecords': ['73hpo7', '73nyt5'],
-                            'Nomatterhowintrusiveandpartisanourpoliticscanbecomethisdoesnotjustifyapoorresponse': ['48nyt3', '48hpo42'],
-                            'Itsaidsomethingcouldevolveandbecomemoredangerousforthatsmallpercentageofpeoplethatreallythinkourcountryhasbeentakenawayfromthem': ['42FOX17', '42HPO9']}
+                            'Todaysrulingprovidescertaintyandclearcoherenttaxfilingguidanceforalllegallymarriedsamesexcouplesnationwide': ['66fox06', '66nyt07'],
+                            'EricisagoodfriendandIhavetremendousrespectforhim': ['83fox08', '83hpo08'],
+                            'ThecampaignandthestatepartyintendtocooperatewiththeUSAttorneysofficeandthestatelegislativecommitteeandwillrespondtothesubpoenasaccordingly': ['97fox04', '97hpo04'],
+                            'AmericansdontbelievetheirleadersinWashingtonarelisteningandnowisthetimetochangethat': ['83fox04', '83fox12'],
+                            'Icanthelpbutthinkthatthoseremarksarewellovertheline': ['50fox11', '50nyt06'],
+                            'FaithmadeAmericastrongItcanmakeherstrongagain': ['87hpo04', '87nyt06'],
+                            'ThefinalwordingwontbereleaseduntiltheNAACPsnationalboardofdirectorsapprovestheresolutionduringitsmeetinginOctober': ['42hpo07', '42fox15'],
+                            'Heobtainedatleastfivemilitarydefermentsfromtoandtookrepeatedstepsthatenabledhimtoavoidgoingtowaraccordingtorecords': ['73hpo07', '73nyt05'],
+                            'Nomatterhowintrusiveandpartisanourpoliticscanbecomethisdoesnotjustifyapoorresponse': ['48nyt03', '48hpo42'],
+                            'Itsaidsomethingcouldevolveandbecomemoredangerousforthatsmallpercentageofpeoplethatreallythinkourcountryhasbeentakenawayfromthem': ['42fox17', '42hpo09']}
         for t in tokens:
             try:
                 set_us.extend(handmade_mapping[t])
@@ -103,7 +103,7 @@ def load_basil():
 
 
 def load_basil_w_tokens():
-    fp = 'data/basil_w_tokens.csv'
+    fp = 'data/inputs/basil_w_tokens.csv'
     basil_df = pd.read_csv(fp, index_col=0).fillna('')
     basil_df.index = [el.lower() for el in basil_df.index]
     return basil_df
@@ -249,7 +249,33 @@ class SentenceSplit:
             us = match_set_to_basil(tokens, basil_for_matching)
             sents.append(us)
         train_sents, dev_sents, test_sents = sents
-        return train_sents, dev_sents, test_sents
+
+        # this method of matching is not perfect, so we have to do some alignment
+
+        # establish basil items that are not matched and add these to train
+        sentence_split_items = train_sents + dev_sents + test_sents
+        basil_items = list(self.basil.index)
+
+        left_out = [el for el in basil_items if el not in sentence_split_items]
+        train_sents += left_out
+
+        # deduplicate
+        train_sent_ids = set(train_sents)
+        dev_sent_ids = set(dev_sents)
+        test_sent_ids = set(test_sents)
+
+        for el in basil_items:
+            if el in train_sent_ids:
+                if el in dev_sent_ids:
+                    dev_sent_ids.remove(el)
+                elif el in test_sent_ids:
+                    test_sent_ids.remove(el)
+
+        train_sent_ids = list(train_sent_ids)
+        dev_sent_ids = list(dev_sent_ids)
+        test_sent_ids = list(test_sent_ids)
+
+        return train_sent_ids, dev_sent_ids, test_sent_ids
 
     def return_split(self):
         """ Returns list of folds and the sentence ids associated with their set types.
@@ -320,9 +346,6 @@ class Split:
             if 'label' not in features:
                 features += ['label']
 
-            print(len(self.input_dataframe))
-            print(len(train_sent_ids))
-            
             train_df = self.input_dataframe.loc[train_sent_ids, features] #+ ['label']
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
             test_df = self.input_dataframe.loc[test_sent_ids, features] #+ ['label']

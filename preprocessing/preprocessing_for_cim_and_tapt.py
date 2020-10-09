@@ -193,7 +193,7 @@ if __name__ == '__main__':
     # tokenize
     nlp = spacy.load("en_core_web_sm")
     basil['tokens'] = basil.sentence.apply(tokenize)
-    basil.to_csv('data/basil_w_tokens.csv')
+    basil.to_csv('data/inputs/basil_w_tokens.csv')
 
     # ARTICLE & CONTEXT
     # Groups basil instances by story and source, and write .tsv lines

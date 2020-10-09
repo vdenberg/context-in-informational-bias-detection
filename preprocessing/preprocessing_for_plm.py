@@ -22,10 +22,6 @@ def preprocess_for_plm(rows, model):
             feats = convert_example_to_roberta_feature(row)
         features.append(feats)
         count += 1
-
-        if count % 2000 == 0:
-            status = f'Processed {count}/{total} rows'
-            print(status)
     return features
 
 
@@ -269,7 +265,7 @@ if __name__ == '__main__':
            features = pickle.load(f)
            features_dict = {feat.my_id: feat for feat in features}
 
-    print(f"Processed all {len(features)} items")
+    print(f"Processed all {len(examples)} items")
 
     ###
     # write features in seperate files per fold

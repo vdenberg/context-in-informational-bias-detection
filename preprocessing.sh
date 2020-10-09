@@ -1,8 +1,12 @@
 # GENERAL
 # python -m spacy download en_core_web_sm
 
-# BASELINES
+# CIM & DOMAIN
+touch data/inputs/tapt/basil_train.tsv
+touch data/inputs/tapt/basil_test.tsv
+python3 preprocessing/preprocessing_for_cim_and_tapt.py # --add_use --add_sbert
 
+# BASELINES
 # sentence classification, BERT
 #todo check out why length of preprocessed features is not the same as length of basil
 python3 preprocessing/preprocessing_for_plm.py --clf_task sent_clf -plm bert
@@ -23,11 +27,5 @@ python3 preprocessing/preprocessing_for_plm.py --clf_task seq_sent_clf --sequenc
 # seq_sent_clf, len 10
 python3 preprocessing/preprocessing_for_plm.py --clf_task seq_sent_clf --sequence_length 10 --windowed
 python3 preprocessing/preprocessing_for_plm.py --clf_task seq_sent_clf --sequence_length 10
-
-# CIM & DOMAIN
-touch data/inputs/tapt/basil_train.tsv
-touch data/inputs/tapt/basil_test.tsv
-python3 preprocessing/preprocessing_for_cim_and_tapt.py # --add_use --add_sbert
-
 
 

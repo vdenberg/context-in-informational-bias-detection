@@ -113,7 +113,6 @@ class LoadBasil:
         df['uniq_idx'] = df['story'] + df['source'] + df['sent_idx']
         df['uniq_idx'] = df['uniq_idx'].apply(standardise_id)
         df = df.set_index(df['uniq_idx'])
-
         return df
 
 
