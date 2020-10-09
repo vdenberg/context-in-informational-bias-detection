@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from lib.handle_data.PreprocessForPLM import *
 from lib.utils import get_torch_device
+from lib.evaluate.Eval import my_eval
 import logging
 
 '''
@@ -74,6 +75,7 @@ if DEBUG:
 TASK_NAME = f'sent_clf_roberta'
 TASK = 'sent_clf'
 FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
+PREDICTION_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
 REPORTS_DIR = f'reports/{TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
@@ -134,6 +136,11 @@ if __name__ == '__main__':
                 for LEARNING_RATE in lrs:
                     setting_name = bs_name + f"_lr{LEARNING_RATE}"
                     setting_results_table = pd.DataFrame(columns=table_columns.split(','))
+
+                    test_ids = []
+                    test_predictions = []
+                    test_labels = []
+
                     for fold_name in folds:
                         fold_results_table = pd.DataFrame(columns=table_columns.split(','))
                         name = setting_name + f"_f{fold_name}"
@@ -143,7 +150,7 @@ if __name__ == '__main__':
                         best_val_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
                                         'lr': LEARNING_RATE, 'set_type': 'dev', 'f1': 0, 'model_loc': best_model_loc,
                                         'sampler': SAMPLER, 'epochs': N_EPS}
-                        test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
+                        fold_test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
                                     'lr': LEARNING_RATE, 'set_type': 'test', 'sampler': SAMPLER}
 
                         # load feats
@@ -152,7 +159,9 @@ if __name__ == '__main__':
                         test_fp = os.path.join(FEAT_DIR, f"{fold_name}_test_features.pkl")
                         _, train_batches, train_labels = load_features(train_fp, BATCH_SIZE, SAMPLER)
                         _, dev_batches, dev_labels = load_features(dev_fp, 1, SAMPLER)
-                        test_ids, test_batches, test_labels = load_features(test_fp, 1, SAMPLER)
+                        fold_test_ids, test_batches, fold_test_labels = load_features(test_fp, 1, SAMPLER)
+                        test_ids.append(fold_test_ids)
+                        test_labels.append(fold_test_labels)
 
                         # start training
                         logger.info(f"***** Training on Fold {fold_name} *****")
@@ -201,14 +210,10 @@ if __name__ == '__main__':
                                         logging.info(f' Ep {ep} / {N_EPS} - {step} / {len(train_batches)} - Loss: {loss.item()}')
 
                                 av_loss = tr_loss / len(train_batches)
-                                # save_model(model, CHECKPOINT_DIR, epoch_name)
 
-                                dev_mets, dev_perf = inferencer.evaluate(model, dev_batches, dev_labels, av_loss=av_loss,
-                                                                             set_type='dev', name=epoch_name)
-
-                                test_mets, test_perf = inferencer.evaluate(model, test_batches, test_labels,
-                                                                         av_loss=av_loss,
-                                                                         set_type='test', name=epoch_name)
+                                dev_mets, dev_perf = inferencer.evaluate(model, dev_batches, dev_labels,
+                                                                            av_loss=av_loss, set_type='dev',
+                                                                            name=epoch_name)
 
                                 # check if best
                                 high_score = ''
@@ -218,7 +223,6 @@ if __name__ == '__main__':
                                     save_model(model, CHECKPOINT_DIR, name)
 
                                 logger.info(f'{epoch_name}: {dev_perf} {high_score}')
-                                logger.info(f'{epoch_name}: {test_perf}')
 
                         best_model = RobertaForSequenceClassification.from_pretrained(best_model_loc,
                                                                                       num_labels=NUM_LABELS,
@@ -226,30 +230,14 @@ if __name__ == '__main__':
                                                                                       output_attentions=False)
                         best_model.to(device)
 
-                        logger.info(f"***** Best model on Fold {fold_name} *****")
-                        logger.info(f"  Details: {best_val_res}")
-
-                        dev_mets, dev_perf = inferencer.evaluate(best_model, dev_batches, dev_labels, set_type='dev',
-                                                                 output_mode=TASK)
-                        best_val_res.update(dev_mets)
-                        logging.info(f"{dev_perf}")
-
-                        test_mets, test_perf = inferencer.evaluate(best_model, test_batches, test_labels,
+                        fold_test_mets, fold_test_perf = inferencer.evaluate(best_model, test_batches, test_labels,
                                                                    set_type='test',
                                                                    output_mode=TASK)
-                        logging.info(f"{test_perf}")
-                        test_res.update(test_mets)
+                        fold_test_res.update(fold_test_mets)
 
                         # get predictions
-                        preds, labels = inferencer.predict(best_model, test_batches)
-                        assert len(preds) == len(test_ids)
-
-                        basil_w_pred = pd.DataFrame(index=test_ids)
-                        basil_w_pred['pred'] = preds
-                        basil_w_pred['label'] = test_labels
-                        pred_fp = f'data/predictions/{MODEL}/{SEED_VAL}/{fold_name}_test_preds.csv'
-                        basil_w_pred.to_csv(pred_fp)
-                        logger.info(f'Preds in {pred_fp}')
+                        fold_test_predictions, labels = inferencer.predict(best_model, test_batches)
+                        test_predictions.append(fold_test_predictions)
 
                         # get embeddings
                         for EMB_TYPE in ['cross4bert']: #poolbert', 'avbert', 'unpoolbert', 'crossbert'
@@ -268,10 +256,35 @@ if __name__ == '__main__':
                                 basil_w_BERT.to_csv(emb_fp)
                                 logger.info(f'{EMB_TYPE} embeddings in {emb_fp}.csv')
 
-                        # store performance in table
+                        # store performance on just the fold in the table
                         fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
-                        fold_results_table = fold_results_table.append(test_res, ignore_index=True)
+                        fold_results_table = fold_results_table.append(fold_test_res, ignore_index=True)
                         setting_results_table = setting_results_table.append(fold_results_table)
+
+                    # compute performance on setting
+
+                    logger.info(f"***** Results on Setting {setting_name} *****")
+
+                    assert len(test_predictions) == len(test_ids)
+                    assert len(test_predictions) == len(test_labels)
+
+                    test_dict, test_perf = my_eval(test_labels, test_predictions, set_type='test', av_loss=av_loss,
+                                                   name=setting_name, opmode=TASK)
+                    logging.info(f"{test_perf}")
+
+                    basil_w_pred = pd.DataFrame(index=test_ids)
+                    basil_w_pred['pred'] = test_predictions
+                    basil_w_pred['label'] = test_labels
+
+                    prediction_dir = f'data/predictions/{MODEL}/{SEED_VAL}'
+
+                    if not os.path.exists(prediction_dir):
+                        os.makedirs(prediction_dir)
+
+                    pred_fp = os.path.join(prediction_dir, f'{setting_name}_test_preds.csv')
+                    
+                    basil_w_pred.to_csv(pred_fp)
+                    logger.info(f'Preds in {pred_fp}')
 
                     # print result of setting
                     logging.info(
