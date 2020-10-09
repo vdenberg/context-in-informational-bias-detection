@@ -53,7 +53,7 @@ models = [args.model] if args.model else ['rob_base']
 seeds = [args.sv] if args.sv else [22]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
-folds = [args.fold] if args.fold else ['fan'] + [str(el) for el in range(1,11)]
+folds = [args.fold] if args.fold else ['sentence-split'] + [str(el) for el in range(1,11)]
 SAMPLER = args.sampler
 
 torch.backends.cudnn.deterministic = True

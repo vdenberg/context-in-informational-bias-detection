@@ -265,8 +265,6 @@ if __name__ == '__main__':
            features = pickle.load(f)
            features_dict = {feat.my_id: feat for feat in features}
 
-    print(f"Processed all items")
-
     ###
     # write features in seperate files per fold
     ###
