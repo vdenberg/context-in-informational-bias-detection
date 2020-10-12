@@ -171,8 +171,6 @@ if __name__ == '__main__':
 
                         FORCE = False
 
-                        print(best_model_loc)
-                        exit(0)
                         if not os.path.exists(best_model_loc) or FORCE:
                             logger.info(f"***** Training on Fold {fold_name} *****")
                             model = RobertaForSequenceClassification.from_pretrained(ROBERTA_MODEL,
