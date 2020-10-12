@@ -237,7 +237,7 @@ if __name__ == '__main__':
                                                                                       output_attentions=False)
                         best_model.to(device)
 
-                        fold_test_mets, fold_test_perf = inferencer.evaluate(best_model, test_batches, test_labels,
+                        fold_test_mets, fold_test_perf = inferencer.evaluate(best_model, test_batches, fold_test_labels,
                                                                    set_type='test',
                                                                    output_mode=TASK)
                         fold_test_res.update(fold_test_mets)
