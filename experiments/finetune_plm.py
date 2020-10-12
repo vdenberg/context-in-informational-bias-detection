@@ -119,7 +119,8 @@ else:
 PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 # CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
 if MODEL == 'bert':
-    CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/bert_{re.sub(CLF_TASK, "_", "")}_baseline/'
+    c = re.sub(CLF_TASK, "_", "")
+    CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/bert_{c}_baseline/'
     print(CHECKPOINT_DIR)
     exit(0)
 else:
