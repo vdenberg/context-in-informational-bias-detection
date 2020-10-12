@@ -165,12 +165,16 @@ if __name__ == '__main__':
                         test_labels.append(fold_test_labels)
 
                         # start training
-                        logger.info(f"***** Training on Fold {fold_name} *****")
+                        logger.info(f"***** Fold {fold_name} *****")
                         logger.info(f"  Details: {best_val_res}")
                         logger.info(f"  Logging to {LOG_FP}")
 
                         FORCE = False
+                        
+                        print(best_model_loc)
+                        exit(0)
                         if not os.path.exists(best_model_loc) or FORCE:
+                            logger.info(f"***** Training on Fold {fold_name} *****")
                             model = RobertaForSequenceClassification.from_pretrained(ROBERTA_MODEL,
                                                                                      cache_dir=CACHE_DIR,
                                                                                      num_labels=NUM_LABELS,
@@ -225,6 +229,7 @@ if __name__ == '__main__':
 
                                 logger.info(f'{epoch_name}: {dev_perf} {high_score}')
 
+                        logger.info(f"***** Loading from {best_model_loc} *****")
                         best_model = RobertaForSequenceClassification.from_pretrained(best_model_loc,
                                                                                       num_labels=NUM_LABELS,
                                                                                       output_hidden_states=True,
