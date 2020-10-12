@@ -97,13 +97,13 @@ N_EPS = args.n_epochs
 MODEL = args.model if args.model else ['rob_base']
 SAMPLER = args.sampler
 CLF_TASK = args.clf_task
-TASK_NAME = CLF_TASK + '_' + MODEL
+SPLIT = args.split
+TASK_NAME = '_'.join([CLF_TASK, MODEL, SPLIT])
 STORE_EMBEDS = args.embeds
 models = [args.model]
 seeds = model_seeds[CLF_TASK][MODEL]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
-SPLIT = args.split
 if SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
 elif MODEL == 'rob_base':
@@ -371,7 +371,6 @@ if __name__ == '__main__':
         main_results_table.to_csv(MAIN_TABLE_FP, index=False)
 
         df = main_results_table
-        print(df)
         df[['prec', 'rec', 'f1']] = df[['prec', 'rec', 'f1']].round(4) * 100
         view = clean_mean(df, grby=['model', 'seed'], set_type='test')
         view = view.fillna(0)
