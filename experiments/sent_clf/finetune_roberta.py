@@ -138,7 +138,7 @@ if __name__ == '__main__':
             if not os.path.exists(prediction_dir):
                 os.makedirs(prediction_dir)
 
-            embedding_dir = f'data/embeddings/{MODEL}/'
+            embedding_dir = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/embeddings/{MODEL}/'
             if not os.path.exists(embedding_dir):
                 os.makedirs(embedding_dir)
 
