@@ -90,6 +90,7 @@ parser.add_argument('-lr', '--lr', type=float, default=None) # 5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) # 16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
 parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
+parser.add_argument('-embeds', '--embeds', action='store_true', default=False)
 args = parser.parse_args()
 
 N_EPS = args.n_epochs
@@ -97,6 +98,7 @@ MODEL = args.model if args.model else ['rob_base']
 SAMPLER = args.sampler
 CLF_TASK = args.clf_task
 TASK_NAME = CLF_TASK + '_' + MODEL
+STORE_EMBEDS = args.embeds
 models = [args.model]
 seeds = model_seeds[CLF_TASK][MODEL]
 bss = [args.bs] if args.bs else [16]
@@ -240,7 +242,7 @@ if __name__ == '__main__':
 
                             FORCE = False
                             selected_model = select_model(MODEL, CLF_TASK)
-                            
+
                             if not os.path.exists(best_model_loc) or FORCE:
                                 logger.info(f"***** Training on Fold {fold_name} *****")
 
@@ -308,22 +310,23 @@ if __name__ == '__main__':
                             test_predictions.extend(fold_test_predictions)
 
                             # get embeddings
-                            for EMB_TYPE in ['cross4bert']: #poolbert', 'avbert', 'unpoolbert', 'crossbert'
-                                emb_fp = os.path.join(embedding_dir, f'{name}_basil_w_{EMB_TYPE}')
+                            if STORE_EMBEDS:
+                                for EMB_TYPE in ['cross4bert']: #poolbert', 'avbert', 'unpoolbert', 'crossbert'
+                                    emb_fp = os.path.join(embedding_dir, f'{name}_basil_w_{EMB_TYPE}')
 
-                                PREFERRED_EMB_SV = 49
-                                if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
-                                    logging.info(f'Generating {EMB_TYPE} ({emb_fp})')
-                                    feat_fp = os.path.join(FEAT_DIR, f"all_features.pkl")
-                                    all_ids, all_batches, all_labels = load_features(feat_fp, batch_size=1,
-                                                                                     sampler=SAMPLER)
-                                    embs = inferencer.predict(best_model, all_batches, return_embeddings=True, emb_type=EMB_TYPE)
-                                    assert len(embs) == len(all_ids)
+                                    PREFERRED_EMB_SV = 49
+                                    if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
+                                        logging.info(f'Generating {EMB_TYPE} ({emb_fp})')
+                                        feat_fp = os.path.join(FEAT_DIR, f"all_features.pkl")
+                                        all_ids, all_batches, all_labels = load_features(feat_fp, batch_size=1,
+                                                                                         sampler=SAMPLER)
+                                        embs = inferencer.predict(best_model, all_batches, return_embeddings=True, emb_type=EMB_TYPE)
+                                        assert len(embs) == len(all_ids)
 
-                                    basil_w_BERT = pd.DataFrame(index=all_ids)
-                                    basil_w_BERT[EMB_TYPE] = embs
-                                    basil_w_BERT.to_csv(emb_fp)
-                                    logger.info(f'{EMB_TYPE} embeddings in {emb_fp}.csv')
+                                        basil_w_BERT = pd.DataFrame(index=all_ids)
+                                        basil_w_BERT[EMB_TYPE] = embs
+                                        basil_w_BERT.to_csv(emb_fp)
+                                        logger.info(f'{EMB_TYPE} embeddings in {emb_fp}.csv')
 
                             # store performance on just the fold in the table
                             fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
