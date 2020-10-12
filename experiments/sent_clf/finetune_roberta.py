@@ -54,7 +54,7 @@ models = [args.model] if args.model else ['rob_base']
 seeds = [args.sv] if args.sv else [22]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
-folds = [args.fold] if args.fold else ['fan'] + [str(el) for el in range(1,11)]
+folds = [args.fold] if args.fold else ['sentence_split'] + [str(el) for el in range(1,11)]
 SAMPLER = args.sampler
 
 torch.backends.cudnn.deterministic = True
@@ -74,8 +74,7 @@ if DEBUG:
 
 TASK_NAME = f'sent_clf_roberta'
 TASK = 'sent_clf'
-#FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
-FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/inputs/sent_clf/features_for_roberta'
+FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
 PREDICTION_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
 # CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
 CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
@@ -148,7 +147,11 @@ if __name__ == '__main__':
                         name = setting_name + f"_f{fold_name}"
 
                         # init results containers
-                        best_model_loc = os.path.join(CHECKPOINT_DIR, name)
+                        if fold_name == 'sentence_split':
+                            model_name = setting_name + f"_f{'fan'}"
+                        else:
+                            model_name = name
+                        best_model_loc = os.path.join(CHECKPOINT_DIR, model_name)
                         best_val_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
                                         'lr': LEARNING_RATE, 'set_type': 'dev', 'f1': 0, 'model_loc': best_model_loc,
                                         'sampler': SAMPLER, 'epochs': N_EPS}
