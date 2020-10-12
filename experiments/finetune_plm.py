@@ -102,11 +102,12 @@ seeds = model_seeds[CLF_TASK][MODEL]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
 SPLIT = args.split
-if SPLIT == 'sentence_split':
-    folds = ['sentence_split']
-elif SPLIT == 'story_split':
+if SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
-
+elif MODEL == 'rob_base':
+    folds = 'fan'
+else:
+    folds = 'sentence_split'
 
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
