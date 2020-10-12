@@ -438,7 +438,7 @@ class Inferencer():
             preds = np.asarray(preds)
             preds = np.reshape(preds, labels.shape)
         else:
-            labels = np.as_array(labels)
+            labels = np.asarray(labels)
 
         if len(preds) != len(labels):
             print('Sizes not equal')
