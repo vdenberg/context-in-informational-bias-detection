@@ -66,12 +66,12 @@ model_mapping = {'bert': 'bert-base-cased',
                 }
 
 model_seeds = {'sent_clf': {
-                   'bert': [6, 11, 20, 22, 34]
+                   'bert': [6, 11, 20, 22, 34],
                    'rob_base': [49, 57, 33, 297, 181],
                    'rob_dapt': [6, 22, 33, 34, 49],
                    'rob_basil_tapt': [6, 33, 34, 49, 181],
                    'rob_basil_dapttapt': [6, 33, 34, 49, 181],
-                   'seq_sent_clf': [22, 34, 49, 181, 43] }
+                   'seq_sent_clf': [22, 34, 49, 181, 43] },
                'tok_clf': {
                     'bert': [6, 23, 49, 132, 281],
                     'rob_base': [6, 33, 34, 132, 281] }
