@@ -11,7 +11,7 @@ import torch
 from lib.handle_data.PreprocessForPLM import *
 from lib.utils import get_torch_device
 
-from lib.classifiers.RobertaWrapper import RobertaForTokenClassification, Inferencer, save_model, load_features
+from lib.classifiers.PLMWrapper import RobertaForTokenClassification, Inferencer, save_model, load_features
 
 
 class InputFeatures(object):

@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function
 from transformers.optimization import AdamW, get_linear_schedule_with_warmup
-from lib.classifiers.RobertaWrapper import save_model, load_features
-from lib.classifiers.BertWrapper import BertForSequenceClassification
+from lib.classifiers.PLMWrapper import save_model, load_features, BertForSequenceClassification
 from lib.classifiers.BertForEmbed import Inferencer
 from datetime import datetime
 import torch

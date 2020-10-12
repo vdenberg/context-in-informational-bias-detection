@@ -10,7 +10,7 @@ import torch
 from transformers.optimization import AdamW, get_linear_schedule_with_warmup
 
 from lib.classifiers.BertForEmbed import Inferencer, save_model
-from lib.classifiers.BertWrapper import load_features, BertForTokenClassification
+from Private.OldVersions.BertWrapper import load_features, BertForTokenClassification
 from lib.handle_data.PreprocessForPLM import *
 from lib.utils import get_torch_device
 

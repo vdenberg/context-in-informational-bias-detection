@@ -2,8 +2,8 @@
 
 from __future__ import absolute_import, division, print_function
 from transformers.optimization import AdamW, get_linear_schedule_with_warmup
-from lib.classifiers.RobertaSSCWrapper import RobertaSSC, Inferencer, save_model
-from lib.classifiers.RobertaWrapper import load_features
+from Private.SSC.RobertaSSCWrapper import RobertaSSC, Inferencer, save_model
+from lib.classifiers.PLMWrapper import load_features
 from datetime import datetime
 import torch
 import random, argparse

@@ -1,6 +1,8 @@
 from __future__ import absolute_import, division, print_function
 from transformers.optimization import AdamW, get_linear_schedule_with_warmup
-from lib.classifiers.RobertaWrapper import RobertaForSequenceClassification, Inferencer, save_model, load_features
+from lib.classifiers.PLMWrapper import Inferencer, save_model, load_features
+from lib.classifiers.PLMWrapper import BertForTokenClassification, BertForSequenceClassification
+from lib.classifiers.PLMWrapper import RobertaForTokenClassification, RobertaForSequenceClassification
 from datetime import datetime
 import torch
 import random, argparse
@@ -24,6 +26,22 @@ class InputFeatures(object):
         self.label_id = label_id
 '''
 
+
+def select_model(model, clf_task):
+    if clf_task == 'sent_clf':
+        if model == 'bert':
+            sel_mod = BertForSequenceClassification
+        elif model == 'roberta':
+            sel_mod = RobertaForSequenceClassification
+
+    elif clf_task == 'tok_clf':
+        if model == 'bert':
+            sel_mod = BertForTokenClassification
+        elif model == 'roberta':
+            sel_mod = RobertaForTokenClassification
+    return sel_mod
+
+
 def clean_mean(df, grby='', set_type=''):
     mets = ['f1']
     if set_type:
@@ -36,8 +54,10 @@ def clean_mean(df, grby='', set_type=''):
 # WHAT IS THE EXPERIMENT
 ########################
 
+
 # find GPU if present
-model_mapping = {'rob_base': 'roberta-base',
+model_mapping = {'bert': 'bert-base-cased',
+                 'rob_base': 'roberta-base',
                  'rob_dapt': 'experiments/adapt_dapt_tapt/pretrained_models/news_roberta_base',
                  'rob_tapt': 'experiments/adapt_dapt_tapt/pretrained_models/dsp_roberta_base_tapt_hyperpartisan_news_5015',
                  'rob_dapttapt': 'experiments/adapt_dapt_tapt/pretrained_models/dsp_roberta_base_dapt_news_tapt_hyperpartisan_news_5015',
@@ -51,7 +71,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-ep', '--n_epochs', type=int, default=10) #2,3,4
 parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
-parser.add_argument('-model', '--model', type=str, default=None) #2,3,4
+parser.add_argument('-clf_task', '--clf_task', type=str, default='sent_clf')
+parser.add_argument('-task_name', '--task_name', type=str, default='sent_clf_roberta')
+parser.add_argument('-model', '--model', type=str, default='roberta') #2,3,4
 parser.add_argument('-lr', '--lr', type=float, default=None) #5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) #16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
@@ -69,6 +91,8 @@ if SPLIT == 'sentence_split':
 elif SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
 SAMPLER = args.sampler
+CLF_TASK = args.clf_task
+TASK_NAME = args.task_name
 
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
@@ -85,15 +109,13 @@ if DEBUG:
 # WHERE ARE THE FILES
 ########################
 
-TASK_NAME = f'sent_clf_roberta'
-TASK = 'sent_clf'
 # FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
 FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/features_for_roberta'
-PREDICTION_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
+PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 # CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
 CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
-REPORTS_DIR = f'reports/{TASK}/{TASK_NAME}/logs'
-TABLE_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
+REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
+TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 CACHE_DIR = 'models/cache/'
 MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'roberta_ft_results.csv')
 
@@ -133,7 +155,7 @@ if __name__ == '__main__':
     logger.info(args)
 
     for MODEL in models:
-        ROBERTA_MODEL = model_mapping[MODEL]
+        EXACT_MODEL = model_mapping[MODEL]
 
         for SEED in seeds:
             if SEED == 0:
@@ -204,11 +226,13 @@ if __name__ == '__main__':
 
                             if not os.path.exists(best_model_loc) or FORCE:
                                 logger.info(f"***** Training on Fold {fold_name} *****")
-                                model = RobertaForSequenceClassification.from_pretrained(ROBERTA_MODEL,
-                                                                                         cache_dir=CACHE_DIR,
-                                                                                         num_labels=NUM_LABELS,
-                                                                                         output_hidden_states=True,
-                                                                                         output_attentions=False)
+
+                                selected_model = select_model(MODEL, CLF_TASK)
+                                model = selected_model.from_pretrained(EXACT_MODEL, cache_dir=CACHE_DIR,
+                                                                       num_labels=NUM_LABELS,
+                                                                       output_hidden_states=True,
+                                                                       output_attentions=False)
+
                                 model.to(device)
                                 optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.01,
                                                   eps=1e-6)  # To reproduce BertAdam specific behavior set correct_bias=False
@@ -258,10 +282,9 @@ if __name__ == '__main__':
 
                                     logger.info(f'{epoch_name}: {dev_perf} {high_score}')
 
-                            best_model = RobertaForSequenceClassification.from_pretrained(best_model_loc,
-                                                                                          num_labels=NUM_LABELS,
-                                                                                          output_hidden_states=True,
-                                                                                          output_attentions=False)
+                            best_model = selected_model.from_pretrained(best_model_loc, num_labels=NUM_LABELS,
+                                                                        output_hidden_states=True,
+                                                                        output_attentions=False)
                             best_model.to(device)
 
                             # get predictions
@@ -308,18 +331,12 @@ if __name__ == '__main__':
                     logger.info(f"***** Results on Setting {setting_name} *****")
 
                     test_mets, test_perf = my_eval(basil_w_pred.label, basil_w_pred.pred, set_type='test', name=setting_name,
-                                                   opmode=TASK)
+                                                   opmode=CLF_TASK)
                     logging.info(f"{test_perf}")
                     test_res.update(test_mets)
 
                     setting_results_table = setting_results_table.append(test_res, ignore_index=True)
                     setting_results_table = setting_results_table.append(fold_results_table, ignore_index=True)
-
-                    # print result of setting
-                    logging.info(
-                        f'Setting {setting_name} results: \n{setting_results_table[["model", "seed", "bs", "lr", "fold", "set_type", "f1"]]}')
-
-                    # write performance to file
                     setting_fp = os.path.join(TABLE_DIR, f'{setting_name}_results_table.csv')
 
                     #if os.path.exists(setting_fp):
@@ -337,6 +354,7 @@ if __name__ == '__main__':
         main_results_table.to_csv(MAIN_TABLE_FP, index=False)
 
         df = main_results_table
+        df[['prec', 'rec', 'f1']] = df[['prec', 'rec', 'f1']].round(4) * 100
         view = clean_mean(df, grby=['model', 'seed'], set_type='test')
         view = view.fillna(0)
         print(view)
@@ -351,6 +369,6 @@ if __name__ == '__main__':
         test_m = test.loc['mean'].round(2).astype(str)
         test_std = test.loc['std'].round(2).astype(str)
         result = test_m + ' \pm ' + test_std
-        print(f"\n{MODEL} Results on {SPLIT}:")
+        print(f"\n{MODEL} results on {SPLIT}:")
         print(main_results_table.seed.unique())
         print(result)
