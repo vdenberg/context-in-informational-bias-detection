@@ -157,7 +157,7 @@ if __name__ == '__main__':
                     test_ids = []
                     test_predictions = []
                     test_labels = []
-                    test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
+                    test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': SPLIT, 'bs': BATCH_SIZE,
                                  'lr': LEARNING_RATE, 'set_type': 'test', 'sampler': SAMPLER}
 
                     for fold_name in folds:
@@ -170,7 +170,7 @@ if __name__ == '__main__':
                         else:
                             model_loc_name = name
                         best_model_loc = os.path.join(CHECKPOINT_DIR, model_loc_name)
-                        best_val_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': SPLIT, 'bs': BATCH_SIZE,
+                        best_val_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
                                         'lr': LEARNING_RATE, 'set_type': 'dev', 'f1': 0, 'model_loc': best_model_loc,
                                         'sampler': SAMPLER, 'epochs': N_EPS}
 
