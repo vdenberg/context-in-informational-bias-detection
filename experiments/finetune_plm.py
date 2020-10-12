@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from lib.handle_data.PreprocessForPLM import *
 from lib.handle_data.PreprocessForRoberta import *
+from Private.OldVersions.PreprocessForBert import *
 from lib.utils import get_torch_device
 from lib.evaluate.Eval import my_eval
 import logging
