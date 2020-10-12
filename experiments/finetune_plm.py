@@ -185,7 +185,7 @@ if __name__ == '__main__':
             torch.manual_seed(SEED_VAL)
             torch.cuda.manual_seed_all(SEED_VAL)
 
-            prediction_dir = f'data/predictions/{MODEL}/{SEED_VAL}'
+            prediction_dir = f'data/predictions/{MODEL}/{SPLIT}/'
             if not os.path.exists(prediction_dir):
                 os.makedirs(prediction_dir)
 
@@ -239,11 +239,11 @@ if __name__ == '__main__':
                             logger.info(f"  Logging to {LOG_FP}")
 
                             FORCE = False
-
+                            selected_model = select_model(MODEL, CLF_TASK)
+                            
                             if not os.path.exists(best_model_loc) or FORCE:
                                 logger.info(f"***** Training on Fold {fold_name} *****")
 
-                                selected_model = select_model(MODEL, CLF_TASK)
                                 model = selected_model.from_pretrained(EXACT_MODEL, cache_dir=CACHE_DIR,
                                                                        num_labels=NUM_LABELS,
                                                                        output_hidden_states=True,
