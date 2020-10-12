@@ -59,10 +59,9 @@ def clean_mean(df, grby='', set_type=''):
 model_mapping = {'bert': 'bert-base-cased',
                  'rob_base': 'roberta-base',
                  'rob_dapt': 'experiments/adapt_dapt_tapt/pretrained_models/news_roberta_base',
-                 'rob_tapt': 'experiments/adapt_dapt_tapt/pretrained_models/dsp_roberta_base_tapt_hyperpartisan_news_5015',
-                 'rob_dapttapt': 'experiments/adapt_dapt_tapt/pretrained_models/dsp_roberta_base_dapt_news_tapt_hyperpartisan_news_5015',
                  'rob_basil_tapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-tapt',
-                 'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-dapttapt'
+                 'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-dapttapt',
+                 'seq_sent_clf': 'roberta-base'
                 }
 
 model_seeds = {'sent_clf': {
@@ -71,10 +70,12 @@ model_seeds = {'sent_clf': {
                    'rob_dapt': [6, 22, 33, 34, 49],
                    'rob_basil_tapt': [6, 33, 34, 49, 181],
                    'rob_basil_dapttapt': [6, 33, 34, 49, 181],
-                   'seq_sent_clf': [22, 34, 49, 181, 43] },
+                   'seq_sent_clf': [22, 34, 49, 181, 43]
+                    },
                'tok_clf': {
                     'bert': [6, 23, 49, 132, 281],
-                    'rob_base': [6, 33, 34, 132, 281] }
+                    'rob_base': [6, 33, 34, 132, 281]
+                    }
                }
 
 device, USE_CUDA = get_torch_device()
