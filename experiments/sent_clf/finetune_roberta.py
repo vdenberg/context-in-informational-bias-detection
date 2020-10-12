@@ -107,8 +107,9 @@ if os.path.exists(MAIN_TABLE_FP):
     table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,epochs,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
     main_results_table = pd.read_csv(MAIN_TABLE_FP)
 else:
-    table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,epochs,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
-    main_results_table = pd.DataFrame(columns=table_columns.split(','))
+    pass
+table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,epochs,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
+main_results_table = pd.DataFrame(columns=table_columns.split(','))
 
 ########################
 # MAIN
@@ -328,11 +329,12 @@ if __name__ == '__main__':
 
                     setting_results_table.to_csv(setting_fp, index=False)
 
-                    logger.info(f"  Log in {LOG_FP}")
-
                     # store performance of setting
                     main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
-                    main_results_table.to_csv(MAIN_TABLE_FP, index=False)
+
+        logger.info(f"  Log in {LOG_FP}")
+        logger.info(f"  Table in {MAIN_TABLE_FP}")
+        main_results_table.to_csv(MAIN_TABLE_FP, index=False)
 
         df = main_results_table
         view = clean_mean(df, grby=['model', 'seed'], set_type='test')
