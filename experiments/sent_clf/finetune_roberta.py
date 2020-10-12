@@ -290,7 +290,7 @@ if __name__ == '__main__':
 
                     if os.path.exists(pred_fp):
                         # load predictions
-                        basil_w_pred = pd.read_csv(pred_fp)
+                        basil_w_pred = pd.read_csv(pred_fp, dtype={'pred': np.int64, 'label': np.int64})
 
                         logger.info(f'Preds from {pred_fp}')
 
