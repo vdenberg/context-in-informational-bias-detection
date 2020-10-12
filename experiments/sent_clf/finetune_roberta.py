@@ -51,7 +51,7 @@ args = parser.parse_args()
 
 N_EPS = args.n_epochs
 models = [args.model] if args.model else ['rob_base']
-seeds = [args.sv] if args.sv else [49, 57, 33, 297, 181]
+seeds = [args.sv] if args.sv else [57, 49, 33, 297, 181]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
 folds = [args.fold] if args.fold else ['sentence_split'] + [str(el) for el in range(1,11)]
