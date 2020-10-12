@@ -81,7 +81,11 @@ parser.add_argument('-spl', '--split', type=str, default='story_split') # senten
 args = parser.parse_args()
 
 N_EPS = args.n_epochs
-models = [args.model] if args.model else ['rob_base']
+MODEL = args.model if args.model else ['rob_base']
+SAMPLER = args.sampler
+CLF_TASK = args.clf_task
+TASK_NAME = args.task_name
+models = [args.model]
 seeds = [args.sv] if args.sv else [57, 49, 33, 297, 181]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
@@ -90,9 +94,7 @@ if SPLIT == 'sentence_split':
     folds = ['sentence_split']
 elif SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
-SAMPLER = args.sampler
-CLF_TASK = args.clf_task
-TASK_NAME = args.task_name
+
 
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
@@ -110,10 +112,16 @@ if DEBUG:
 ########################
 
 # FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
-FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/features_for_roberta'
+if MODEL == 'bert':
+    FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/features_for_bert'
+else:
+    FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/features_for_roberta'
 PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 # CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
-CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
+if MODEL == 'bert':
+    CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/bert_{CLF_TASK.translate("_", "")}_baseline/'
+else:
+    CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 CACHE_DIR = 'models/cache/'
