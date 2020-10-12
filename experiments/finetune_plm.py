@@ -131,12 +131,12 @@ else:
     FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/features_for_roberta'
 PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 if MODEL == 'bert':
-    CHECKPOINT_DIR = f'/models/checkpoints/{TASK_NAME}'
+    CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
 else:
     CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
-CACHE_DIR = '/models/cache/'
+CACHE_DIR = 'models/cache/'
 MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'{TASK_NAME}_results.csv')
 
 if not os.path.exists(CHECKPOINT_DIR):
