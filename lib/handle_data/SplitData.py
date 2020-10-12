@@ -159,14 +159,12 @@ class StorySplit:
 
         stories_split_ten_ways = []
         for ordered_folds in folds_in_ten_orders:
-            test_stories = ordered_folds[-1]
-            remaining_folds = ordered_folds[:-1]
+            test_stories = ordered_folds[9]
 
-            dev_stories = remaining_folds[-1]
-            remaining_folds = remaining_folds[:-1]
+            dev_stories = ordered_folds[8]
 
             train_stories = []
-            for i, fold in enumerate(remaining_folds):
+            for fold in ordered_folds[:8]:
                 train_stories.extend(fold)
 
             stories_split_one_way = {'train': train_stories, 'dev': dev_stories, 'test': test_stories}
@@ -207,9 +205,6 @@ class StorySplit:
             test_stories = stories_split_one_way['test']
             test_sent_ids = collect_sent_ids(test_stories, sent_by_story)
             split_sent_ids['test'] = test_sent_ids
-
-            all_train_sent_ids = []
-            all_dev_sent_ids = []
 
             train_stories = stories_split_one_way['train']
             train_sent_ids = collect_sent_ids(train_stories, sent_by_story)
