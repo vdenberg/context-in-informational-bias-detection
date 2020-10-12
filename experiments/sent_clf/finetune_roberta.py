@@ -321,7 +321,6 @@ if __name__ == '__main__':
                     setting_results_table.to_csv(setting_fp, index=False)
 
                     logger.info(f"  Log in {LOG_FP}")
-                    logger.info(f"  Table in {setting_fp}")
 
                     # store performance of setting
                     main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
