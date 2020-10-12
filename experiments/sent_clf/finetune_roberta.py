@@ -336,5 +336,5 @@ if __name__ == '__main__':
         test_std = test.loc['std'].round(2).astype(str)
         result = test_m + ' \pm ' + test_std
         print(f"\n{MODEL} Results on {SPLIT}:")
-        print(main_results_table.seeds.unique())
+        print(main_results_table.seed.unique())
         print(result)
