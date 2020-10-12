@@ -76,11 +76,12 @@ TASK_NAME = f'sent_clf_roberta'
 TASK = 'sent_clf'
 FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
 PREDICTION_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
-CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
+# CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
+CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
 REPORTS_DIR = f'reports/{TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
 CACHE_DIR = 'models/cache/'
-MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'roberta_ft_results.csv')
+MAIN_TABLE_FP = os.path.joi/n(TABLE_DIR, f'roberta_ft_results.csv')
 
 if not os.path.exists(CHECKPOINT_DIR):
     os.makedirs(CHECKPOINT_DIR)
@@ -282,7 +283,7 @@ if __name__ == '__main__':
                         os.makedirs(prediction_dir)
 
                     pred_fp = os.path.join(prediction_dir, f'{setting_name}_test_preds.csv')
-                    
+
                     basil_w_pred.to_csv(pred_fp)
                     logger.info(f'Preds in {pred_fp}')
 
