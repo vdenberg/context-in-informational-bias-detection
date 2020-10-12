@@ -31,13 +31,13 @@ def select_model(model, clf_task):
     if clf_task == 'sent_clf':
         if model == 'bert':
             sel_mod = BertForSequenceClassification
-        elif model == 'roberta':
+        else:
             sel_mod = RobertaForSequenceClassification
 
     elif clf_task == 'tok_clf':
         if model == 'bert':
             sel_mod = BertForTokenClassification
-        elif model == 'roberta':
+        else:
             sel_mod = RobertaForTokenClassification
     return sel_mod
 
@@ -73,7 +73,7 @@ parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-clf_task', '--clf_task', type=str, default='sent_clf')
 parser.add_argument('-task_name', '--task_name', type=str, default='sent_clf_roberta')
-parser.add_argument('-model', '--model', type=str, default='roberta') #2,3,4
+parser.add_argument('-model', '--model', type=str, default='rob_base') #2,3,4
 parser.add_argument('-lr', '--lr', type=float, default=None) #5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) #16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
