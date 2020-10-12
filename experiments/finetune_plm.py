@@ -371,6 +371,7 @@ if __name__ == '__main__':
         main_results_table.to_csv(MAIN_TABLE_FP, index=False)
 
         df = main_results_table
+        print(df)
         df[['prec', 'rec', 'f1']] = df[['prec', 'rec', 'f1']].round(4) * 100
         view = clean_mean(df, grby=['model', 'seed'], set_type='test')
         view = view.fillna(0)
