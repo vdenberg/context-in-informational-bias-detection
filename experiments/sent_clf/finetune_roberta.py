@@ -238,8 +238,8 @@ if __name__ == '__main__':
                         best_model.to(device)
 
                         fold_test_mets, fold_test_perf = inferencer.evaluate(best_model, test_batches, fold_test_labels,
-                                                                   set_type='test',
-                                                                   output_mode=TASK)
+                                                                             set_type='test',
+                                                                             output_mode=TASK)
                         fold_test_res.update(fold_test_mets)
 
                         # get predictions
@@ -276,8 +276,8 @@ if __name__ == '__main__':
                     assert len(test_predictions) == len(test_ids)
                     assert len(test_predictions) == len(test_labels)
 
-                    test_dict, test_perf = my_eval(test_labels, test_predictions, set_type='test', av_loss=av_loss,
-                                                   name=setting_name, opmode=TASK)
+                    test_dict, test_perf = my_eval(test_labels, test_predictions, set_type='test', name=setting_name,
+                                                   opmode=TASK)
                     logging.info(f"{test_perf}")
 
                     basil_w_pred = pd.DataFrame(index=test_ids)
