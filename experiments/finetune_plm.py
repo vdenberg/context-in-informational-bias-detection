@@ -85,7 +85,6 @@ parser.add_argument('-ep', '--n_epochs', type=int, default=10) #2,3,4
 parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-clf_task', '--clf_task', type=str, default='sent_clf')
-parser.add_argument('-task_name', '--task_name', type=str, default='sent_clf_roberta')
 parser.add_argument('-model', '--model', type=str, default='rob_base')
 parser.add_argument('-lr', '--lr', type=float, default=None) # 5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) # 16, 21
@@ -97,7 +96,7 @@ N_EPS = args.n_epochs
 MODEL = args.model if args.model else ['rob_base']
 SAMPLER = args.sampler
 CLF_TASK = args.clf_task
-TASK_NAME = args.task_name
+TASK_NAME = CLF_TASK + '_' + MODEL
 models = [args.model]
 seeds = model_seeds[CLF_TASK][MODEL]
 bss = [args.bs] if args.bs else [16]
@@ -365,8 +364,6 @@ if __name__ == '__main__':
                     # store performance of setting
                     main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
 
-        logger.info(f"  Log in {LOG_FP}")
-        logger.info(f"  Table in {MAIN_TABLE_FP}")
         main_results_table.to_csv(MAIN_TABLE_FP, index=False)
 
         df = main_results_table
@@ -385,3 +382,6 @@ if __name__ == '__main__':
         print(f"\n{MODEL} results on {SPLIT}:")
         print(main_results_table.seed.unique())
         print(result)
+
+        logger.info(f"  Log in {LOG_FP}")
+        logger.info(f"  Table in {MAIN_TABLE_FP}")
