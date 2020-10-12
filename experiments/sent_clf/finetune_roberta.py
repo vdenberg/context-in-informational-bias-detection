@@ -244,7 +244,7 @@ if __name__ == '__main__':
 
                         # get predictions
                         fold_test_predictions, labels = inferencer.predict(best_model, test_batches)
-                        test_predictions.append(fold_test_predictions)
+                        test_predictions.extend(fold_test_predictions)
 
                         # get embeddings
                         for EMB_TYPE in ['cross4bert']: #poolbert', 'avbert', 'unpoolbert', 'crossbert'
