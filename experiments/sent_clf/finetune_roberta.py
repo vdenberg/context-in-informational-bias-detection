@@ -47,7 +47,7 @@ parser.add_argument('-model', '--model', type=str, default=None) #2,3,4
 parser.add_argument('-lr', '--lr', type=float, default=None) #5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) #16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
-parser.add_argument('-spl', '--split', type=str, default=None) # sentence or story
+parser.add_argument('-spl', '--split', type=str, default='story_split') # sentence or story
 args = parser.parse_args()
 
 N_EPS = args.n_epochs
