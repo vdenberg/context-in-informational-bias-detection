@@ -328,8 +328,8 @@ if __name__ == '__main__':
 
         test = main_results_table[main_results_table.set_type == 'test']
         test = test[['set_type', 'seed', 'prec', 'rec', 'f1']]
-        mets = ['acc', 'prec', 'rec', 'f1']
-        test[mets] = test[mets].round(4) * 100
+        test = test[test.seed != 22]
+        test[['prec', 'rec', 'f1']] = test[['prec', 'rec', 'f1']].round(4) * 100
 
         test = test.groupby('seed').mean()
         test = test.describe()
