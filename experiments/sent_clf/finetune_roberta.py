@@ -74,7 +74,8 @@ if DEBUG:
 
 TASK_NAME = f'sent_clf_roberta'
 TASK = 'sent_clf'
-FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
+# FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
+FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/inputs/sent_clf/features_for_roberta'
 PREDICTION_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
 # CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
 CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
