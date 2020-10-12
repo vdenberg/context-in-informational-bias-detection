@@ -149,6 +149,8 @@ if __name__ == '__main__':
                     test_ids = []
                     test_predictions = []
                     test_labels = []
+                    test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': 'overall', 'bs': BATCH_SIZE,
+                                 'lr': LEARNING_RATE, 'set_type': 'test', 'sampler': SAMPLER}
 
                     for fold_name in folds:
                         fold_results_table = pd.DataFrame(columns=table_columns.split(','))
@@ -277,7 +279,6 @@ if __name__ == '__main__':
                             # store performance on just the fold in the table
                             fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
                             fold_results_table = fold_results_table.append(fold_test_res, ignore_index=True)
-                            setting_results_table = setting_results_table.append(fold_results_table)
 
                     if not os.path.exists(pred_fp):
                         # compute performance on setting
@@ -297,9 +298,13 @@ if __name__ == '__main__':
 
                     logger.info(f"***** Results on Setting {setting_name} *****")
 
-                    test_dict, test_perf = my_eval(basil_w_pred.label, basil_w_pred.pred, set_type='test', name=setting_name,
+                    test_mets, test_perf = my_eval(basil_w_pred.label, basil_w_pred.pred, set_type='test', name=setting_name,
                                                    opmode=TASK)
                     logging.info(f"{test_perf}")
+                    test_res.update(test_mets)
+
+                    fold_results_table = fold_results_table.append(test_res, ignore_index=True)
+                    setting_results_table = setting_results_table.append(fold_results_table)
 
                     # print result of setting
                     logging.info(
