@@ -124,7 +124,7 @@ else:
     CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
-CACHE_DIR = 'models/cache/'
+CACHE_DIR = '/home/mitarb/vdberg/Projects/EntityFramingDetection/models/cache/'
 MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'roberta_ft_results.csv')
 
 if not os.path.exists(CHECKPOINT_DIR):
@@ -265,7 +265,7 @@ if __name__ == '__main__':
 
                                         model.zero_grad()
                                         outputs = model(batch[0], batch[1], labels=batch[2])
-                                        (loss), logits, pooled_output, sequence_output, hidden_states = outputs
+                                        loss = outputs[0]
 
                                         loss.backward()
                                         tr_loss += loss.item()
