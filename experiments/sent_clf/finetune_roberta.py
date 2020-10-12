@@ -81,7 +81,7 @@ CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/ch
 REPORTS_DIR = f'reports/{TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
 CACHE_DIR = 'models/cache/'
-MAIN_TABLE_FP = os.path.joi/n(TABLE_DIR, f'roberta_ft_results.csv')
+MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'roberta_ft_results.csv')
 
 if not os.path.exists(CHECKPOINT_DIR):
     os.makedirs(CHECKPOINT_DIR)
