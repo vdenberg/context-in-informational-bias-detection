@@ -24,6 +24,14 @@ class InputFeatures(object):
         self.label_id = label_id
 '''
 
+def clean_mean(df, grby='', set_type=''):
+    mets = ['f1']
+    if set_type:
+        tmp_df = df[df.set_type == set_type]
+    else:
+        tmp_df = df
+    return tmp_df.groupby(grby)[mets].mean().round(2)
+
 ########################
 # WHAT IS THE EXPERIMENT
 ########################
@@ -313,10 +321,10 @@ if __name__ == '__main__':
                     # write performance to file
                     setting_fp = os.path.join(TABLE_DIR, f'{setting_name}_results_table.csv')
 
-                    if os.path.exists(setting_fp):
-                        orig_setting_results_table = pd.read_csv(setting_fp)
-                        setting_results_table = pd.concat((orig_setting_results_table, setting_results_table))
-                        setting_results_table = setting_results_table.drop_duplicates(keep='first')
+                    #if os.path.exists(setting_fp):
+                    #    orig_setting_results_table = pd.read_csv(setting_fp)
+                    #    setting_results_table = pd.concat((orig_setting_results_table, setting_results_table))
+                    #    setting_results_table = setting_results_table.drop_duplicates(keep='first')
 
                     setting_results_table.to_csv(setting_fp, index=False)
 
@@ -326,7 +334,12 @@ if __name__ == '__main__':
                     main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
                     main_results_table.to_csv(MAIN_TABLE_FP, index=False)
 
-        test = main_results_table[main_results_table.set_type == 'test']
+        df = main_results_table
+        view = clean_mean(df, grby=['model', 'seed'], set_type='test')
+        view = view.fillna(0)
+        print(view)
+
+        test = df[df.set_type == 'test']
         test = test[['set_type', 'seed', 'prec', 'rec', 'f1']]
         test = test[test.seed != 22]
         test[['prec', 'rec', 'f1']] = test[['prec', 'rec', 'f1']].round(4) * 100
