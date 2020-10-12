@@ -438,7 +438,7 @@ class Inferencer():
             preds = np.asarray(preds)
             preds = np.reshape(preds, labels.shape)
         else:
-            labels = np.asarray(labels)
+            labels = labels.numpy
 
         if len(preds) != len(labels):
             print(f'Sizes of {set_type} not equal')
