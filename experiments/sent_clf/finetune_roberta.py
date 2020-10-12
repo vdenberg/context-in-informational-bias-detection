@@ -47,7 +47,7 @@ parser.add_argument('-model', '--model', type=str, default=None) #2,3,4
 parser.add_argument('-lr', '--lr', type=float, default=None) #5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) #16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
-parser.add_argument('-fold', '--fold', type=str, default=None)
+parser.add_argument('-spl', '--split', type=str, default=None) # sentence or story
 args = parser.parse_args()
 
 N_EPS = args.n_epochs
@@ -55,7 +55,11 @@ models = [args.model] if args.model else ['rob_base']
 seeds = [args.sv] if args.sv else [57, 49, 33, 297, 181]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
-folds = [args.fold] if args.fold else [str(el) for el in range(1,11)]
+SPLIT = args.split
+if SPLIT == 'sentence_split':
+    folds = ['sentence_split']
+elif SPLIT == 'story_split':
+    folds = [str(el) for el in range(1,11)]
 SAMPLER = args.sampler
 
 torch.backends.cudnn.deterministic = True
@@ -166,7 +170,7 @@ if __name__ == '__main__':
                         else:
                             model_loc_name = name
                         best_model_loc = os.path.join(CHECKPOINT_DIR, model_loc_name)
-                        best_val_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
+                        best_val_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': SPLIT, 'bs': BATCH_SIZE,
                                         'lr': LEARNING_RATE, 'set_type': 'dev', 'f1': 0, 'model_loc': best_model_loc,
                                         'sampler': SAMPLER, 'epochs': N_EPS}
 
@@ -331,6 +335,6 @@ if __name__ == '__main__':
         test_m = test.loc['mean'].round(2).astype(str)
         test_std = test.loc['std'].round(2).astype(str)
         result = test_m + ' \pm ' + test_std
-        print(f"\n{MODEL} Results on {folds}:")
+        print(f"\n{MODEL} Results on {SPLIT}:")
         print(main_results_table.seeds.unique())
         print(result)
