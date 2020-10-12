@@ -138,6 +138,10 @@ if __name__ == '__main__':
             if not os.path.exists(prediction_dir):
                 os.makedirs(prediction_dir)
 
+            embedding_dir = f'data/embeddings/{MODEL}/'
+            if not os.path.exists(embedding_dir):
+                os.makedirs(embedding_dir)
+
             for BATCH_SIZE in bss:
                 bs_name = seed_name + f"_bs{BATCH_SIZE}"
                 for LEARNING_RATE in lrs:
@@ -260,7 +264,7 @@ if __name__ == '__main__':
 
                             # get embeddings
                             for EMB_TYPE in ['cross4bert']: #poolbert', 'avbert', 'unpoolbert', 'crossbert'
-                                emb_fp = f'data/embeddings/{MODEL}/{name}_basil_w_{EMB_TYPE}'
+                                emb_fp = os.path.join(embedding_dir, f'{name}_basil_w_{EMB_TYPE}')
 
                                 PREFERRED_EMB_SV = 49
                                 if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
