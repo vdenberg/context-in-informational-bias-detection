@@ -65,6 +65,18 @@ model_mapping = {'bert': 'bert-base-cased',
                  'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-dapttapt'
                 }
 
+model_seeds = {'sent_clf': {
+                   'bert': [6, 11, 20, 22, 34]
+                   'rob_base': [49, 57, 33, 297, 181],
+                   'rob_dapt': [6, 22, 33, 34, 49],
+                   'rob_basil_tapt': [6, 33, 34, 49, 181],
+                   'rob_basil_dapttapt': [6, 33, 34, 49, 181],
+                   'seq_sent_clf': [22, 34, 49, 181, 43] }
+               'tok_clf': {
+                    'bert': [6, 23, 49, 132, 281],
+                    'rob_base': [6, 33, 34, 132, 281] }
+               }
+
 device, USE_CUDA = get_torch_device()
 
 parser = argparse.ArgumentParser()
@@ -73,11 +85,11 @@ parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-clf_task', '--clf_task', type=str, default='sent_clf')
 parser.add_argument('-task_name', '--task_name', type=str, default='sent_clf_roberta')
-parser.add_argument('-model', '--model', type=str, default='rob_base') #2,3,4
-parser.add_argument('-lr', '--lr', type=float, default=None) #5e-5, 3e-5, 2e-5
-parser.add_argument('-bs', '--bs', type=int, default=None) #16, 21
+parser.add_argument('-model', '--model', type=str, default='rob_base')
+parser.add_argument('-lr', '--lr', type=float, default=None) # 5e-5, 3e-5, 2e-5
+parser.add_argument('-bs', '--bs', type=int, default=None) # 16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
-parser.add_argument('-spl', '--split', type=str, default='story_split') # sentence or story
+parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
 args = parser.parse_args()
 
 N_EPS = args.n_epochs
@@ -86,7 +98,7 @@ SAMPLER = args.sampler
 CLF_TASK = args.clf_task
 TASK_NAME = args.task_name
 models = [args.model]
-seeds = [args.sv] if args.sv else [57, 49, 33, 297, 181]
+seeds = model_seeds[CLF_TASK][MODEL]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
 SPLIT = args.split
@@ -113,22 +125,18 @@ if DEBUG:
 
 # FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
 if MODEL == 'bert':
-    FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/features_for_bert'
+    FEAT_DIR = f'data/inputs/sent_clf/features_for_bert'
 else:
     FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/features_for_roberta'
 PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
-# CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
 if MODEL == 'bert':
-    c = re.sub("_", "", CLF_TASK)
-    CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/bert_{c}_baseline/'
-    print(CHECKPOINT_DIR)
-    exit(0)
+    CHECKPOINT_DIR = f'/models/checkpoints/{TASK_NAME}'
 else:
     CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
-CACHE_DIR = '/home/mitarb/vdberg/Projects/EntityFramingDetection/models/cache/'
-MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'roberta_ft_results.csv')
+CACHE_DIR = '/models/cache/'
+MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'{TASK_NAME}_results.csv')
 
 if not os.path.exists(CHECKPOINT_DIR):
     os.makedirs(CHECKPOINT_DIR)
@@ -136,11 +144,7 @@ if not os.path.exists(REPORTS_DIR):
     os.makedirs(REPORTS_DIR)
 if not os.path.exists(TABLE_DIR):
     os.makedirs(TABLE_DIR)
-if os.path.exists(MAIN_TABLE_FP):
-    table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,epochs,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
-    main_results_table = pd.read_csv(MAIN_TABLE_FP)
-else:
-    pass
+
 table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,epochs,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
 main_results_table = pd.DataFrame(columns=table_columns.split(','))
 
