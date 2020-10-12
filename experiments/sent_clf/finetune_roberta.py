@@ -284,15 +284,13 @@ if __name__ == '__main__':
 
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
-                        basil_w_pred['label'] = test_labels
+                        basil_w_pred['label'] = [el.item() for el in test_labels]
                         basil_w_pred.to_csv(pred_fp)
                         logger.info(f'Preds in {pred_fp}')
 
                     if os.path.exists(pred_fp):
                         # load predictions
-                        basil_w_pred = pd.read_csv(pred_fp) #, dtype={'pred': np.int64, 'label': np.int64})
-                        print(basil_w_pred)
-                        basil_w_pred = pd.read_csv(pred_fp, dtype={'pred': np.int64, 'label': np.int64})
+                        basil_w_pred = pd.read_csv(pred_fp) #, dtype={'pred': np.int64})
 
                         logger.info(f'Preds from {pred_fp}')
 
