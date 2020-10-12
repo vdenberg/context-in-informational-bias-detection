@@ -443,8 +443,8 @@ class Inferencer():
         if len(preds) != len(labels):
             print('Sizes not equal')
             print(preds, labels)
-            print(len(preds), len(preds[0]))
-            print(len(labels), len(labels[0]))
+            print(len(preds)) #, len(preds[0]))
+            print(len(labels)) #, len(labels[0]))
             exit(0)
 
         metrics_dict, metrics_string = my_eval(labels, preds, set_type=set_type, av_loss=av_loss, name=name, rep_sim=rep_sim, opmode=output_mode)
