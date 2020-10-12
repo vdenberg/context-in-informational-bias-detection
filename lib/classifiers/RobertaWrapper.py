@@ -440,6 +440,8 @@ class Inferencer():
         else:
             labels = labels.numpy
 
+        print(preds)
+        print(labels)
         if len(preds) != len(labels):
             print(f'Sizes of {set_type} not equal')
             print(preds, labels)
