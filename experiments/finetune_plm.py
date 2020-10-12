@@ -5,7 +5,7 @@ from lib.classifiers.PLMWrapper import BertForTokenClassification, BertForSequen
 from lib.classifiers.PLMWrapper import RobertaForTokenClassification, RobertaForSequenceClassification
 from datetime import datetime
 import torch
-import random, argparse
+import random, argparse, re
 import numpy as np
 import pandas as pd
 from lib.handle_data.PreprocessForPLM import *
@@ -119,7 +119,7 @@ else:
 PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 # CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
 if MODEL == 'bert':
-    CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/bert_{CLF_TASK.translate("_", "")}_baseline/'
+    CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/bert_{re.sub(CLF_TASK, "_", "")}_baseline/'
 else:
     CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
