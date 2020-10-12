@@ -153,7 +153,7 @@ if __name__ == '__main__':
                     test_ids = []
                     test_predictions = []
                     test_labels = []
-                    test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': 'overall', 'bs': BATCH_SIZE,
+                    test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
                                  'lr': LEARNING_RATE, 'set_type': 'test', 'sampler': SAMPLER}
 
                     for fold_name in folds:
@@ -162,15 +162,13 @@ if __name__ == '__main__':
 
                         # init results containers
                         if fold_name == 'sentence_split':
-                            model_name = setting_name + f"_f{'fan'}"
+                            model_loc_name = setting_name + f"_f{'fan'}"
                         else:
-                            model_name = name
-                        best_model_loc = os.path.join(CHECKPOINT_DIR, model_name)
+                            model_loc_name = name
+                        best_model_loc = os.path.join(CHECKPOINT_DIR, model_loc_name)
                         best_val_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
                                         'lr': LEARNING_RATE, 'set_type': 'dev', 'f1': 0, 'model_loc': best_model_loc,
                                         'sampler': SAMPLER, 'epochs': N_EPS}
-                        fold_test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
-                                    'lr': LEARNING_RATE, 'set_type': 'test', 'sampler': SAMPLER}
 
                         # load feats
                         train_fp = os.path.join(FEAT_DIR, f"{fold_name}_train_features.pkl")
@@ -253,11 +251,6 @@ if __name__ == '__main__':
                                                                                           output_attentions=False)
                             best_model.to(device)
 
-                            fold_test_mets, fold_test_perf = inferencer.evaluate(best_model, test_batches, fold_test_labels,
-                                                                                 set_type='test',
-                                                                                 output_mode=TASK)
-                            fold_test_res.update(fold_test_mets)
-
                             # get predictions
                             fold_test_predictions, labels = inferencer.predict(best_model, test_batches)
                             test_predictions.extend(fold_test_predictions)
@@ -282,7 +275,6 @@ if __name__ == '__main__':
 
                             # store performance on just the fold in the table
                             fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
-                            fold_results_table = fold_results_table.append(fold_test_res, ignore_index=True)
 
                     if not os.path.exists(pred_fp):
                         # compute performance on setting
@@ -307,15 +299,12 @@ if __name__ == '__main__':
                     logging.info(f"{test_perf}")
                     test_res.update(test_mets)
 
-                    fold_results_table = fold_results_table.append(test_res, ignore_index=True)
-                    setting_results_table = setting_results_table.append(fold_results_table)
+                    setting_results_table = setting_results_table.append(test_res, ignore_index=True)
+                    setting_results_table = setting_results_table.append(fold_results_table, ignore_index=True)
 
                     # print result of setting
                     logging.info(
                         f'Setting {setting_name} results: \n{setting_results_table[["model", "seed", "bs", "lr", "fold", "set_type", "f1"]]}')
-
-                    # store performance of setting
-                    main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
 
                     # write performance to file
                     setting_fp = os.path.join(TABLE_DIR, f'{setting_name}_results_table.csv')
@@ -330,4 +319,18 @@ if __name__ == '__main__':
                     logger.info(f"  Log in {LOG_FP}")
                     logger.info(f"  Table in {setting_fp}")
 
+                    # store performance of setting
+                    main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
                     main_results_table.to_csv(MAIN_TABLE_FP, index=False)
+
+        test = main_results_table[main_results_table.set_type == 'test']
+        test = test[['set_type', 'seed', 'prec', 'rec', 'f1']]
+
+        test = test.groupby('seed').mean()
+        test = test.describe()
+        test_m = test.loc['mean'].round(2).astype(str)
+        test_std = test.loc['std'].round(2).astype(str)
+        result = test_m + ' \pm ' + test_std
+        print(f"\n{MODEL} Results on {folds}:")
+        print(main_results_table.seeds.unique())
+        print(result)
