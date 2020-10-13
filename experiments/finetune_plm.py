@@ -367,8 +367,7 @@ if __name__ == '__main__':
 
                     if not os.path.exists(pred_fp):
                         # compute performance on setting
-                        print('eeeehem')
-                        print(test_predictions[0])
+                        print(test_predictions)
                         exit(0)
                         print(type(test_predictions))
                         assert len(test_predictions) == len(test_ids)
