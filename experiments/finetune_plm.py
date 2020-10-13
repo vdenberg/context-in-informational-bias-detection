@@ -157,7 +157,7 @@ elif CLF_TASK == 'sent_clf':
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
     else:
         FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/{CLF_TASK}/features_for_roberta'
-        
+
 else:
     if MODEL == 'bert':
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
@@ -245,7 +245,7 @@ if __name__ == '__main__':
                         name = setting_name + f"_f{fold_name}"
 
                         # init results containers
-                        if MODEL != 'bert' and fold_name == 'sentence_split':
+                        if MODEL != 'bert' and fold_name == 'sentence_split' and CLF_TASK == 'sent_clf':
                             model_loc_name = setting_name + f"_f{'fan'}"
                         else:
                             model_loc_name = name
