@@ -187,7 +187,7 @@ if __name__ == '__main__':
             torch.manual_seed(SEED_VAL)
             torch.cuda.manual_seed_all(SEED_VAL)
 
-            prediction_dir = f'data/predictions/{MODEL}/{SPLIT}/'
+            prediction_dir = f'data/predictions/{TASK_NAME}/'
             if not os.path.exists(prediction_dir):
                 os.makedirs(prediction_dir)
 
