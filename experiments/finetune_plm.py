@@ -339,7 +339,10 @@ if __name__ == '__main__':
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
                         print(test_labels)
-                        basil_w_pred['label'] = [el.item() for el in test_labels]
+                        if CLF_TASK == 'tok_clf':
+                            basil_w_pred['label'] = [el.tolist() for el in test_labels]
+                        else:
+                            basil_w_pred['label'] = [el.item() for el in test_labels]
                         print(basil_w_pred.head())
                         basil_w_pred.to_csv(pred_fp)
                         logger.info(f'Preds in {pred_fp}')
