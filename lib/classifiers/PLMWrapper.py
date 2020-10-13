@@ -496,6 +496,7 @@ class Inferencer():
             preds, _ = self.predict(model, data, output_mode=output_mode)
         else:
             if output_mode == 'tok_clf':
+                print(preds)
                 preds = lists_to_arrays_in_series(preds, as_array=True)
                 labels = lists_to_arrays_in_series(labels, as_series=True)
 

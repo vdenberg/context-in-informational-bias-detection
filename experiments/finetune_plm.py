@@ -343,12 +343,10 @@ if __name__ == '__main__':
                         else:
                             basil_w_pred['label'] = [el.item() for el in test_labels]
                         basil_w_pred.to_csv(pred_fp)
-                        logger.info(f'Preds in {pred_fp}')
 
-                    else:
-                        # load predictions
-                        basil_w_pred = pd.read_csv(pred_fp) #, dtype={'pred': np.int64})
-                        logger.info(f'Preds from {pred_fp}')
+                    # load predictions
+                    basil_w_pred = pd.read_csv(pred_fp) #, dtype={'pred': np.int64})
+                    logger.info(f'Preds from {pred_fp}')
 
                     logger.info(f"***** Results on Setting {setting_name} *****")
 
