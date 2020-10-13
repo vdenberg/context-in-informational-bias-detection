@@ -240,6 +240,9 @@ if __name__ == '__main__':
                     test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': SPLIT, 'bs': BATCH_SIZE,
                                  'lr': LEARNING_RATE, 'set_type': 'test', 'sampler': SAMPLER}
 
+                    all_ids, all_batches, all_labels = load_features(feat_fp, batch_size=1,
+                                                                     sampler=SAMPLER)
+
                     for fold_name in folds:
                         fold_results_table = pd.DataFrame(columns=table_columns.split(','))
                         name = setting_name + f"_f{fold_name}"
@@ -351,8 +354,6 @@ if __name__ == '__main__':
                                     if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
                                         logging.info(f'Generating {EMB_TYPE} ({emb_fp})')
                                         feat_fp = os.path.join(FEAT_DIR, f"all_features.pkl")
-                                        all_ids, all_batches, all_labels = load_features(feat_fp, batch_size=1,
-                                                                                         sampler=SAMPLER)
                                         embs = inferencer.predict(best_model, all_batches, return_embeddings=True, emb_type=EMB_TYPE)
                                         assert len(embs) == len(all_ids)
 
@@ -367,6 +368,7 @@ if __name__ == '__main__':
                     if not os.path.exists(pred_fp):
                         # compute performance on setting
                         assert len(test_predictions) == len(test_ids)
+                        assert len(test_predictions) == len(all_ids)
                         assert len(test_predictions) == len(test_labels)
 
                         basil_w_pred = pd.DataFrame(index=test_ids)
