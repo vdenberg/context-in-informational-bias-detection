@@ -640,11 +640,13 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
-            print(pred.shape)
-            print(pred.squeeze())
-            print(type(pred.squeeze()))
-            exit(0)
-            preds.append(pred.squeeze())
+            if isinstance(pred, list):
+                pred = np.asarray(pred)
+
+            elif pred.ndim > 1:
+                pred = pred.squeeze()
+
+            preds.append(pred)
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
 
