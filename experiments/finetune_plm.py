@@ -373,6 +373,7 @@ if __name__ == '__main__':
 
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
+                        basil_w_pred['label'] = test_labels
                         if CLF_TASK == 'tok_clf':
                             basil_w_pred['label'] = [np.asarray(el.tolist()) for el in test_labels]
                         else:
