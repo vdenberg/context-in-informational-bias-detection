@@ -635,13 +635,7 @@ class Inferencer():
                 pred += pad
                 pred = np.asarray(pred)
 
-            print(pred)
-            print(type(pred))
-            exit(0)
-
             preds.append(pred)
-
-        # rep_sim = sum(rep_sim) / len(rep_sim)
 
         model.train()
         if return_embeddings:
