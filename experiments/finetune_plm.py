@@ -129,9 +129,9 @@ if DEBUG:
 
 # FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
 if MODEL == 'bert':
-    FEAT_DIR = f'data/inputs/sent_clf/features_for_bert'
+    FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
 else:
-    FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/features_for_roberta'
+    FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/{CLF_TASK}/features_for_roberta'
 PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 if MODEL == 'bert':
     CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
