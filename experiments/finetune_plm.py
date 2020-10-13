@@ -231,7 +231,7 @@ if __name__ == '__main__':
                         _, dev_batches, dev_labels = load_features(dev_fp, 1, SAMPLER)
                         fold_test_ids, test_batches, fold_test_labels = load_features(test_fp, 1, SAMPLER)
                         print(train_labels)
-                        print(test_labels)
+                        print(fold_test_labels)
                         exit(0)
                         test_ids.extend(fold_test_ids)
                         test_labels.extend(fold_test_labels)
