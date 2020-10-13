@@ -562,7 +562,7 @@ class Inferencer():
         self.device = device
         self.use_cuda = use_cuda
 
-    def predict(self, model, data, return_embeddings=False, emb_type='poolbert', output_mode='sent_clf'):
+    def predict(self, model, data, return_embeddings=False, emb_type='cross4bert', output_mode='sent_clf'):
         model.to(self.device)
         model.eval()
 
@@ -573,7 +573,6 @@ class Inferencer():
         for step, batch in enumerate(data):
             batch = tuple(t.to(self.device) for t in batch)
             input_ids, input_mask, label_ids = batch
-            labels.extend(label_ids)
 
             with torch.no_grad():
                 # print(input_mask)
@@ -643,10 +642,10 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
+            print(input_ids)
+            print(label_ids)
             print(logits)
             print(pred)
-            print(label_ids)
-            print(len(pred), len(label_ids))
             exit(0)
             preds.extend(pred)
             labels.extend(label_ids)
