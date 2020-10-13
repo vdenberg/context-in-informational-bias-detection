@@ -376,10 +376,6 @@ if __name__ == '__main__':
 
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
-                        if CLF_TASK != 'sent_clf':
-                            basil_w_pred['label'] = [el.squeeze() for el in test_labels]
-                        else:
-                            basil_w_pred['label'] = [el.item() for el in test_labels]
                         basil_w_pred.to_csv(pred_fp)
 
                     # load predictions
