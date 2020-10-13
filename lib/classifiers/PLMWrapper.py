@@ -663,13 +663,19 @@ class Inferencer():
             return preds
 
     def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
+        print(type(pred), type(labels))
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
             labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
         else:
-            preds = arrays_in_series(preds)
-            labels = arrays_in_series(labels)
+
+            if output_mode == 'seq_sent_clf':
+                preds = arrays_in_series(preds)
+                labels = arrays_in_series(labels)
+            else:
+                preds = preds.array()
+                labels = preds.array()
 
         if output_mode == 'seq_sent_clf':
             m = labels != -1
