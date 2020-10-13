@@ -642,7 +642,7 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
-            label_ids = [id for id in label_ids.item() if id != -1]
+            label_ids = [id for id in label_ids.squeeze() if id != -1]
             labels.append(np.asarray(label_ids))
             preds.append(np.asarray(preds))
 
