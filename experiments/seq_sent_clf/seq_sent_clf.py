@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import, division, print_function
 from transformers.optimization import AdamW, get_linear_schedule_with_warmup
-from Private.SSC.RobertaSSCWrapper import RobertaSSC, Inferencer, save_model
+from lib.classifiers.RobertaSSCWrapper import RobertaSSC, Inferencer, save_model
 from lib.classifiers.PLMWrapper import load_features
 from datetime import datetime
 import torch
@@ -38,6 +38,23 @@ model_mapping = {'rob_base': 'roberta-base',
                  'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-dapttapt'
                 }
 
+
+model_seeds = {'sent_clf': {
+                   'bert': [6, 11, 20, 22, 34],
+                   'rob_base': [49, 57, 33, 297, 181],
+                   'rob_dapt': [6, 22, 33, 34, 49],
+                   'rob_basil_tapt': [6, 33, 34, 49, 181],
+                   'rob_basil_dapttapt': [6, 33, 34, 49, 181],
+                   },
+               'tok_clf': {
+                    'bert': [6, 23, 49, 132, 281],
+                    'rob_base': [6, 33, 34, 132, 281]
+                    },
+                'seq_sent_clf': {
+                    'rob_base': [22, 34, 49, 181, 43]
+                    }
+                }
+
 device, USE_CUDA = get_torch_device()
 
 parser = argparse.ArgumentParser()
@@ -47,20 +64,36 @@ parser.add_argument('-exlen', '--example_length', type=int, default=None)
 parser.add_argument('-ep', '--n_epochs', type=int, default=10) #2,3,4
 parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
+parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
 parser.add_argument('-model', '--model', type=str, default=None) #2,3,4
 parser.add_argument('-lr', '--lr', type=float, default=1.5e-5) #5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=3,
                     help='note that in this experiment batch size is the nr of sentences in a group')
 parser.add_argument('-sv', '--sv', type=int, default=22) #16, 21
 parser.add_argument('-fold', '--fold', type=str, default=None) #16, 21
+parser.add_argument('-fold', '--fold', type=str, default=None) #16, 21
 args = parser.parse_args()
 
-WINDOW = args.window
-EX_LEN = args.example_length if args.example_length else 4
-
 N_EPS = args.n_epochs
-models = [args.model] if args.model else ['rob_base']
-seeds = [args.sv] if args.sv else [43, 22] # 49, 181, 34
+SAMPLER = args.sampler
+CLF_TASK = args.clf_task
+SPLIT = args.split
+MODEL = args.model
+WINDOW = args.window
+EX_LEN = args.example_length
+
+task_name_elements = []
+if CLF_TASK == 'seq_sent_len':
+    if WINDOW:
+        task_name_elements.append('w')
+task_name_elements.append(CLF_TASK)
+if CLF_TASK == 'seq_sent_len':
+    task_name_elements.append(str(EX_LEN))
+task_name_elements.extend([SPLIT, MODEL])
+TASK_NAME = '_'.join(task_name_elements)
+
+models = [args.model]
+seeds = model_seeds[CLF_TASK][MODEL]
 bss = [args.bs] if args.bs else [3]
 lrs = [args.lr] if args.lr else [1.5e-5]
 folds = [args.fold] if args.fold else [str(el) for el in range(1,11)]
@@ -89,11 +122,12 @@ else:
     TASK_NAME = f'SSC{EX_LEN}'
     FEAT_DIR = f'data/inputs/seq_sent_clf/non_windowed/seq_sent_clf{EX_LEN}'
 
+PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}/'
 REPORTS_DIR = f'reports/{TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{TASK}/{TASK_NAME}/tables'
 CACHE_DIR = 'models/cache/'
-MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'ssc_results.csv')
+MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'{TASK_NAME}_results.csv')
 
 if not os.path.exists(CHECKPOINT_DIR):
     os.makedirs(CHECKPOINT_DIR)
@@ -101,12 +135,9 @@ if not os.path.exists(REPORTS_DIR):
     os.makedirs(REPORTS_DIR)
 if not os.path.exists(TABLE_DIR):
     os.makedirs(TABLE_DIR)
-if os.path.exists(MAIN_TABLE_FP):
-    table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,epochs,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
-    main_results_table = pd.read_csv(MAIN_TABLE_FP)
-else:
-    table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,epochs,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
-    main_results_table = pd.DataFrame(columns=table_columns.split(','))
+
+table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,epochs,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
+main_results_table = pd.DataFrame(columns=table_columns.split(','))
 
 ########################
 # MAIN
@@ -114,7 +145,7 @@ else:
 
 NUM_LABELS = 2
 PRINT_EVERY = 100
-
+logger = logging.getLogger()
 inferencer = Inferencer(REPORTS_DIR, logger, device, use_cuda=USE_CUDA)
 
 if __name__ == '__main__':
@@ -144,11 +175,23 @@ if __name__ == '__main__':
             torch.manual_seed(SEED_VAL)
             torch.cuda.manual_seed_all(SEED_VAL)
 
+            prediction_dir = f'data/predictions/{TASK_NAME}/'
+            if not os.path.exists(prediction_dir):
+                os.makedirs(prediction_dir)
+
             for BATCH_SIZE in bss:
                 bs_name = seed_name + f"_bs{BATCH_SIZE}"
                 for LEARNING_RATE in lrs:
                     setting_name = bs_name + f"_lr{LEARNING_RATE}"
                     setting_results_table = pd.DataFrame(columns=table_columns.split(','))
+
+                    pred_fp = os.path.join(prediction_dir, f'{setting_name}_test_preds.csv')
+                    test_ids = []
+                    test_predictions = []
+                    test_labels = []
+                    test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': SPLIT, 'bs': BATCH_SIZE,
+                                'lr': LEARNING_RATE, 'set_type': 'test', 'sampler': SAMPLER}
+
                     for fold_name in folds:
                         fold_results_table = pd.DataFrame(columns=table_columns.split(','))
                         name = setting_name + f"_f{fold_name}"
@@ -169,90 +212,84 @@ if __name__ == '__main__':
                         _, dev_batches, dev_labels = load_features(dev_fp, 1, SAMPLER)
                         test_ids, test_batches, test_labels = load_features(test_fp, 1, SAMPLER)
 
-                        # start training
-                        logger.info(f"***** Training on Fold {fold_name} *****")
-                        logger.info(f"  Details: {best_val_res}")
-                        logger.info(f"  Logging to {LOG_FP}")
+                        if not os.path.exists(pred_fp):
 
-                        FORCE = False
-                        if not os.path.exists(best_model_loc) or FORCE:
-                            model = RobertaSSC.from_pretrained(ROBERTA_MODEL, cache_dir=CACHE_DIR, num_labels=NUM_LABELS,
-                                                               output_hidden_states=False, output_attentions=False)
+                            # start training
+                            logger.info(f"***** Fold {fold_name} *****")
+                            logger.info(f"  Details: {best_val_res}")
+                            logger.info(f"  Logging to {LOG_FP}")
 
-                            model.to(device)
-                            optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.01,
-                                              eps=1e-6)  # To reproduce BertAdam specific behavior set correct_bias=False
+                            FORCE = False
+                            if not os.path.exists(best_model_loc) or FORCE:
+                                logger.info(f"***** Training Seed {SEED_VAL}, Fold {fold_name} *****")
+                                model = RobertaSSC.from_pretrained(ROBERTA_MODEL, cache_dir=CACHE_DIR, num_labels=NUM_LABELS,
+                                                                   output_hidden_states=False, output_attentions=False)
 
-                            n_train_batches = len(train_batches)
-                            half_train_batches = int(n_train_batches / 2)
-                            GRADIENT_ACCUMULATION_STEPS = 2
-                            WARMUP_PROPORTION = 0.06
-                            num_tr_opt_steps = n_train_batches * N_EPS / GRADIENT_ACCUMULATION_STEPS
-                            num_tr_warmup_steps = int(WARMUP_PROPORTION * num_tr_opt_steps)
-                            scheduler = get_linear_schedule_with_warmup(optimizer,
-                                                                        num_warmup_steps=num_tr_warmup_steps,
-                                                                        num_training_steps=num_tr_opt_steps)
+                                model.to(device)
+                                optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.01,
+                                                  eps=1e-6)  # To reproduce BertAdam specific behavior set correct_bias=False
 
-                            model.train()
+                                n_train_batches = len(train_batches)
+                                half_train_batches = int(n_train_batches / 2)
+                                GRADIENT_ACCUMULATION_STEPS = 2
+                                WARMUP_PROPORTION = 0.06
+                                num_tr_opt_steps = n_train_batches * N_EPS / GRADIENT_ACCUMULATION_STEPS
+                                num_tr_warmup_steps = int(WARMUP_PROPORTION * num_tr_opt_steps)
+                                scheduler = get_linear_schedule_with_warmup(optimizer,
+                                                                            num_warmup_steps=num_tr_warmup_steps,
+                                                                            num_training_steps=num_tr_opt_steps)
 
-                            for ep in range(1, N_EPS + 1):
-                                epoch_name = name + f"_ep{ep}"
-                                tr_loss = 0
-                                for step, batch in enumerate(train_batches):
-                                    batch = tuple(t.to(device) for t in batch)
+                                model.train()
 
-                                    model.zero_grad()
-                                    outputs = model(batch[0], batch[1], labels=batch[2])
-                                    loss = outputs[0]
+                                for ep in range(1, N_EPS + 1):
+                                    epoch_name = name + f"_ep{ep}"
+                                    tr_loss = 0
+                                    for step, batch in enumerate(train_batches):
+                                        batch = tuple(t.to(device) for t in batch)
 
-                                    loss.backward()
-                                    tr_loss += loss.item()
-                                    optimizer.step()
-                                    scheduler.step()
+                                        model.zero_grad()
+                                        outputs = model(batch[0], batch[1], labels=batch[2])
+                                        loss = outputs[0]
 
-                                    if step % PRINT_EVERY == 0 and step != 0:
-                                        logging.info(f' Ep {ep} / {N_EPS} - {step} / {len(train_batches)} - Loss: {loss.item()}')
+                                        loss.backward()
+                                        tr_loss += loss.item()
+                                        optimizer.step()
+                                        scheduler.step()
 
-                                av_loss = tr_loss / len(train_batches)
-                                # save_model(model, CHECKPOINT_DIR, epoch_name)
+                                        if step % PRINT_EVERY == 0 and step != 0:
+                                            logging.info(f' Ep {ep} / {N_EPS} - {step} / {len(train_batches)} - Loss: {loss.item()}')
 
-                                preds, dev_mets, dev_perf = inferencer.evaluate(model, dev_batches, dev_labels, av_loss=av_loss,
-                                                                             set_type='dev', name=epoch_name)
+                                    av_loss = tr_loss / len(train_batches)
+                                    # save_model(model, CHECKPOINT_DIR, epoch_name)
 
-                                # check if best
-                                high_score = ''
-                                if dev_mets['f1'] > best_val_res['f1']:
-                                    best_val_res.update(dev_mets)
-                                    high_score = '(HIGH SCORE)'
-                                    save_model(model, CHECKPOINT_DIR, name)
+                                    preds, dev_mets, dev_perf = inferencer.evaluate(model, dev_batches, dev_labels, av_loss=av_loss,
+                                                                                 set_type='dev', name=epoch_name)
 
-                                logger.info(f'{epoch_name}: {dev_perf} {high_score}')
-                                logger.info(f'{epoch_name}: {test_perf}')
+                                    # check if best
+                                    high_score = ''
+                                    if dev_mets['f1'] > best_val_res['f1']:
+                                        best_val_res.update(dev_mets)
+                                        high_score = '(HIGH SCORE)'
+                                        save_model(model, CHECKPOINT_DIR, name)
 
-                        best_model = RobertaSSC.from_pretrained(best_model_loc,
-                                                                num_labels=NUM_LABELS,
-                                                                output_hidden_states=False,
-                                                                output_attentions=False)
-                        best_model.to(device)
+                                    logger.info(f'{epoch_name}: {dev_perf} {high_score}')
+                                    logger.info(f'{epoch_name}: {test_perf}')
 
-                        logger.info(f"***** Best model on Fold {fold_name} *****")
-                        logger.info(f"  Details: {best_val_res}")
+                            best_model = RobertaSSC.from_pretrained(best_model_loc,
+                                                                    num_labels=NUM_LABELS,
+                                                                    output_hidden_states=False,
+                                                                    output_attentions=False)
+                            best_model.to(device)
 
-                        preds, dev_mets, dev_perf = inferencer.evaluate(best_model, dev_batches, dev_labels, set_type='dev',
-                                                                 output_mode=TASK)
-                        best_val_res.update(dev_mets)
-                        logging.info(f"{dev_perf}")
+                            # get predictions
+                            preds, test_mets, test_perf = inferencer.evaluate(best_model, test_batches, test_labels,
+                                                                       set_type='test',
+                                                                       output_mode=TASK)
+                            print(len(preds), len(test_labels))
 
-                        preds, test_mets, test_perf = inferencer.evaluate(best_model, test_batches, test_labels,
-                                                                   set_type='test',
-                                                                   output_mode=TASK)
-                        logging.info(f"{test_perf}")
-                        test_res.update(test_mets)
-
-                        # store performance in table
-                        fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
-                        fold_results_table = fold_results_table.append(test_res, ignore_index=True)
-                        setting_results_table = setting_results_table.append(fold_results_table)
+                            # store performance in table
+                            fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
+                            setting_results_table = setting_results_table.append(fold_results_table)
 
                     # print result of setting
                     logging.info(

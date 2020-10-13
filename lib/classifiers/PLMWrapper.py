@@ -573,7 +573,7 @@ class Inferencer():
         for step, batch in enumerate(data):
             batch = tuple(t.to(self.device) for t in batch)
             input_ids, input_mask, label_ids = batch
-            # labels.extend(label_ids)
+            labels.extend(label_ids)
 
             with torch.no_grad():
                 # print(input_mask)

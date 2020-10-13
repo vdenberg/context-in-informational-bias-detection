@@ -337,6 +337,7 @@ if __name__ == '__main__':
 
                             # get predictions
                             fold_test_predictions, labels = inferencer.predict(best_model, test_batches, output_mode=CLF_TASK)
+                            print(len(fold_test_predictions), len(test_labels))
                             test_predictions.extend(fold_test_predictions)
                             test_labels.extend(labels)
 
