@@ -627,13 +627,7 @@ class Inferencer():
             logits = logits.detach().cpu().numpy()
 
             if output_mode == 'tok_clf':
-                print(logits.shape)
-                pred = np.argmax(logits, axis=2)[0]
-                print(np.argmax(logits, axis=2)[0])
-                print(type(pred))
-                pred = [p for p in np.argmax(logits, axis=2)]
-                print(pred)
-                exit(0)
+                pred = np.argmax(logits, axis=2)
 
             elif output_mode == 'sent_clf':
 
@@ -663,7 +657,7 @@ class Inferencer():
         if preds is None:
             preds, _ = self.predict(model, data, output_mode=output_mode)
             labels = labels.flatten()
-            preds = preds.flatten()
+            preds = np.asarray(preds).flatten()
         else:
             if output_mode == 'tok_clf':
                 preds = arrays_in_series(preds)
