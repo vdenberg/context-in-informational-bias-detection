@@ -89,7 +89,7 @@ if CLF_TASK == 'seq_sent_len':
 task_name_elements.append(CLF_TASK)
 if CLF_TASK == 'seq_sent_len':
     task_name_elements.append(str(EX_LEN))
-task_name_elements.append([SPLIT, MODEL])
+task_name_elements.extend([SPLIT, MODEL])
 TASK_NAME = '_'.join(task_name_elements)
 
 models = [args.model]
