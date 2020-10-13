@@ -364,8 +364,6 @@ if __name__ == '__main__':
 
                     if not os.path.exists(pred_fp):
                         # compute performance on setting
-                        print(len(test_predictions), len(test_ids))
-                        print(test_predictions, test_ids)
                         assert len(test_predictions) == len(test_ids)
                         assert len(test_predictions) == len(test_labels)
 
@@ -421,7 +419,7 @@ if __name__ == '__main__':
         test_m = test.loc['mean'].round(2).astype(str)
         test_std = test.loc['std'].round(2).astype(str)
         result = test_m + ' \pm ' + test_std
-        print(f"\n{MODEL} results on {SPLIT}:")
+        print(f"\n{TASK_NAME} results on {SPLIT}:")
         print(main_results_table.seed.unique())
         print(result)
 
