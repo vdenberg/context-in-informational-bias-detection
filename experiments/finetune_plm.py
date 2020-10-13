@@ -3,6 +3,7 @@ from transformers.optimization import AdamW, get_linear_schedule_with_warmup
 from lib.classifiers.PLMWrapper import Inferencer, save_model, load_features
 from lib.classifiers.PLMWrapper import BertForTokenClassification, BertForSequenceClassification
 from lib.classifiers.PLMWrapper import RobertaForTokenClassification, RobertaForSequenceClassification
+from lib.classifiers.PLMWrapper import RobertaSSC
 from datetime import datetime
 import torch
 import random, argparse
