@@ -640,6 +640,7 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
+            print(pred.shape)
             preds.append(np.asarray(pred))
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
