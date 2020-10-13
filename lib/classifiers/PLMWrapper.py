@@ -649,14 +649,14 @@ class Inferencer():
             labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
         else:
-            if output_mode != 'tok_sent_clf':
+            if output_mode != 'tok_clf':
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)
-
 
         if output_mode == 'seq_sent_clf':
             m = labels != -1
             labels = labels[m]
+            preds = preds[m]
 
         if len(preds) != len(labels):
             print(f'Sizes of {set_type} not equal')
