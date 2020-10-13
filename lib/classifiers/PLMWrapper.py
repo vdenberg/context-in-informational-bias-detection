@@ -642,8 +642,8 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
-            label_ids = [id for id in label_ids.squeeze() if id != -1]
-            labels.append(np.asarray(label_ids))
+            print(label_ids.shape)
+            labels.append(np.asarray(label_ids.squeeze()))
             preds.append(np.asarray(preds))
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
@@ -665,7 +665,6 @@ class Inferencer():
                 labels = arrays_in_series(labels)
 
         if output_mode == 'seq_sent_clf':
-            labels = labels.flatten()
             m = labels != -1
             labels = labels[m]
 
