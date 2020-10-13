@@ -499,18 +499,17 @@ class Inferencer():
                 preds = lists_to_arrays_in_series(preds, as_array=True)
                 labels = lists_to_arrays_in_series(labels, as_series=True)
 
+        labels = np.asarray(labels)
+
         if output_mode == 'tok_clf':
-            labels = labels.numpy().flatten()
+            labels = labels.flatten()
             preds = np.asarray(preds)
             preds = np.reshape(preds, labels.shape)
 
         elif output_mode == 'seq_sent_clf':
-            labels = labels.numpy().flatten()
+            labels = labels.flatten()
             m = labels != -1
             labels = labels[m]
-        else:
-            print(type(labels))
-            labels = labels.numpy()
 
         if len(preds) != len(labels):
             print(f'Sizes of {set_type} not equal')
