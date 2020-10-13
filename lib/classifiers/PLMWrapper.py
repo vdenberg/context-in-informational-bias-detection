@@ -622,23 +622,21 @@ class Inferencer():
             logits = logits.detach().cpu().numpy()
 
             if output_mode == 'tok_clf':
-                pred = np.argmax(logits, axis=2)
+                pred = np.argmax(logits, axis=2)[0]
 
             elif output_mode == 'sent_clf':
                 if len(logits.shape) == 1:
                     logits = logits.unsqueeze()
-                pred = np.argmax(logits, axis=1)
+                pred = np.argmax(logits, axis=1)[0]
 
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
+                pred = np.asarray(pred)
 
             print(pred)
             print(type(pred))
 
-            if isinstance(pred, list):
-                pred = np.asarray(pred)
-
-            elif pred.ndim > 1:
+            if pred.ndim > 1:
                 pred = pred.squeeze()
 
             if output_mode == 'seq_sent_clf':
