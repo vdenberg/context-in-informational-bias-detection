@@ -494,14 +494,15 @@ class Inferencer():
         if preds is None:
             preds, _ = self.predict(model, data, output_mode=output_mode)
         else:
-            preds = [el.strip("'").strip('[]') for el in preds]
-            preds = [tuple(map(int, el.split(', '))) for el in preds]
-            print(preds)
-
+            if output_mode == 'tok_clf':
+                preds = [el.strip("'").strip('[]') for el in preds]
+                preds = [np.array(map(int, el.split(', '))) for el in preds]
+            
         if output_mode == 'tok_clf':
             labels = labels.numpy().flatten()
             preds = np.asarray(preds)
             preds = np.reshape(preds, labels.shape)
+
         elif output_mode == 'seq_sent_clf':
             labels = labels.numpy().flatten()
             m = labels != -1
