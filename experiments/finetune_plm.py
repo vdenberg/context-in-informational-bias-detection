@@ -352,7 +352,7 @@ if __name__ == '__main__':
 
                     logger.info(f"***** Results on Setting {setting_name} *****")
 
-                    test_mets, test_perf = inferencer.evaluate(labels=test_labels, preds=basil_w_pred.pred,
+                    test_mets, test_perf = inferencer.evaluate(labels=basil_w_pred.label, preds=basil_w_pred.pred,
                                                                set_type='test', name=setting_name,
                                                                output_mode=CLF_TASK)
                     logging.info(f"{test_perf}")

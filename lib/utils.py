@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import (DataLoader, SequentialSampler, RandomSampler, TensorDataset)
 import os
 import numpy as np
-
+import pandas as pd
 
 def standardise_id(basil_id):
     if not basil_id[1].isdigit():
@@ -140,6 +140,13 @@ def get_torch_device():
     return device, use_cuda
 
 
+def lists_to_arrays_in_series(series, as_array=False, as_series=False):
+    series = [el.strip("'").strip('[]') for el in series]
+    if as_array:
+        series = np.asarray([np.array(map(int, el.split(', '))) for el in series])
+    elif as_series:
+        series = pd.Series([np.array(map(int, el.split(', '))) for el in series])
+    return series
 
 '''
 def showPlot(points):

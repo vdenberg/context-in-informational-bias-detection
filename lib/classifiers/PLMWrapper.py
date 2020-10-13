@@ -3,12 +3,13 @@ import torch
 from torch import nn
 import os, pickle
 import numpy as np
-from lib.utils import  to_tensor, to_batches
+import pandas as pd
+from lib.utils import to_tensor, to_batches, lists_to_arrays_in_series
 from lib.evaluate.Eval import my_eval
 from torch.nn import CrossEntropyLoss, MSELoss, Embedding, Dropout, Linear, Sigmoid, LSTM
 from transformers.configuration_roberta import RobertaConfig
 from transformers.modeling_roberta import RobertaModel, ROBERTA_PRETRAINED_MODEL_ARCHIVE_MAP
-import re
+
 
 # helpers
 class InputFeatures(object):
@@ -495,12 +496,11 @@ class Inferencer():
             preds, _ = self.predict(model, data, output_mode=output_mode)
         else:
             if output_mode == 'tok_clf':
-                preds = [el.strip("'").strip('[]') for el in preds]
-                preds = [np.array(map(int, el.split(', '))) for el in preds]
+                preds = lists_to_arrays_in_series(preds, as_array=True)
+                labels = lists_to_arrays_in_series(labels, as_series=True)
 
         if output_mode == 'tok_clf':
-            print(labels)
-            labels = np.asarray(labels).flatten()
+            labels = labels.numpy().flatten()
             preds = np.asarray(preds)
             preds = np.reshape(preds, labels.shape)
 
