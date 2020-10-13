@@ -146,7 +146,7 @@ def arrays_in_series(series):
         el = el.strip("'").strip('[]')
         el = tuple(map(int, el.split(', ')))
         flat.extend(el)
-    return series
+    return flat
 
 '''
 def showPlot(points):
