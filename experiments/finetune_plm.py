@@ -240,6 +240,7 @@ if __name__ == '__main__':
                     test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': SPLIT, 'bs': BATCH_SIZE,
                                  'lr': LEARNING_RATE, 'set_type': 'test', 'sampler': SAMPLER}
 
+                    feat_fp = os.path.join(FEAT_DIR, f"all_features.pkl")
                     all_ids, all_batches, all_labels = load_features(feat_fp, batch_size=1,
                                                                      sampler=SAMPLER)
 
@@ -353,7 +354,6 @@ if __name__ == '__main__':
                                     PREFERRED_EMB_SV = 49
                                     if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
                                         logging.info(f'Generating {EMB_TYPE} ({emb_fp})')
-                                        feat_fp = os.path.join(FEAT_DIR, f"all_features.pkl")
                                         embs = inferencer.predict(best_model, all_batches, return_embeddings=True, emb_type=EMB_TYPE)
                                         assert len(embs) == len(all_ids)
 
