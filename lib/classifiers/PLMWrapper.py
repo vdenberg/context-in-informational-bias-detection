@@ -491,7 +491,7 @@ class Inferencer():
             return preds, labels
 
     def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
-        if not preds:
+        if preds is None:
             preds, _ = self.predict(model, data, output_mode=output_mode)
         else:
             preds = preds.numpy().flatten()
