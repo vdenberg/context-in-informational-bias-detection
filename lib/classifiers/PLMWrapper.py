@@ -643,6 +643,7 @@ class Inferencer():
                 pred = logits[0].argmax(axis=1).tolist()
 
             preds.extend(pred)
+            print(label_ids)
             labels.extend([id for id in label_ids if id != -1])
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
