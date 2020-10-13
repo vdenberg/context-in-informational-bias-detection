@@ -463,7 +463,10 @@ class Inferencer():
             logits = logits.detach().cpu().numpy()
 
             if output_mode == 'tok_clf':
+                print(logits)
                 pred = [list(p) for p in np.argmax(logits, axis=2)]
+                print(pred)
+                exit(0)
 
             elif output_mode == 'sent_clf':
 
