@@ -506,6 +506,7 @@ class Inferencer():
             preds = np.asarray(preds)
             print(labels.shape)
             print(preds.shape)
+            print(labels)
             preds = np.reshape(preds, labels.shape)
 
         elif output_mode == 'seq_sent_clf':
