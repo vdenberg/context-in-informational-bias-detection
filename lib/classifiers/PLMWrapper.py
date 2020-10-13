@@ -653,12 +653,16 @@ class Inferencer():
         print(type(preds), type(labels))
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
+            print(preds[0])
+            print(type(preds))
+            exit(0)
             labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
         else:
             if output_mode != 'tok_sent_clf':
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)
+
 
         if output_mode == 'seq_sent_clf':
             m = labels != -1
