@@ -644,6 +644,14 @@ class Inferencer():
             elif pred.ndim > 1:
                 pred = pred.squeeze()
 
+            if output_mode == 'seq_sent_clf':
+                max_seq_len = len(label_ids)
+                pad = [-1] * (max_seq_len - len(label_ids))
+                print(pred)
+                pred += pad
+                print(pred)
+                exit(0)
+
             preds.append(pred)
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
