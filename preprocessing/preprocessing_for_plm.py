@@ -58,7 +58,7 @@ def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex, window):
     for i, sent in enumerate(seq_rows):
         input_ids = remove_special(sent.input_ids, cls, pad)
         flat_input_ids.extend(input_ids)
-        input_ids.append(sent.my_id)
+        flat_ids.append(sent.my_id)
         flat_labels.append(sent.label_id)
 
     pad_len = max_ex_len - len(flat_input_ids)
