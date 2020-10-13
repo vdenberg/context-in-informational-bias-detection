@@ -641,6 +641,7 @@ class Inferencer():
                 pred = logits[0].argmax(axis=1).tolist()
 
             print(pred.shape)
+            exit(0)
             preds.append(np.asarray(pred))
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
