@@ -4,13 +4,13 @@ from lib.classifiers.PLMWrapper import Inferencer, save_model, load_features
 from lib.classifiers.PLMWrapper import BertForTokenClassification, BertForSequenceClassification
 from lib.classifiers.PLMWrapper import RobertaForTokenClassification, RobertaForSequenceClassification
 from lib.classifiers.PLMWrapper import RobertaForSequentialSequenceClassification
+from lib.handle_data.PreprocessForRoberta import *
 from datetime import datetime
 import torch
 import random, argparse
 import numpy as np
 import pandas as pd
 import os, sys
-#from Private.OldVersions.PreprocessForRoberta import *
 from lib.utils import get_torch_device
 import logging
 
