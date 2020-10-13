@@ -70,8 +70,7 @@ parser.add_argument('-lr', '--lr', type=float, default=1.5e-5) #5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=3,
                     help='note that in this experiment batch size is the nr of sentences in a group')
 parser.add_argument('-sv', '--sv', type=int, default=22) #16, 21
-parser.add_argument('-fold', '--fold', type=str, default=None) #16, 21
-parser.add_argument('-fold', '--fold', type=str, default=None) #16, 21
+parser.add_argument('-fold', '--fold', type=str, default=None)
 args = parser.parse_args()
 
 N_EPS = args.n_epochs
