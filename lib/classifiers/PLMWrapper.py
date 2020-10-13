@@ -644,7 +644,7 @@ class Inferencer():
             print(pred.squeeze())
             print(type(pred.squeeze()))
             exit(0)
-            preds.append(np.asarray(pred))
+            preds.append(pred.squeeze())
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
 
