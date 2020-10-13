@@ -631,22 +631,12 @@ class Inferencer():
 
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
+                pad = [-1] * (max_seq_len - len(label_ids))
+                pred += pad
                 pred = np.asarray(pred)
 
             print(pred)
             print(type(pred))
-
-            if pred.ndim > 1:
-                print('ndim', pred)
-                pred = pred.squeeze()
-
-            if output_mode == 'seq_sent_clf':
-                max_seq_len = len(label_ids)
-                pad = [-1] * (max_seq_len - len(label_ids))
-                print(pred)
-                pred += pad
-                print(pred)
-                exit(0)
 
             preds.append(pred)
 
