@@ -625,18 +625,15 @@ class Inferencer():
                 pred = np.argmax(logits, axis=2)
 
             elif output_mode == 'sent_clf':
-
                 if len(logits.shape) == 1:
                     logits = logits.unsqueeze()
-                try:
-                    pred = np.argmax(logits, axis=1)
-                except:
-                    print(logits)
-                    print(logits.shape)
-                    exit(0)
+                pred = np.argmax(logits, axis=1)
 
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
+
+            print(pred)
+            print(type(pred))
 
             if isinstance(pred, list):
                 pred = np.asarray(pred)

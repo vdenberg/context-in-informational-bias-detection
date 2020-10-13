@@ -145,12 +145,12 @@ def get_torch_device():
 def arrays_in_series(series):
     flat = []
     for el in series:
-        print(el)
         el = el.strip('[]').strip('\n')
         el = re.sub(',','',el)
         el = tuple(map(int, el.split(' ')))
         flat.extend(el)
     return np.asarray(flat)
+
 
 '''
 def showPlot(points):
