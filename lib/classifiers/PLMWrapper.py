@@ -490,8 +490,9 @@ class Inferencer():
         else:
             return preds, labels
 
-    def evaluate(self, model, data, labels, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
-        preds, rep_sim = self.predict(model, data, output_mode=output_mode)
+    def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
+        if not preds:
+            preds, _ = self.predict(model, data, output_mode=output_mode)
         # print('Evaluation these predictions:', len(preds), len(preds[0]), preds[:2])
         # print('Evaluation above predictions with these labels:', len(labels), len(labels[0]), labels[:2])
         if output_mode == 'tok_clf':
@@ -512,7 +513,7 @@ class Inferencer():
             print(len(labels)) #, len(labels[0]))
             exit(0)
 
-        metrics_dict, metrics_string = my_eval(labels, preds, set_type=set_type, av_loss=av_loss, name=name, rep_sim=rep_sim, opmode=output_mode)
+        metrics_dict, metrics_string = my_eval(labels, preds, set_type=set_type, av_loss=av_loss, name=name, opmode=output_mode)
         return metrics_dict, metrics_string
 
 

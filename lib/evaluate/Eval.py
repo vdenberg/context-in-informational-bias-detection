@@ -57,7 +57,7 @@ def get_metrics(labels, preds, opmode):
     }
 
 
-def my_eval(labels, preds, av_loss=None, set_type="", name="", rep_sim=None, opmode='classification'):
+def my_eval(labels, preds, av_loss=None, set_type="", name="", opmode='classification'):
     """
     Compares labels to predictions, Loss can be added to also
     display the loss associated to the model that made those predictions
@@ -74,9 +74,6 @@ def my_eval(labels, preds, av_loss=None, set_type="", name="", rep_sim=None, opm
 
     if av_loss:
         metrics_dict['loss'] = av_loss
-
-    if rep_sim:
-        metrics_dict['rep_sim'] = rep_sim
 
     if set_type:
         metrics_dict['set_type'] = set_type
