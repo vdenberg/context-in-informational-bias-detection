@@ -140,12 +140,12 @@ def get_torch_device():
     return device, use_cuda
 
 
-def lists_to_arrays_in_series(series, as_array=False, as_series=False):
-    series = [el.strip("'").strip('[]') for el in series]
-    if as_array:
-        series = np.asarray([np.asarray(list(map(int, el.split(', ')))) for el in series])
-    elif as_series:
-        series = pd.Series([np.asarray(list(map(int, el.split(', ')))) for el in series])
+def arrays_in_series(series):
+    flat = []
+    for el in series:
+        el = el.strip("'").strip('[]')
+        el = tuple(map(int, el.split(', ')))
+        flat.extend(el)
     return series
 
 '''

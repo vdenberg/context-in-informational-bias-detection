@@ -4,7 +4,7 @@ from torch import nn
 import os, pickle
 import numpy as np
 import pandas as pd
-from lib.utils import to_tensor, to_batches, lists_to_arrays_in_series
+from lib.utils import to_tensor, to_batches, arrays_in_series
 from lib.evaluate.Eval import my_eval
 from torch.nn import CrossEntropyLoss, MSELoss, Embedding, Dropout, Linear, Sigmoid, LSTM
 from transformers.configuration_roberta import RobertaConfig
@@ -496,20 +496,10 @@ class Inferencer():
             preds, _ = self.predict(model, data, output_mode=output_mode)
         else:
             if output_mode == 'tok_clf':
-                preds = lists_to_arrays_in_series(preds, as_array=True)
-                labels = lists_to_arrays_in_series(labels, as_series=True)
+                preds = arrays_in_series(preds)
+                labels = arrays_in_series(labels)
 
-        labels = np.asarray(labels)
-
-        if output_mode == 'tok_clf':
-            labels = labels.flatten()
-            preds = np.asarray(preds)
-            print(labels.shape)
-            print(preds.shape)
-            print(labels)
-            preds = np.reshape(preds, labels.shape)
-
-        elif output_mode == 'seq_sent_clf':
+        if output_mode == 'seq_sent_clf':
             labels = labels.flatten()
             m = labels != -1
             labels = labels[m]
