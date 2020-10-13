@@ -26,6 +26,7 @@ class InputFeatures(object):
 
 def load_features(fp, batch_size, sampler='sequential'):
     with open(fp, "rb") as f:
+        print(fp)
         ids, data, labels = to_tensor(pickle.load(f))
     batches = to_batches(data, batch_size=batch_size, sampler=sampler)
     return ids, batches, labels

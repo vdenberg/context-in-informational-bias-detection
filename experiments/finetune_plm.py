@@ -262,6 +262,7 @@ if __name__ == '__main__':
                         _, dev_batches, dev_labels = load_features(dev_fp, 1, SAMPLER)
                         fold_test_ids, test_batches, fold_test_labels = load_features(test_fp, 1, SAMPLER)
                         test_ids.extend(fold_test_ids)
+                        print(fold_test_ids)
                         test_labels.extend(fold_test_labels)
 
                         if not os.path.exists(pred_fp):
@@ -364,6 +365,8 @@ if __name__ == '__main__':
 
                     if not os.path.exists(pred_fp):
                         # compute performance on setting
+                        print(len(test_predictions), len(test_ids))
+                        print(test_predictions, test_ids)
                         assert len(test_predictions) == len(test_ids)
                         assert len(test_predictions) == len(test_labels)
 
