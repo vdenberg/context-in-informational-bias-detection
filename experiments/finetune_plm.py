@@ -126,7 +126,7 @@ bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
 if SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
-elif MODEL == 'rob_base':
+if MODEL != 'bert' and CLF_TASK == 'sent_clf':
     folds = ['fan']
 else:
     folds = ['sentence_split']
