@@ -464,7 +464,6 @@ class Inferencer():
 
             if output_mode == 'tok_clf':
                 print(label_ids)
-                print(logits)
                 pred = [list(p) for p in np.argmax(logits, axis=2)]
                 print(pred)
                 exit(0)
