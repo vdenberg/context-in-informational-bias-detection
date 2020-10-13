@@ -359,7 +359,6 @@ def convert_example_to_roberta_feature(example_row):
     else:
         raise KeyError(output_mode)
 
-    print(label_id)
     return InputFeatures(my_id=example.my_id,
                          input_ids=input_ids,
                          input_mask=attention_mask,
