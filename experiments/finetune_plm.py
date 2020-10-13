@@ -137,6 +137,8 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 DEBUG = args.debug
+FORCE_PRED = args.force_pred
+FORCE_TRAIN =  args.force_train
 if DEBUG:
     FORCE_PRED = True
     FORCE_TRAIN = True
