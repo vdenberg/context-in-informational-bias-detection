@@ -64,6 +64,7 @@ parser.add_argument('-exlen', '--example_length', type=int, default=None)
 parser.add_argument('-ep', '--n_epochs', type=int, default=10) #2,3,4
 parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
+parser.add_argument('-clf_task', '--clf_task', type=str, default='seq_sent_clf')
 parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
 parser.add_argument('-model', '--model', type=str, default='rob_base') #2,3,4
 parser.add_argument('-lr', '--lr', type=float, default=1.5e-5) #5e-5, 3e-5, 2e-5
@@ -75,7 +76,7 @@ args = parser.parse_args()
 
 N_EPS = args.n_epochs
 SAMPLER = args.sampler
-CLF_TASK = 'seq_sent_clf'
+CLF_TASK = args.clf_task
 SPLIT = args.split
 MODEL = args.model
 WINDOW = args.window
