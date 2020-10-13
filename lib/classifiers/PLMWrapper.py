@@ -628,7 +628,8 @@ class Inferencer():
 
             if output_mode == 'tok_clf':
                 print(logits.shape)
-                pred = [list(p) for p in np.argmax(logits, axis=2)]
+                print(np.argmax(logits, axis=2))
+                pred = [p for p in np.argmax(logits, axis=2)]
                 print(pred)
                 exit(0)
 
