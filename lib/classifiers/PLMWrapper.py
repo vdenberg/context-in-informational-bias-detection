@@ -637,6 +637,7 @@ class Inferencer():
             print(type(pred))
 
             if pred.ndim > 1:
+                print(pred)
                 pred = pred.squeeze()
 
             if output_mode == 'seq_sent_clf':
