@@ -336,10 +336,11 @@ if __name__ == '__main__':
                             best_model.to(device)
 
                             # get predictions
-                            fold_test_predictions, labels = inferencer.predict(best_model, test_batches, output_mode=CLF_TASK)
-                            print(len(fold_test_predictions), len(test_labels))
+                            fold_test_predictions, fold_test_labels = inferencer.predict(best_model,
+                                                                                         test_batches,
+                                                                                         output_mode=CLF_TASK)
                             test_predictions.extend(fold_test_predictions)
-                            test_labels.extend(labels)
+                            test_labels.extend(fold_test_labels)
 
                             # get embeddings
                             if STORE_EMBEDS:

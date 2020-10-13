@@ -642,13 +642,8 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
-            print(input_ids)
-            print(label_ids)
-            print(logits)
-            print(pred)
-            exit(0)
             preds.extend(pred)
-            labels.extend(label_ids)
+            labels.extend([id for id in label_ids if id != -1])
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
 
