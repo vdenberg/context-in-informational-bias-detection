@@ -498,7 +498,7 @@ class Inferencer():
         # print('Evaluation these predictions:', len(preds), len(preds[0]), preds[:2])
         # print('Evaluation above predictions with these labels:', len(labels), len(labels[0]), labels[:2])
         if output_mode == 'tok_clf':
-            labels = labels.numpy().flatten()
+            labels = labels.values.numpy().flatten()
             preds = np.asarray(preds)
             preds = np.reshape(preds, labels.shape)
         elif output_mode == 'seq_sent_clf':
