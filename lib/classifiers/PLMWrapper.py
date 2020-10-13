@@ -643,9 +643,9 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
-            print(preds)
+            print(pred)
             print(label_ids)
-            print(len(preds), len(label_ids))
+            print(len(pred), len(label_ids))
             exit(0)
             preds.extend(pred)
             labels.extend(label_ids)
@@ -682,8 +682,6 @@ class Inferencer():
 
         metrics_dict, metrics_string = my_eval(labels, preds, set_type=set_type, av_loss=av_loss, name=name, opmode=output_mode)
         return metrics_dict, metrics_string
-
-
 
 
 def save_model(model_to_save, model_dir, identifier):
