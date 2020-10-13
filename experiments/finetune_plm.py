@@ -367,12 +367,12 @@ if __name__ == '__main__':
 
                     if not os.path.exists(pred_fp):
                         # compute performance on setting
-                        print(test_predictions)
                         print(test_predictions[0])
                         print(type(test_predictions))
                         assert len(test_predictions) == len(test_ids)
                         assert len(test_predictions) == len(test_labels)
                         print(test_predictions)
+                        exit(0)
 
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
