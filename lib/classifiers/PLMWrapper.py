@@ -659,10 +659,11 @@ class Inferencer():
             preds = self.predict(model, data, output_mode=output_mode)
             print(len(labels))
             print(len(preds))
-            exit(0)
-
             labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
+            print(len(labels))
+            print(len(preds))
+            exit(0)
         else:
             if output_mode != 'sent_clf':
                 preds = arrays_in_series(preds)
