@@ -263,6 +263,7 @@ if __name__ == '__main__':
     else:
         with open(FEAT_OFP, "rb") as f:
            features = pickle.load(f)
+           print(features[0].my_id)
            features_dict = {feat.my_id: feat for feat in features}
 
     ###
