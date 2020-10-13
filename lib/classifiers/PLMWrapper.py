@@ -494,12 +494,11 @@ class Inferencer():
         if preds is None:
             preds, _ = self.predict(model, data, output_mode=output_mode)
         else:
-            preds = [list(el) for el in preds]
+            preds = [map(int, el.strip("'").split(', ')) for el in preds]
             print(preds)
-        # print('Evaluation these predictions:', len(preds), len(preds[0]), preds[:2])
-        # print('Evaluation above predictions with these labels:', len(labels), len(labels[0]), labels[:2])
+
         if output_mode == 'tok_clf':
-            labels = labels.values.flatten()
+            labels = labels.numpy().flatten()
             preds = np.asarray(preds)
             preds = np.reshape(preds, labels.shape)
         elif output_mode == 'seq_sent_clf':
