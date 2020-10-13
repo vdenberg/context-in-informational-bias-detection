@@ -637,6 +637,7 @@ class Inferencer():
 
             print(pred)
             print(type(pred))
+            exit(0)
 
             preds.append(pred)
 
