@@ -283,8 +283,6 @@ if __name__ == '__main__':
                             preds, test_mets, test_perf = inferencer.evaluate(best_model, test_batches, test_labels,
                                                                        set_type='test',
                                                                        output_mode=TASK)
-                            print(len(preds), len(test_labels))
-
                             # store performance in table
                             fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
                             setting_results_table = setting_results_table.append(fold_results_table)

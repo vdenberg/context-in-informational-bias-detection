@@ -643,6 +643,7 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
+            print(logits)
             print(pred)
             print(label_ids)
             print(len(pred), len(label_ids))
