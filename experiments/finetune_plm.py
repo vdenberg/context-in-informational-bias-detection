@@ -266,7 +266,6 @@ if __name__ == '__main__':
                         _, dev_batches, dev_labels = load_features(dev_fp, 1, SAMPLER)
                         fold_test_ids, test_batches, fold_test_labels = load_features(test_fp, 1, SAMPLER)
                         test_ids.extend(fold_test_ids)
-                        print(type(fold_test_labels))
                         test_labels.extend(fold_test_labels)
 
                         if not os.path.exists(pred_fp):
@@ -371,6 +370,9 @@ if __name__ == '__main__':
                         assert len(test_predictions) == len(test_ids)
                         assert len(test_predictions) == len(test_labels)
 
+
+                        print(type(test_labels))
+                        
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
                         basil_w_pred['label'] = test_labels
