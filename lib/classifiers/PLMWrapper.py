@@ -494,7 +494,7 @@ class Inferencer():
         if preds is None:
             preds, _ = self.predict(model, data, output_mode=output_mode)
         else:
-            preds = [map(int, el.strip("'").split(', ')) for el in preds]
+            preds = [tuple(map(int, el.strip("'").split(', '))) for el in preds]
             print(preds)
 
         if output_mode == 'tok_clf':
