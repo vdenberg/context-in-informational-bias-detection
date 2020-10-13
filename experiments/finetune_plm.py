@@ -126,7 +126,7 @@ bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
 if SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
-if MODEL != 'bert' and CLF_TASK == 'sent_clf':
+elif MODEL != 'bert' and CLF_TASK == 'sent_clf':
     folds = ['fan']
 else:
     folds = ['sentence_split']
@@ -136,6 +136,8 @@ torch.backends.cudnn.benchmark = False
 
 DEBUG = args.debug
 if DEBUG:
+    FORCE_PRED = True
+    FORCE_TRAIN = True
     N_EPS = 2
     seeds = [0]
     bss = [32]
@@ -268,17 +270,16 @@ if __name__ == '__main__':
                         test_ids.extend(fold_test_ids)
                         test_labels.extend(fold_test_labels)
 
-                        if not os.path.exists(pred_fp):
+                        if not os.path.exists(pred_fp) or FORCE_PRED:
 
                             # start training
                             logger.info(f"***** Fold {fold_name} *****")
                             logger.info(f"  Details: {best_val_res}")
                             logger.info(f"  Logging to {LOG_FP}")
 
-                            FORCE = False
                             selected_model = select_model(MODEL, CLF_TASK)
 
-                            if not os.path.exists(best_model_loc) or FORCE:
+                            if not os.path.exists(best_model_loc) or FORCE_TRAIN:
                                 logger.info(f"***** Training Seed {SEED_VAL}, Fold {fold_name} *****")
 
                                 model = selected_model.from_pretrained(EXACT_MODEL, cache_dir=CACHE_DIR,
@@ -307,6 +308,7 @@ if __name__ == '__main__':
                                     tr_loss = 0
                                     for step, batch in enumerate(train_batches):
                                         batch = tuple(t.to(device) for t in batch)
+
 
                                         model.zero_grad()
                                         outputs = model(batch[0], batch[1], labels=batch[2])
