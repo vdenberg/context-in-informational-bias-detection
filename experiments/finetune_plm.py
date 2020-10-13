@@ -64,7 +64,6 @@ model_mapping = {'bert': 'bert-base-cased',
                  'rob_dapt': 'experiments/adapt_dapt_tapt/pretrained_models/news_roberta_base',
                  'rob_basil_tapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-tapt',
                  'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-dapttapt',
-                 'seq_sent_clf': 'roberta-base'
                 }
 
 model_seeds = {'sent_clf': {
@@ -73,13 +72,15 @@ model_seeds = {'sent_clf': {
                    'rob_dapt': [6, 22, 33, 34, 49],
                    'rob_basil_tapt': [6, 33, 34, 49, 181],
                    'rob_basil_dapttapt': [6, 33, 34, 49, 181],
-                   'seq_sent_clf': [22, 34, 49, 181, 43]
-                    },
+                   },
                'tok_clf': {
                     'bert': [6, 23, 49, 132, 281],
                     'rob_base': [6, 33, 34, 132, 281]
+                    },
+                'seq_sent_clf': {
+                    'rob_base': [22, 34, 49, 181, 43]
                     }
-               }
+                }
 
 device, USE_CUDA = get_torch_device()
 
@@ -103,7 +104,7 @@ N_EPS = args.n_epochs
 SAMPLER = args.sampler
 CLF_TASK = args.clf_task
 SPLIT = args.split
-MODEL = args.model if args.model else ['rob_base']
+MODEL = args.model
 WINDOW = args.window
 EX_LEN = args.example_length
 
