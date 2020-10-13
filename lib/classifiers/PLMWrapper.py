@@ -641,6 +641,8 @@ class Inferencer():
                 pred = logits[0].argmax(axis=1).tolist()
 
             print(pred.shape)
+            print(pred.squeeze())
+            print(type(pred.squeeze()))
             exit(0)
             preds.append(np.asarray(pred))
 
