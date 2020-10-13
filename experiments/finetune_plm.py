@@ -95,7 +95,6 @@ parser.add_argument('-lr', '--lr', type=float, default=None) # 5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) # 16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
 parser.add_argument('-embeds', '--embeds', action='store_true', default=False)
-# Just for seq_sent_len classification task:
 parser.add_argument('-win', '--window', action='store_true', default=False) #16, 21
 parser.add_argument('-exlen', '--example_length', help='5|10',type=int, default=5)
 args = parser.parse_args()
@@ -152,12 +151,18 @@ if CLF_TASK == 'seq_sent_clf':
         FEAT_DIR = f'data/inputs/{CLF_TASK}/windowed/ssc{EX_LEN}/'
     else:
         FEAT_DIR = f'data/inputs/{CLF_TASK}/non_windowed/ssc{EX_LEN}/'
+
+elif CLF_TASK == 'sent_clf':
+    if MODEL == 'bert':
+        FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
+    else:
+        FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/{CLF_TASK}/features_for_roberta'
+        
 else:
     if MODEL == 'bert':
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
     else:
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta'
-        FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/{CLF_TASK}/features_for_roberta'
 
 PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
