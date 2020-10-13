@@ -250,12 +250,11 @@ if __name__ == '__main__':
     # takes a while!
     ###
 
-    FORCE = True
+    FORCE = False
     if not os.path.exists(FEAT_OFP) or FORCE:
         examples = dataloader.get_examples(DATA_TSV_IFP, 'train', sep='\t')
         examples = [(ex, label_map, MAX_SEQ_LEN, tokenizer, spacy_tokenizer, CLF_TASK) for ex in examples if ex.text_a]
         features = preprocess_for_plm(examples, model=PLM)
-        print(features[0].my_id)
         features_dict = {feat.my_id: feat for feat in features}
 
         with open(FEAT_OFP, "wb") as f:
@@ -281,6 +280,8 @@ if __name__ == '__main__':
             if CLF_TASK == 'seq_sent_clf':
                 features = redistribute_feats(features, cls=0, pad=1, max_sent=MAX_EX_LEN, max_len=MAX_SEQ_LEN,
                                           window=WINDOW)
+
+                print(features[0].my_id)
             # print(f"Processed fold {fold_name} {set_type} - {len(features)} items to {FEAT_OFP}")
 
             with open(FEAT_OFP, "wb") as f:
