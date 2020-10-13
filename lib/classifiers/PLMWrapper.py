@@ -497,9 +497,10 @@ class Inferencer():
             if output_mode == 'tok_clf':
                 preds = [el.strip("'").strip('[]') for el in preds]
                 preds = [np.array(map(int, el.split(', '))) for el in preds]
-            
+
         if output_mode == 'tok_clf':
-            labels = labels.numpy().flatten()
+            print(labels)
+            labels = np.asarray(labels).flatten()
             preds = np.asarray(preds)
             preds = np.reshape(preds, labels.shape)
 
