@@ -509,6 +509,7 @@ class Inferencer():
             m = labels != -1
             labels = labels[m]
         else:
+            print(type(labels))
             labels = labels.numpy()
 
         if len(preds) != len(labels):
