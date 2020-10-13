@@ -647,6 +647,7 @@ class Inferencer():
         print(type(preds), type(labels))
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
+            print(preds)
             print(preds[0])
             print(type(preds))
             exit(0)
