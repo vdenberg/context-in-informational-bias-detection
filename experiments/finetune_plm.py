@@ -363,7 +363,7 @@ if __name__ == '__main__':
                             # store performance on just the fold in the table
                             fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
 
-                    logger.info(f"***** Get results of Seed {SEED_VAL}, Fold {fold_name} *****")
+                    logger.info(f"***** Get results of Seed {SEED_VAL}, Fold {fold_name} (pred exists: {os.path.exists(pred_fp)}) *****")
 
                     if not os.path.exists(pred_fp):
                         # compute performance on setting
