@@ -8,11 +8,8 @@ from datetime import datetime
 import torch
 import random, argparse
 import numpy as np
-from lib.handle_data.PreprocessForPLM import *
-from lib.handle_data.PreprocessForRoberta import *
-from lib.handle_data.PreprocessForBert import *
+from Private.OldVersions.PreprocessForBert import *
 from lib.utils import get_torch_device
-from lib.evaluate.Eval import my_eval
 import logging
 
 '''
