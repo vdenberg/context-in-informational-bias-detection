@@ -65,7 +65,7 @@ parser.add_argument('-ep', '--n_epochs', type=int, default=10) #2,3,4
 parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
-parser.add_argument('-model', '--model', type=str, default=None) #2,3,4
+parser.add_argument('-model', '--model', type=str, default='rob_base') #2,3,4
 parser.add_argument('-lr', '--lr', type=float, default=1.5e-5) #5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=3,
                     help='note that in this experiment batch size is the nr of sentences in a group')
@@ -88,7 +88,7 @@ if CLF_TASK == 'seq_sent_len':
 task_name_elements.append(CLF_TASK)
 if CLF_TASK == 'seq_sent_len':
     task_name_elements.append(str(EX_LEN))
-task_name_elements.extend([SPLIT, MODEL])
+task_name_elements.append([SPLIT, MODEL])
 TASK_NAME = '_'.join(task_name_elements)
 
 models = [args.model]
