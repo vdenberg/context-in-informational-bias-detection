@@ -289,7 +289,7 @@ if __name__ == '__main__':
 
                                     dev_mets, dev_perf = inferencer.evaluate(model, dev_batches, dev_labels,
                                                                                 av_loss=av_loss, set_type='dev',
-                                                                                name=epoch_name)
+                                                                                name=epoch_name, output_mode=CLF_TASK)
 
                                     # check if best
                                     high_score = ''
@@ -306,7 +306,7 @@ if __name__ == '__main__':
                             best_model.to(device)
 
                             # get predictions
-                            fold_test_predictions, labels = inferencer.predict(best_model, test_batches)
+                            fold_test_predictions, labels = inferencer.predict(best_model, test_batches, output_mode=CLF_TASK)
                             test_predictions.extend(fold_test_predictions)
 
                             # get embeddings
