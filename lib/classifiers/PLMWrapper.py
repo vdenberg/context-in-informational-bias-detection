@@ -665,12 +665,8 @@ class Inferencer():
     def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
-            print(preds)
             labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
-            print(len(labels))
-            print(len(preds))
-            exit(0)
         else:
             if output_mode == 'tok_clf':
                 preds = arrays_in_series(preds)
