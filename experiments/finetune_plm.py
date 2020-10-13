@@ -342,7 +342,6 @@ if __name__ == '__main__':
                             basil_w_pred['label'] = [el.tolist() for el in test_labels]
                         else:
                             basil_w_pred['label'] = [el.item() for el in test_labels]
-                        print(basil_w_pred.head())
                         basil_w_pred.to_csv(pred_fp)
                         logger.info(f'Preds in {pred_fp}')
 
@@ -355,7 +354,7 @@ if __name__ == '__main__':
 
                     test_mets, test_perf = inferencer.evaluate(labels=basil_w_pred.label, preds=basil_w_pred.pred,
                                                                set_type='test', name=setting_name,
-                                                               opmode=CLF_TASK)
+                                                               output_mode=CLF_TASK)
                     logging.info(f"{test_perf}")
                     test_res.update(test_mets)
 
