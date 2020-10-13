@@ -3,6 +3,7 @@ from torch.utils.data import (DataLoader, SequentialSampler, RandomSampler, Tens
 import os
 import numpy as np
 import pandas as pd
+import re
 
 def standardise_id(basil_id):
     if not basil_id[1].isdigit():
@@ -144,6 +145,7 @@ def arrays_in_series(series):
     flat = []
     for el in series:
         el = el.strip('[]').strip('\n')
+        el = re.sub(',','',el)
         el = tuple(map(int, el.split(' ')))
         flat.extend(el)
     return flat
