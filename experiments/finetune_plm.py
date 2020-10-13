@@ -214,7 +214,7 @@ if __name__ == '__main__':
                         name = setting_name + f"_f{fold_name}"
 
                         # init results containers
-                        if fold_name == 'sentence_split':
+                        if MODEL != 'bert' and fold_name == 'sentence_split':
                             model_loc_name = setting_name + f"_f{'fan'}"
                         else:
                             model_loc_name = name
