@@ -34,6 +34,7 @@ def get_metrics(labels, preds, opmode):
 
     #mcc = matthews_corrcoef(labels, preds)
     acc = accuracy_score(labels, preds)
+    print(labels, preds)
     prec_rec_fscore = precision_recall_fscore_support(labels, preds, labels=[0, 1])
     prec, rec, _ = [el[1] for el in prec_rec_fscore[:-1]]
 

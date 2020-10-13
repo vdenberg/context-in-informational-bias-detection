@@ -373,7 +373,7 @@ if __name__ == '__main__':
         df = main_results_table
         df[['prec', 'rec', 'f1']] = df[['prec', 'rec', 'f1']].round(4) * 100
         print(df)
-        
+
         view = clean_mean(df, grby=['model', 'seed'], set_type='test')
         view = view.fillna(0)
         print(view)
