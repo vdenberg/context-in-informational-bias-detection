@@ -631,7 +631,7 @@ class Inferencer():
 
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
-                print(input_ids, input_mask, label_ids)
+                print(input_ids, input_mask)
                 pad = [-1] * (len(label_ids) - len(pred))
                 print(pad)
                 pred += pad
