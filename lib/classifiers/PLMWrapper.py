@@ -504,6 +504,8 @@ class Inferencer():
         if output_mode == 'tok_clf':
             labels = labels.flatten()
             preds = np.asarray(preds)
+            print(labels.shape)
+            print(preds.shape)
             preds = np.reshape(preds, labels.shape)
 
         elif output_mode == 'seq_sent_clf':
