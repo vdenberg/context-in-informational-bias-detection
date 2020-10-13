@@ -262,7 +262,6 @@ if __name__ == '__main__':
                         _, dev_batches, dev_labels = load_features(dev_fp, 1, SAMPLER)
                         fold_test_ids, test_batches, fold_test_labels = load_features(test_fp, 1, SAMPLER)
                         test_ids.extend(fold_test_ids)
-                        test_labels.extend(fold_test_labels)
 
                         if not os.path.exists(pred_fp):
 
@@ -339,6 +338,7 @@ if __name__ == '__main__':
                             # get predictions
                             fold_test_predictions, labels = inferencer.predict(best_model, test_batches, output_mode=CLF_TASK)
                             test_predictions.extend(fold_test_predictions)
+                            test_labels.extend(labels)
 
                             # get embeddings
                             if STORE_EMBEDS:
