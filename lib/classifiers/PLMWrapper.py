@@ -466,6 +466,7 @@ class Inferencer():
                 print(label_ids)
                 pred = [list(p) for p in np.argmax(logits, axis=2)]
                 print(pred)
+                print('hm')
                 exit(0)
 
             elif output_mode == 'sent_clf':
