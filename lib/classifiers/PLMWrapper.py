@@ -3,14 +3,13 @@ import torch
 from torch import nn
 import os, pickle
 import numpy as np
-import pandas as pd
 from lib.utils import to_tensor, to_batches, arrays_in_series
 from lib.evaluate.Eval import my_eval
-from torch.nn import CrossEntropyLoss, MSELoss, Embedding, Dropout, Linear, Sigmoid, LSTM
+from torch.nn import CrossEntropyLoss, MSELoss, Dropout, Linear
 from transformers.configuration_roberta import RobertaConfig
 from transformers.modeling_roberta import RobertaModel, ROBERTA_PRETRAINED_MODEL_ARCHIVE_MAP
 from allennlp.training.metrics import F1Measure, CategoricalAccuracy
-from allennlp.modules import TextFieldEmbedder, TimeDistributed, Seq2SeqEncoder
+from allennlp.modules import TimeDistributed
 from allennlp.modules.conditional_random_field import ConditionalRandomField
 
 # helpers
@@ -30,8 +29,6 @@ def load_features(fp, batch_size, sampler='sequential'):
         ids, data, labels = to_tensor(pickle.load(f))
     batches = to_batches(data, batch_size=batch_size, sampler=sampler)
     return ids, batches, labels
-
-
 
 
 class BertForSequenceClassification(BertPreTrainedModel):
@@ -397,7 +394,7 @@ class RobertaForTokenClassification(BertPreTrainedModel):
 #@add_start_docstrings("""RoBERTa Model transformer with a sequence classification/regression head on top (a linear layer
  #   on top of the pooled output) e.g. for GLUE tasks. """,
  #                     ROBERTA_START_DOCSTRING, ROBERTA_INPUTS_DOCSTRING)
-class RobertaSSC(BertPreTrainedModel):
+class RobertaForSequentialSequenceClassification(BertPreTrainedModel):
     r"""
         **labels**: (`optional`) ``torch.LongTensor`` of shape ``(batch_size,)``:
             Labels for computing the sequence classification/regression loss.
@@ -433,7 +430,7 @@ class RobertaSSC(BertPreTrainedModel):
     base_model_prefix = "roberta"
 
     def __init__(self, config):
-        super(RobertaSSC, self).__init__(config)
+        super(RobertaForSequentialSequenceClassification, self).__init__(config)
         self.num_labels = config.num_labels
 
         self.roberta = RobertaModel(config)

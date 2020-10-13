@@ -3,7 +3,7 @@ from transformers.optimization import AdamW, get_linear_schedule_with_warmup
 from lib.classifiers.PLMWrapper import Inferencer, save_model, load_features
 from lib.classifiers.PLMWrapper import BertForTokenClassification, BertForSequenceClassification
 from lib.classifiers.PLMWrapper import RobertaForTokenClassification, RobertaForSequenceClassification
-from lib.classifiers.PLMWrapper import RobertaSSC
+from lib.classifiers.PLMWrapper import RobertaForSequentialSequenceClassification
 from datetime import datetime
 import torch
 import random, argparse
@@ -40,6 +40,9 @@ def select_model(model, clf_task):
             sel_mod = BertForTokenClassification
         else:
             sel_mod = RobertaForTokenClassification
+
+    elif clf_task == 'seq_sent_clf':
+        sel_mod = RobertaForSequentialSequenceClassification
     return sel_mod
 
 
@@ -86,21 +89,37 @@ parser.add_argument('-ep', '--n_epochs', type=int, default=10) #2,3,4
 parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-clf_task', '--clf_task', help='tok_clf|sent_clf', type=str, default='sent_clf')
+parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
 parser.add_argument('-model', '--model', help='bert|rob_base',type=str, default='rob_base')
 parser.add_argument('-lr', '--lr', type=float, default=None) # 5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) # 16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
-parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
 parser.add_argument('-embeds', '--embeds', action='store_true', default=False)
+# Just for seq_sent_len classification task:
+parser.add_argument('-win', '--window', action='store_true', default=False) #16, 21
+parser.add_argument('-exlen', '--example_length', help='5|10',type=int, default=5)
 args = parser.parse_args()
 
 N_EPS = args.n_epochs
-MODEL = args.model if args.model else ['rob_base']
 SAMPLER = args.sampler
 CLF_TASK = args.clf_task
-NUM_LABELS = 2 if CLF_TASK == 'sent_clf' else 4
 SPLIT = args.split
-TASK_NAME = '_'.join([CLF_TASK, SPLIT, MODEL])
+MODEL = args.model if args.model else ['rob_base']
+WINDOW = args.window
+EX_LEN = args.example_length
+
+task_name_elements = []
+if CLF_TASK == 'seq_sent_len':
+    if WINDOW:
+        task_name_elements.append('w')
+task_name_elements.append(CLF_TASK)
+if CLF_TASK == 'seq_sent_len':
+    task_name_elements.append(str(EX_LEN))
+task_name_elements.extend([SPLIT, MODEL])
+TASK_NAME = '_'.join(task_name_elements)
+
+NUM_LABELS = 2 if CLF_TASK == 'sent_clf' else 4
+
 STORE_EMBEDS = args.embeds
 models = [args.model]
 seeds = model_seeds[CLF_TASK][MODEL]
@@ -128,12 +147,18 @@ if DEBUG:
 # WHERE ARE THE FILES
 ########################
 
-# FEAT_DIR = f'data/inputs/sent_clf/features_for_roberta'
-if MODEL == 'bert':
-    FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
+if CLF_TASK == 'seq_sent_clf':
+    if WINDOW:
+        FEAT_DIR = f'data/inputs/{CLF_TASK}/windowed/ssc{EX_LEN}/'
+    else:
+        FEAT_DIR = f'data/inputs/{CLF_TASK}/non_windowed/ssc{EX_LEN}/'
 else:
-    FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta'
-    FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/{CLF_TASK}/features_for_roberta'
+    if MODEL == 'bert':
+        FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
+    else:
+        FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta'
+        FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/{CLF_TASK}/features_for_roberta'
+
 PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
 if MODEL != 'bert' and CLF_TASK == 'sent_clf':
