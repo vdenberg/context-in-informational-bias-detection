@@ -140,18 +140,6 @@ def get_torch_device():
     return device, use_cuda
 
 
-def plot_scores(losses):
-    tr_scores, dev_scores = zip(*losses)
-    # print('debug loss plotting:')
-    # print(tr_scores, dev_scores)
-    plt.figure()
-    fig, ax = plt.subplots()
-    loc = ticker.MultipleLocator(base=0.2)
-    ax.yaxis.set_major_locator(loc)
-    plt.plot(tr_scores)
-    plt.plot(dev_scores)
-    plt.legend(('train', 'dev'), loc='upper right')
-    return plt
 
 '''
 def showPlot(points):
