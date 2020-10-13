@@ -367,14 +367,13 @@ if __name__ == '__main__':
 
                     if not os.path.exists(pred_fp):
                         # compute performance on setting
-                        assert len(test_predictions) == len(test_ids)
                         assert len(test_predictions) == len(all_ids)
+                        assert len(test_predictions) == len(test_ids)
                         assert len(test_predictions) == len(test_labels)
 
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
-                        basil_w_pred['label'] = test_labels
-                        if CLF_TASK == 'tok_clf':
+                        if CLF_TASK != 'sent_clf':
                             basil_w_pred['label'] = [np.asarray(el.tolist()) for el in test_labels]
                         else:
                             basil_w_pred['label'] = [el.item() for el in test_labels]

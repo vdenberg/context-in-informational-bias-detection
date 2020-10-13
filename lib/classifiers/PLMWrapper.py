@@ -642,9 +642,9 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
-            preds.extend(pred)
-            print(label_ids)
-            labels.extend([id for id in label_ids.item() if id != -1])
+            label_ids = [id for id in label_ids.item() if id != -1]
+            labels.append(np.asarray(label_ids))
+            preds.append(np.asarray(preds))
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
 
@@ -657,10 +657,10 @@ class Inferencer():
     def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
         if preds is None:
             preds, _ = self.predict(model, data, output_mode=output_mode)
-            labels = labels.flatten()
+            labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
         else:
-            if output_mode == 'tok_clf':
+            if output_mode != 'sent_clf':
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)
 
