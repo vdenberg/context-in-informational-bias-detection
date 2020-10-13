@@ -568,8 +568,6 @@ class Inferencer():
 
         preds = []
         embeddings = []
-        labels = []
-
         for step, batch in enumerate(data):
             batch = tuple(t.to(self.device) for t in batch)
             input_ids, input_mask, label_ids = batch
@@ -642,8 +640,6 @@ class Inferencer():
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
 
-            print(label_ids.shape)
-            labels.append(np.asarray(label_ids.squeeze()))
             preds.append(np.asarray(preds))
 
         # rep_sim = sum(rep_sim) / len(rep_sim)
@@ -652,11 +648,11 @@ class Inferencer():
         if return_embeddings:
             return embeddings
         else:
-            return preds, labels
+            return preds
 
     def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
         if preds is None:
-            preds, _ = self.predict(model, data, output_mode=output_mode)
+            preds = self.predict(model, data, output_mode=output_mode)
             labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
         else:
