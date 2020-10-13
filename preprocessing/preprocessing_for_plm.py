@@ -250,7 +250,7 @@ if __name__ == '__main__':
     # takes a while!
     ###
 
-    FORCE = False
+    FORCE = True
     if not os.path.exists(FEAT_OFP) or FORCE:
         examples = dataloader.get_examples(DATA_TSV_IFP, 'train', sep='\t')
         examples = [(ex, label_map, MAX_SEQ_LEN, tokenizer, spacy_tokenizer, CLF_TASK) for ex in examples if ex.text_a]
