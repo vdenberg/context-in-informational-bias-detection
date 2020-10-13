@@ -124,7 +124,6 @@ class SpanToBio():
 
         if spans:
             lab_seq = self.get_lab_seq(sent, toks, spans)
-            #print('Label sequence:', lab_seq)
         else:
             lab_seq = ['O' for t in toks]
         bio_tags = self.lab_seq_to_bio_tags(lab_seq)
@@ -181,7 +180,6 @@ def expand_to_wordpieces(original_sentence, original_labels, tokenizer):
                 exit(0)
             lbl_ix += 1
 
-    # print("TMP ", tmp_labels)
     expanded_labels = []
     for i, lbl in enumerate(tmp_labels):
         if lbl == "X":
@@ -196,7 +194,7 @@ def expand_to_wordpieces(original_sentence, original_labels, tokenizer):
 
     assert len(word_pieces) == len(expanded_labels)
 
-    #print('Expanded labels:', expanded_labels)
+    #('Expanded labels:', expanded_labels)
     #if original_sentence.startswith('Huckabee , an ordained'):
         #exit(0)
 
@@ -317,8 +315,6 @@ def _truncate_seq_pair(tokens_a, tokens_b, max_length):
 def convert_example_to_roberta_feature(example_row):
     # return example_row
     example, label_map, max_seq_length, tokenizer, spacy_tokenizer, output_mode = example_row
-
-    #print(example.my_id)
 
     # tokens
     if output_mode == 'tok_clf':

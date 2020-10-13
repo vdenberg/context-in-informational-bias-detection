@@ -33,8 +33,6 @@ def get_metrics(labels, preds, opmode):
     # assert set(labels) == {0, 1}
 
     #mcc = matthews_corrcoef(labels, preds)
-    print(labels)
-    print(preds)
     acc = accuracy_score(labels, preds)
     prec_rec_fscore = precision_recall_fscore_support(labels, preds, labels=[0, 1])
     prec, rec, _ = [el[1] for el in prec_rec_fscore[:-1]]
@@ -95,7 +93,7 @@ def my_eval(labels, preds, av_loss=None, set_type="", name="", opmode='classific
     if av_loss:
         metrics_string = f"{set_type}: loss {metrics[4]} {conf_mat} acc {metrics[0]} prec {metrics[1]} rec {metrics[2]} > {set_type} f1: {metrics[3]} <"
     else:
-        metrics_string = f"{set_type} {conf_mat}: acc {metrics[0]} prec {metrics[1]} rec {metrics[2]} > {set_type} f1: {metrics[3]} <"
+        metrics_string = f"{set_type} {conf_mat}: acc {metrics[0]} prec {metrics[1]} rec {metrics[2]} > {set_x} f1: {metrics[3]} <"
 
     # if rep_sim:
         # metrics_string += f' (rep_sim: {round(rep_sim, 3)})'
