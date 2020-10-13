@@ -20,8 +20,6 @@ def preprocess_for_plm(rows, model):
             feats = convert_example_to_bert_feature(row)
         elif model == 'roberta':
             feats = convert_example_to_roberta_feature(row)
-            print(feats.my_id)
-            exit(0)
         features.append(feats)
         count += 1
     return features
