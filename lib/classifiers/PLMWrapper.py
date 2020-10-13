@@ -530,8 +530,6 @@ class RobertaForSequentialSequenceClassification(BertPreTrainedModel):
         else:
             logits = self.time_distributed_aggregate_feedforward(embedded_sentences)
             probs = torch.nn.functional.softmax(logits, dim=-1)
-            #print(probs)
-            #print()
 
         outputs = (logits, probs, sequence_output) + outputs[2:]
 
@@ -675,6 +673,8 @@ class Inferencer():
             print(preds, labels)
             print(len(preds)) #, len(preds[0]))
             print(len(labels)) #, len(labels[0]))
+            print(set_type)
+            print(name)
             exit(0)
 
         metrics_dict, metrics_string = my_eval(labels, preds, set_type=set_type, av_loss=av_loss, name=name, opmode=output_mode)
