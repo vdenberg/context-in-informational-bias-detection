@@ -121,7 +121,7 @@ NUM_LABELS = 2 if CLF_TASK == 'sent_clf' else 4
 
 STORE_EMBEDS = args.embeds
 models = [args.model]
-seeds = args.sv if args.sv else model_seeds[CLF_TASK][MODEL]
+seeds = [args.sv] if args.sv else model_seeds[CLF_TASK][MODEL]
 bss = [args.bs] if args.bs else [16]
 lrs = [args.lr] if args.lr else [1e-5]
 if SPLIT == 'story_split':
