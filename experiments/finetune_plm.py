@@ -95,8 +95,10 @@ parser.add_argument('-lr', '--lr', type=float, default=None) # 5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) # 16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
 parser.add_argument('-embeds', '--embeds', action='store_true', default=False)
-parser.add_argument('-win', '--window', action='store_true', default=False) #16, 21
+parser.add_argument('-win', '--window', action='store_true', default=False)
 parser.add_argument('-exlen', '--example_length', help='5|10',type=int, default=5)
+parser.add_argument('-force_pred', '--force_pred', action='store_true', default=False)
+parser.add_argument('-force_train', '--force_train', action='store_true', default=False)
 args = parser.parse_args()
 
 N_EPS = args.n_epochs
