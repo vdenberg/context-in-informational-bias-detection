@@ -668,9 +668,8 @@ class Inferencer():
             labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
         else:
-            if output_mode == 'tok_clf':
-                preds = arrays_in_series(preds)
-                labels = arrays_in_series(labels)
+            preds = arrays_in_series(preds)
+            labels = arrays_in_series(labels)
 
         if output_mode == 'seq_sent_clf':
             m = labels != -1
