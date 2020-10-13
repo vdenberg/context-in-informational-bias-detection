@@ -307,8 +307,6 @@ if __name__ == '__main__':
 
                             # get predictions
                             fold_test_predictions, labels = inferencer.predict(best_model, test_batches, output_mode=CLF_TASK)
-                            print(fold_test_predictions)
-                            exit(0)
                             test_predictions.extend(fold_test_predictions)
 
                             # get embeddings
