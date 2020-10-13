@@ -182,7 +182,7 @@ main_results_table = pd.DataFrame(columns=table_columns.split(','))
 ########################
 
 PRINT_EVERY = 100
-
+logger = logging.getLogger()
 inferencer = Inferencer(REPORTS_DIR, logger, device, use_cuda=USE_CUDA)
 
 if __name__ == '__main__':
