@@ -232,9 +232,6 @@ if __name__ == '__main__':
                         fold_test_ids, test_batches, fold_test_labels = load_features(test_fp, 1, SAMPLER)
                         test_ids.extend(fold_test_ids)
                         test_labels.extend(fold_test_labels)
-                        print(test_ids)
-                        print(test_labels)
-                        exit(0)
 
                         if not os.path.exists(pred_fp):
 
