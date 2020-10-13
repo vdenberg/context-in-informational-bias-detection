@@ -75,7 +75,7 @@ args = parser.parse_args()
 
 N_EPS = args.n_epochs
 SAMPLER = args.sampler
-CLF_TASK = args.clf_task
+CLF_TASK = 'seq_sent_len'
 SPLIT = args.split
 MODEL = args.model
 WINDOW = args.window
