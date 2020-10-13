@@ -631,7 +631,7 @@ class Inferencer():
 
             elif output_mode == 'seq_sent_clf':
                 pred = logits[0].argmax(axis=1).tolist()
-                pad = [-1] * (max_seq_len - len(label_ids))
+                pad = [-1] * (len(label_ids) - len(label_ids))
                 pred += pad
                 pred = np.asarray(pred)
 
