@@ -84,8 +84,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-ep', '--n_epochs', type=int, default=10) #2,3,4
 parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
-parser.add_argument('-clf_task', '--clf_task', type=str, default='sent_clf')
-parser.add_argument('-model', '--model', type=str, default='rob_base')
+parser.add_argument('-clf_task', '--clf_task', help='tok_clf|sent_clf', type=str, default='sent_clf')
+parser.add_argument('-model', '--model', help='bert|rob_base',type=str, default='rob_base')
 parser.add_argument('-lr', '--lr', type=float, default=None) # 5e-5, 3e-5, 2e-5
 parser.add_argument('-bs', '--bs', type=int, default=None) # 16, 21
 parser.add_argument('-sv', '--sv', type=int, default=None)
@@ -97,6 +97,7 @@ N_EPS = args.n_epochs
 MODEL = args.model if args.model else ['rob_base']
 SAMPLER = args.sampler
 CLF_TASK = args.clf_task
+NUM_LABELS = 2 if CLF_TASK == 'sent_clf' else 4
 SPLIT = args.split
 TASK_NAME = '_'.join([CLF_TASK, MODEL, SPLIT])
 STORE_EMBEDS = args.embeds
@@ -155,7 +156,6 @@ main_results_table = pd.DataFrame(columns=table_columns.split(','))
 # MAIN
 ########################
 
-NUM_LABELS = 2
 PRINT_EVERY = 100
 
 inferencer = Inferencer(REPORTS_DIR, logger, device, use_cuda=USE_CUDA)
@@ -372,9 +372,12 @@ if __name__ == '__main__':
 
         df = main_results_table
         df[['prec', 'rec', 'f1']] = df[['prec', 'rec', 'f1']].round(4) * 100
+        print(df)
+        
         view = clean_mean(df, grby=['model', 'seed'], set_type='test')
         view = view.fillna(0)
         print(view)
+
 
         test = df[df.set_type == 'test']
         test = test[['set_type', 'seed', 'prec', 'rec', 'f1']]
