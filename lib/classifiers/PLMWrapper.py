@@ -8,7 +8,7 @@ from lib.evaluate.Eval import my_eval
 from torch.nn import CrossEntropyLoss, MSELoss, Embedding, Dropout, Linear, Sigmoid, LSTM
 from transformers.configuration_roberta import RobertaConfig
 from transformers.modeling_roberta import RobertaModel, ROBERTA_PRETRAINED_MODEL_ARCHIVE_MAP
-
+import re
 
 # helpers
 class InputFeatures(object):
@@ -494,7 +494,8 @@ class Inferencer():
         if preds is None:
             preds, _ = self.predict(model, data, output_mode=output_mode)
         else:
-            preds = [tuple(map(int, el.strip("'").split(', '))) for el in preds]
+            preds = [re.sub("\[\]'", '', el) for el in preds]
+            preds = [tuple(map(int, el.split(', '))) for el in preds]
             print(preds)
 
         if output_mode == 'tok_clf':
