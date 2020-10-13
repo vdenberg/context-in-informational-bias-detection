@@ -255,6 +255,7 @@ if __name__ == '__main__':
         examples = dataloader.get_examples(DATA_TSV_IFP, 'train', sep='\t')
         examples = [(ex, label_map, MAX_SEQ_LEN, tokenizer, spacy_tokenizer, CLF_TASK) for ex in examples if ex.text_a]
         features = preprocess_for_plm(examples, model=PLM)
+        print(features[0].my_id)
         features_dict = {feat.my_id: feat for feat in features}
 
         with open(FEAT_OFP, "wb") as f:
