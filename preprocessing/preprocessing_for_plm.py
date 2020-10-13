@@ -52,11 +52,13 @@ def enforce_max_sent_per_example(sentences, max_sent_per_example, labels=None):
 def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex, window):
     flat_input_ids = []
     flat_labels = []
+    flat_ids = []
     #segment_ids = []
 
     for i, sent in enumerate(seq_rows):
         input_ids = remove_special(sent.input_ids, cls, pad)
         flat_input_ids.extend(input_ids)
+        input_ids.append(sent.my_id)
         flat_labels.append(sent.label_id)
 
     pad_len = max_ex_len - len(flat_input_ids)
@@ -74,7 +76,7 @@ def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex, window):
 
     assert len(flat_labels) == max_sent_in_ex
 
-    return InputFeatures(my_id=None,
+    return InputFeatures(my_id=flat_ids,
                          input_ids=flat_input_ids,
                          input_mask=mask,
                          segment_ids=[],
@@ -263,7 +265,6 @@ if __name__ == '__main__':
     else:
         with open(FEAT_OFP, "rb") as f:
            features = pickle.load(f)
-           print(features[0].my_id)
            features_dict = {feat.my_id: feat for feat in features}
 
     ###
@@ -281,8 +282,6 @@ if __name__ == '__main__':
             if CLF_TASK == 'seq_sent_clf':
                 features = redistribute_feats(features, cls=0, pad=1, max_sent=MAX_EX_LEN, max_len=MAX_SEQ_LEN,
                                           window=WINDOW)
-
-                print(features[0].my_id)
             # print(f"Processed fold {fold_name} {set_type} - {len(features)} items to {FEAT_OFP}")
 
             with open(FEAT_OFP, "wb") as f:
