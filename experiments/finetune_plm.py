@@ -99,7 +99,7 @@ SAMPLER = args.sampler
 CLF_TASK = args.clf_task
 NUM_LABELS = 2 if CLF_TASK == 'sent_clf' else 4
 SPLIT = args.split
-TASK_NAME = '_'.join([CLF_TASK, MODEL, SPLIT])
+TASK_NAME = '_'.join([CLF_TASK, SPLIT, MODEL])
 STORE_EMBEDS = args.embeds
 models = [args.model]
 seeds = model_seeds[CLF_TASK][MODEL]
@@ -131,11 +131,11 @@ if DEBUG:
 if MODEL == 'bert':
     FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
 else:
+    FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta'
     FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/{CLF_TASK}/features_for_roberta'
 PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
-if MODEL == 'bert':
-    CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
-else:
+CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
+if MODEL != 'bert' and CLF_TASK == 'sent_clf':
     CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
@@ -244,7 +244,7 @@ if __name__ == '__main__':
                             selected_model = select_model(MODEL, CLF_TASK)
 
                             if not os.path.exists(best_model_loc) or FORCE:
-                                logger.info(f"***** Training on Fold {fold_name} *****")
+                                logger.info(f"***** Training Seed {SEED_VAL}, Fold {fold_name} *****")
 
                                 model = selected_model.from_pretrained(EXACT_MODEL, cache_dir=CACHE_DIR,
                                                                        num_labels=NUM_LABELS,
