@@ -183,6 +183,8 @@ if not os.path.exists(REPORTS_DIR):
     os.makedirs(REPORTS_DIR)
 if not os.path.exists(TABLE_DIR):
     os.makedirs(TABLE_DIR)
+if not os.path.exists(PREDICTION_DIR):
+    os.makedirs(PREDICTION_DIR)
 
 table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,epochs,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
 main_results_table = pd.DataFrame(columns=table_columns.split(','))
