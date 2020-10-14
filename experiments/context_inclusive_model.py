@@ -272,6 +272,16 @@ if PREPROCESS:
 
     print(sentences.head())
     print(sentences.head()[['source']])
+    s = set(sentences.index)
+    r = set(raw_data.index)
+    print(len(s), len(r))
+    d = s-r
+    d2 = r-s
+    print(len(d), len(d2))
+    print(d)
+    print(d2)
+    exit(0)
+
     raw_data['source'] = sentences['source']
     print(raw_data.head())
     print(raw_data.head()[['source']])
