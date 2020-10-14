@@ -296,16 +296,17 @@ if __name__ == '__main__':
                                 optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.01,
                                                   eps=1e-6)  # To reproduce BertAdam specific behavior set correct_bias=False
 
-                                n_train_batches = len(train_batches)
-                                half_train_batches = int(n_train_batches / 2)
-                                GRADIENT_ACCUMULATION_STEPS = 2
-                                WARMUP_PROPORTION = 0.06
-                                num_tr_opt_steps = n_train_batches * N_EPS / GRADIENT_ACCUMULATION_STEPS
-                                num_tr_warmup_steps = int(WARMUP_PROPORTION * num_tr_opt_steps)
-                                scheduler = get_linear_schedule_with_warmup(optimizer,
-                                                                            num_warmup_steps=num_tr_warmup_steps,
-                                                                            num_training_steps=num_tr_opt_steps)
-
+                                BERT_TOK_CLF = (CLF_TASK == 'tok_clf') & (MODEL == 'bert')
+                                if not BERT_TOK_CLF:
+                                    n_train_batches = len(train_batches)
+                                    half_train_batches = int(n_train_batches / 2)
+                                    GRADIENT_ACCUMULATION_STEPS = 2
+                                    WARMUP_PROPORTION = 0.06
+                                    num_tr_opt_steps = n_train_batches * N_EPS / GRADIENT_ACCUMULATION_STEPS
+                                    num_tr_warmup_steps = int(WARMUP_PROPORTION * num_tr_opt_steps)
+                                    scheduler = get_linear_schedule_with_warmup(optimizer,
+                                                                                num_warmup_steps=num_tr_warmup_steps,
+                                                                                num_training_steps=num_tr_opt_steps)
                                 model.train()
 
                                 logger.info(f"***** Train {CLF_TASK} {fold_name} *****")
