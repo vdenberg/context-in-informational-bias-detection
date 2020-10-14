@@ -188,8 +188,6 @@ if not os.path.exists(TABLE_DIR):
     os.makedirs(TABLE_DIR)
 if not os.path.exists(PREDICTION_DIR):
     os.makedirs(PREDICTION_DIR)
-if not os.path.exists(PREDICTION_DIR):
-    os.makedirs(PREDICTION_DIR)
 
 # set device
 device, USE_CUDA = get_torch_device()
