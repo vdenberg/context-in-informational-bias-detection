@@ -143,7 +143,7 @@ FORCE_TRAIN = args.force_train
 if DEBUG:
     FORCE_PRED = True
     FORCE_TRAIN = True
-    N_EPS = 2
+    N_EPS = 1
     #seeds = [0]
     #bss = [32]
     #lrs = [3e-5]
