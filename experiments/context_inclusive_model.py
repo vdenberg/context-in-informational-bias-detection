@@ -272,9 +272,9 @@ if PREPROCESS:
     raw_data['quartile'] = quartiles
 
     processor = Processor(sentence_ids=raw_data.sentence_ids.values, max_doc_length=MAX_DOC_LEN)
-    print(raw_data.loc(['46fox24']))
+    print(raw_data.loc['46fox24'])
     raw_data = raw_data.dropna()
-    print(raw_data.loc(['46fox24']))
+    print(raw_data.loc['46fox24'])
     exit(0)
     raw_data['id_num'] = [processor.sent_id_map[i] for i in raw_data.sentence_ids.values]
     raw_data['art_context_doc_num'] = processor.to_numeric_documents(raw_data.art_context_document.values)
