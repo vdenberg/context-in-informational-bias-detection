@@ -662,9 +662,14 @@ class Inferencer():
                 labels = np.asarray(labels).flatten()
                 preds = np.asarray(preds).flatten()
         else:
+            print(type(labels), type(labels[0]), labels[0])
+            print(type(preds), type(preds[0]), preds[0])
             if output_mode != 'sent_clf':
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)
+            print(type(labels), type(labels[0]))
+            print(type(preds), type(preds[0]))
+            exit(0)
 
         if output_mode == 'seq_sent_clf':
             m = labels != -1
