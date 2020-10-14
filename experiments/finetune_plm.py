@@ -165,7 +165,6 @@ else:
     else:
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta'
 
-PREDICTION_DIR = f'data/predictions/{TASK_NAME}/'
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
 if MODEL != 'bert' and CLF_TASK == 'sent_clf':
     CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
@@ -173,6 +172,8 @@ REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 CACHE_DIR = 'models/cache/'
 MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'{TASK_NAME}_results.csv')
+PREDICTION_DIR = f'data/predictions/{TASK_NAME}/'
+EMBEDDING_DIR = f'data/embeddings/{TASK_NAME}/'
 
 if not os.path.exists(PREDICTION_DIR):
     os.makedirs(PREDICTION_DIR)
@@ -220,10 +221,6 @@ if __name__ == '__main__':
             np.random.seed(SEED_VAL)
             torch.manual_seed(SEED_VAL)
             torch.cuda.manual_seed_all(SEED_VAL)
-
-            embedding_dir = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/embeddings/{MODEL}/'
-            if not os.path.exists(embedding_dir):
-                os.makedirs(embedding_dir)
 
             for BATCH_SIZE in bss:
                 bs_name = seed_name + f"_bs{BATCH_SIZE}"
@@ -285,21 +282,16 @@ if __name__ == '__main__':
 
                                 model.to(device)
 
-                                BERT_TOK_CLF = (CLF_TASK == 'tok_clf') & (MODEL == 'bert')
-                                if not BERT_TOK_CLF:
-                                    optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.01, eps=1e-6)
-                                    n_train_batches = len(train_batches)
-                                    half_train_batches = int(n_train_batches / 2)
-                                    GRADIENT_ACCUMULATION_STEPS = 2
-                                    WARMUP_PROPORTION = 0.06
-                                    num_tr_opt_steps = n_train_batches * N_EPS / GRADIENT_ACCUMULATION_STEPS
-                                    num_tr_warmup_steps = int(WARMUP_PROPORTION * num_tr_opt_steps)
-                                    scheduler = get_linear_schedule_with_warmup(optimizer,
-                                                                                num_warmup_steps=num_tr_warmup_steps,
-                                                                                num_training_steps=num_tr_opt_steps)
-                                else:
-                                    optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, eps=1e-8)
-                                    scheduler = None
+                                optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.01, eps=1e-6)
+                                n_train_batches = len(train_batches)
+                                half_train_batches = int(n_train_batches / 2)
+                                GRADIENT_ACCUMULATION_STEPS = 2
+                                WARMUP_PROPORTION = 0.06
+                                num_tr_opt_steps = n_train_batches * N_EPS / GRADIENT_ACCUMULATION_STEPS
+                                num_tr_warmup_steps = int(WARMUP_PROPORTION * num_tr_opt_steps)
+                                scheduler = get_linear_schedule_with_warmup(optimizer,
+                                                                            num_warmup_steps=num_tr_warmup_steps,
+                                                                            num_training_steps=num_tr_opt_steps)
 
                                 model.train()
 
@@ -353,7 +345,7 @@ if __name__ == '__main__':
                             # get embeddings
                             if STORE_EMBEDS:
                                 for EMB_TYPE in ['cross4bert']:
-                                    emb_fp = os.path.join(embedding_dir, f'{name}_basil_w_{EMB_TYPE}')
+                                    emb_fp = os.path.join(EMBEDDING_DIR, f'{name}_basil_w_{EMB_TYPE}')
 
                                     PREFERRED_EMB_SV = 49
                                     if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):

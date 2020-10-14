@@ -81,8 +81,6 @@ def make_weight_matrix(embed_df, EMB_DIM):
 parser = argparse.ArgumentParser()
 
 # DATA PARAMS
-parser.add_argument('-name', '--task_name', help='Task name', type=str, default='')
-
 parser.add_argument('-n_voters', '--n_voters', help='Nr voters when splitting', type=int, default=1)
 parser.add_argument('-subset', '--subset_of_data', type=float, help='Section of data to experiment on', default=1.0)
 parser.add_argument('-pp', '--preprocess', action='store_true', default=False, help='Whether to proprocess again')
@@ -93,8 +91,8 @@ parser.add_argument('-emb', '--embedding_type', type=str, help='Options: avbert|
 # TRAINING PARAMS
 parser.add_argument('-mode', '--mode', type=str, help='Options: train|eval|debug', default='train')
 parser.add_argument('-lex', '--lex', action='store_true', default=False, help='lex')
-parser.add_argument('-context', '--context_type', type=str, help='Options: article|coverage', default='coverage')
-parser.add_argument('-cam_type', '--cam_type', type=str, help='Options: cim|cim|cim*|cim**', default='cim')
+parser.add_argument('-context', '--context_type', type=str, help='Options: art|cov', default='cov')
+parser.add_argument('-cim_type', '--cim_type', type=str, help='Options: cim|cim*', default='cim')
 parser.add_argument('-base', '--base', type=str, help='Options: base|tapt', default='base')
 parser.add_argument('-ep', '--epochs', type=int, default=150)  # 75
 parser.add_argument('-pat', '--patience', type=int, default=5)  # 15
@@ -106,7 +104,7 @@ parser.add_argument('-wu', '--warmup_proportion', type=float, default=0.1)
 parser.add_argument('-g', '--gamma', type=float, default=.95)
 
 # NEURAL NETWORK DIMS
-parser.add_argument('-hid', '--hidden_size', type=int, default=1200)
+parser.add_argument('-hid', '--hidden_size', type=int, default=1000)
 parser.add_argument('-lay', '--bilstm_layers', type=int, default=2)
 
 # OTHER NN PARAMS
@@ -123,13 +121,12 @@ args = parser.parse_args()
 # set to variables for readability
 
 # DATA PARAMS
-SUBSET = args.subset_of_data
-N_VOTERS = args.n_voters
+SUBSET = args.subset_of_data # not in use
+N_VOTERS = args.n_voters # not in use
 PREPROCESS = args.preprocess
-
-# EMBEDDING PARAMS
 EMB_TYPE = args.embedding_type
 EMB_DIM = 512 if EMB_TYPE == 'use' else 768
+MAX_DOC_LEN = 76
 
 # TRAINING PARAMS
 MODE = args.mode
@@ -139,30 +136,26 @@ DEBUG = True if args.mode == 'debug' else False
 FORCE_TRAIN = args.force_train
 FORCE_PRED = args.force_pred if not FORCE_TRAIN else True
 
-LEX = args.lex
-
+# SETTING
 CONTEXT_TYPE = args.context_type
-MAX_DOC_LEN = 76 # if CONTEXT_TYPE == 'article' else 158
-
-CAM_TYPE = args.cam_type
-
+CIM_TYPE = args.cam_type
 BASE = args.base
+LEX = args.lex # not in use
+TASK_NAME = '_'.join([CONTEXT_TYPE, CIM_TYPE, BASE])
 
-START_EPOCH = 0
+# OPTIMIZING PARAMS
 N_EPOCHS = args.epochs
 if DEBUG:
     N_EPOCHS = 5
-
 PATIENCE = args.patience
-
-# OPTIMIZING PARAMS
 BATCH_SIZE = args.batch_size
 LR = args.learning_rate
-WARMUP_PROPORTION = args.warmup_proportion
+#WARMUP_PROPORTION = args.warmup_proportion # not in use
+#GRADIENT_ACCUMULATION_STEPS = 1 # not in use
 GAMMA = args.gamma
 
 # NEURAL NETWORK DIMS
-HIDDEN = args.hidden_size if CAM_TYPE == 'cim' else args.hidden_size * 2
+HIDDEN = args.hidden_size
 BILSTM_LAYERS = args.bilstm_layers
 
 # OTHER NN PARAMS
@@ -170,33 +163,20 @@ SEED_VAL = args.seed_val
 SAMPLER = args.sampler
 PRINT_STEP_EVERY = args.step_info_every  # steps
 NUM_LABELS = 2
-#GRADIENT_ACCUMULATION_STEPS = 1
 
-# set seed
-# random.seed(SEED_VAL)
-# np.random.seed(SEED_VAL)
-# torch.manual_seed(SEED_VAL)
-# torch.cuda.manual_seed_all(SEED_VAL)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 # set directories
-if args.task_name:
-    TASK_NAME = args.task_name #'cim_ensemble_tapt'
-else:
-    print("Please provide task name")
-    exit(0)
 
-DATA_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/cam_input/{CONTEXT_TYPE}'
+DATA_DIR = f'data/inputs/cim/'
 DATA_FP = os.path.join(DATA_DIR, 'cim_basil.tsv')
-CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/cam/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
-REPORTS_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/reports/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
-FIG_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/figures/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
-CACHE_DIR = '/home/mitarb/vdberg/Projects/EntityFramingDetection/models/cache/' # This is where BERT will look for pre-trained models to load parameters from.
+CHECKPOINT_DIR = f'models/checkpoints/cim/{TASK_NAME}'
+CACHE_DIR = 'models/cache/' # This is where BERT will look for pre-trained models to load parameters from.
 PREDICTION_DIR = f'data/predictions/{TASK_NAME}/'
-
-TABLE_DIR = f"/home/mitarb/vdberg/Projects/EntityFramingDetection/reports/cim/tables/{CONTEXT_TYPE}/{TASK_NAME}"
-MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'{TASK_NAME}.csv')
+REPORTS_DIR = f'reports/cim/{TASK_NAME}'
+TABLE_DIR = f"reports/cim/tables/{TASK_NAME}"
+MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'{TASK_NAME}_results.csv')
 table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,voter,epoch,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
 main_results_table = pd.DataFrame(columns=table_columns.split(','))
 
@@ -204,8 +184,6 @@ if not os.path.exists(CHECKPOINT_DIR):
     os.makedirs(CHECKPOINT_DIR)
 if not os.path.exists(REPORTS_DIR):
     os.makedirs(REPORTS_DIR)
-if not os.path.exists(FIG_DIR):
-    os.makedirs(FIG_DIR)
 if not os.path.exists(TABLE_DIR):
     os.makedirs(TABLE_DIR)
 if not os.path.exists(PREDICTION_DIR):
@@ -337,7 +315,8 @@ for fold in folds:
 # =====================================================================================
 
 logger.info("============ LOAD EMBEDDINGS =============")
-logger.info(f" Embedding type: {EMB_TYPE}")
+logger.info(f" Embeddin"
+            f"g type: {EMB_TYPE}")
 
 def get_weights_matrix(data, emb_fp, emb_dim=None):
     data_w_emb = pd.read_csv(emb_fp, index_col=0).fillna('')
@@ -351,11 +330,10 @@ def get_weights_matrix(data, emb_fp, emb_dim=None):
     wm = make_weight_matrix(data, emb_dim)
     return wm
 
-
-if EMB_TYPE in ['use', 'sbert']:
-    embed_fp = f"/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/embeddings/basil_w_{EMB_TYPE}.csv"
-    weights_matrix = get_weights_matrix(data, embed_fp, emb_dim=EMB_DIM)
-    logger.info(f" --> Loaded from {embed_fp}, shape: {weights_matrix.shape}")
+# if EMB_TYPE in ['use', 'sbert']:
+#    embed_fp = f"data/sent_clf/embeddings/basil_w_{EMB_TYPE}.csv"
+#    weights_matrix = get_weights_matrix(data, embed_fp, emb_dim=EMB_DIM)
+#    logger.info(f" --> Loaded from {embed_fp}, shape: {weights_matrix.shape}")
 
 for fold in folds:
     weights_matrices = []
@@ -386,7 +364,7 @@ logger.info(f" Num epochs: {N_EPOCHS}")
 logger.info(f" Starting from: {START_EPOCH}")
 logger.info(f" Patience: {PATIENCE}")
 logger.info(f" Mode: {'train' if not EVAL else 'eval'}")
-logger.info(f" CAM type: {CAM_TYPE}")
+logger.info(f" CAM type: {CIM_TYPE}")
 logger.info(f" Emb type: {EMB_TYPE}")
 logger.info(f" Use cuda: {USE_CUDA}")
 logger.info(f" Nr layers: {BILSTM_LAYERS}")
@@ -394,7 +372,7 @@ logger.info(f" Nr layers: {BILSTM_LAYERS}")
 table_columns = 'model,seed,bs,lr,model_loc,fold,voter,epoch,set_type,loss,acc,prec,rec,f1,fn,fp,tn,tp,h'
 main_results_table = pd.DataFrame(columns=table_columns.split(','))
 
-base_name = CAM_TYPE + '_' + BASE
+base_name = CIM_TYPE + '_' + BASE
 if LEX:
     base_name += "_lex"
 
@@ -456,24 +434,18 @@ for HIDDEN in hiddens:
                             best_model_loc = os.path.join(CHECKPOINT_DIR, voter_name)
                             cam = CIMClassifier(start_epoch=START_EPOCH, cp_dir=CHECKPOINT_DIR, tr_labs=fold['train'][i].label,
                                                 weights_mat=fold['weights_matrices'][i], emb_dim=EMB_DIM, hid_size=HIDDEN, layers=BILSTM_LAYERS,
-                                                b_size=BATCH_SIZE, lr=LR, step=1, gamma=GAMMA, cam_type=CAM_TYPE, context=CONTEXT_TYPE)
+                                                b_size=BATCH_SIZE, lr=LR, step=1, gamma=GAMMA, cam_type=CIM_TYPE, context=CONTEXT_TYPE)
 
                             cam_cl = Classifier(model=cam, logger=logger, fig_dir=FIG_DIR, name=voter_name, patience=PATIENCE, n_eps=N_EPOCHS,
                                             printing=PRINT_STEP_EVERY, load_from_ep=None)
 
-                            cam_cl.best_model_loc = best_model_loc
-                            best_val_mets, test_mets, preds = cam_cl.train_on_fold(fold, voter_i=i)
                             if not os.path.exists(best_model_loc) or FORCE_TRAIN:
-                                print(best_model_loc)
-                                exit(0)
                                 logger.info(f"--------------- TRAIN {setting_name} ON FOLD {fold['name']} V{i} ---------------")
 
                                 best_val_mets, test_mets, preds = cam_cl.train_on_fold(fold, voter_i=i)
                             else:
                                 preds, losses = cam_cl.produce_preds(fold, voter_name)
                                 test_mets, test_perf = my_eval(fold['test'].label, preds, set_type='test')
-                                print(test_perf)
-                            exit(0)
 
                             voter_preds.append(preds)
 
