@@ -466,7 +466,14 @@ for HIDDEN in hiddens:
 
                 else:
                     setting_results_table = pd.DataFrame(columns=table_columns.split(','))
+
+                    all_preds = []
+                    test_results = {'model': base_name, 'fold': fold["name"], 'seed': SEED_VAL,
+                                    'bs': BATCH_SIZE, 'lr': LR, 'h': HIDDEN,
+                                    'voter': 'maj_vote', 'set_type': 'test'}
+
                     for fold in folds:
+
                         logger.info(f"--------------- CAM ON FOLD {fold['name']} ---------------")
                         logger.info(f" Hidden layer size: {HIDDEN}")
                         logger.info(f" Batch size: {BATCH_SIZE}")
@@ -484,7 +491,7 @@ for HIDDEN in hiddens:
                         else:
                             fold_results_table = pd.DataFrame(columns=table_columns.split(','))
 
-                            all_preds = []
+                            voter_preds = []
                             for i in range(N_VOTERS):
                                 logger.info(f"------------ VOTER {i} ------------")
                                 voter_name = fold_name + f"_v{i}"
@@ -505,22 +512,17 @@ for HIDDEN in hiddens:
                                 # todo compute average val perf
                                 val_results.update(best_val_mets)
                                 val_results.update({'model_loc': cam_cl.best_model_loc})
-                                test_results.update(test_mets)
                                 fold_results_table = fold_results_table.append(val_results, ignore_index=True)
-                                fold_results_table = fold_results_table.append(test_results, ignore_index=True)
-                                all_preds.append(preds)
-
-                            test_results = {'model': base_name, 'fold': fold["name"], 'seed': SEED_VAL,
-                                            'bs': BATCH_SIZE, 'lr': LR, 'h': HIDDEN,
-                                            'voter': 'maj_vote', 'set_type': 'test'}
+                                voter_preds.append(preds)
+                                fold_results_table.to_csv(fold_table_fp, index=False)
+                            preds = voter_preds[0]
+                                     
                             maj_vote = [Counter(line).most_common()[0][0] for line in zip(*all_preds)]
-                            test_mets, test_perf = my_eval(fold['test'].label, maj_vote, name='majority vote', set_type='test')
+                            test_mets, test_perf = my_eval(fold['test'].label, maj_vote, name='majority vote',
+                                                           set_type='test')
                             test_results.update(test_mets)
 
-                            fold_results_table = fold_results_table.append(test_results, ignore_index=True)
-                            fold_results_table.to_csv(fold_table_fp, index=False)
-
-                        setting_results_table = setting_results_table.append(fold_results_table)
+                            setting_results_table = setting_results_table.append(fold_results_table)
 
                     logging.info(f'Setting {setting_name} results: \n{setting_results_table[["model", "seed", "bs", "lr", "fold", "set_type", "f1"]]}')
                     setting_results_table.to_csv(setting_table_fp, index=False)
