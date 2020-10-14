@@ -115,6 +115,9 @@ parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-nopad', '--no_padding', action='store_true', default=False)
 parser.add_argument('-inf', '--step_info_every', type=int, default=250)
 
+parser.add_argument('-force_pred', '--force_pred', action='store_true', default=False)
+parser.add_argument('-force_train', '--force_train', action='store_true', default=False)
+
 args = parser.parse_args()
 
 # set to variables for readability
@@ -133,6 +136,8 @@ MODE = args.mode
 TRAIN = True if args.mode != 'eval' else False
 EVAL = True if args.mode == 'eval' else False
 DEBUG = True if args.mode == 'debug' else False
+FORCE_TRAIN = args.force_train
+FORCE_PRED = args.force_pred if not FORCE_TRAIN else True
 
 LEX = args.lex
 
@@ -428,7 +433,6 @@ for HIDDEN in hiddens:
                                 'bs': BATCH_SIZE, 'lr': LR, 'h': HIDDEN,
                                 'voter': 'maj_vote', 'set_type': 'test'}
 
-                FORCE = False
                 setting_results_table = pd.DataFrame(columns=table_columns.split(','))
 
                 logger.info(f"--------------- {setting_name} ---------------")
@@ -447,7 +451,6 @@ for HIDDEN in hiddens:
                     test_ids.extend(fold['test'].index)
                     test_labels.extend(fold['test'].label)
 
-                    FORCE_PRED = False
                     if not os.path.exists(pred_fp) or FORCE_PRED:
 
                         voter_preds = []
@@ -463,7 +466,6 @@ for HIDDEN in hiddens:
                             cam_cl = Classifier(model=cam, logger=logger, fig_dir=FIG_DIR, name=voter_name, patience=PATIENCE, n_eps=N_EPOCHS,
                                             printing=PRINT_STEP_EVERY, load_from_ep=None)
 
-                            FORCE_TRAIN = False
                             if not os.path.exists(best_model_loc) or FORCE_TRAIN:
                                 print(best_model_loc)
                                 exit(0)
