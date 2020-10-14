@@ -205,14 +205,14 @@ else:
     print("Please provide task name")
     exit(0)
 
-DATA_DIR = f'data/sent_clf/cam_input/ #{CONTEXT_TYPE}'
+DATA_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/cam_input/{CONTEXT_TYPE}'
 DATA_FP = os.path.join(DATA_DIR, 'cim_basil.tsv')
-CHECKPOINT_DIR = f'models/checkpoints/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
-REPORTS_DIR = f'reports/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
-FIG_DIR = f'figures/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
-CACHE_DIR = 'models/cache/' # This is where BERT will look for pre-trained models to load parameters from.
+CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
+REPORTS_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/reports/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
+FIG_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/figures/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
+CACHE_DIR = '/home/mitarb/vdberg/Projects/EntityFramingDetection/models/cache/' # This is where BERT will look for pre-trained models to load parameters from.
 
-TABLE_DIR = f"reports/cim/tables/{CONTEXT_TYPE}/{TASK_NAME}"
+TABLE_DIR = f"/home/mitarb/vdberg/Projects/EntityFramingDetection/reports/cim/tables/{CONTEXT_TYPE}/{TASK_NAME}"
 MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'{TASK_NAME}.csv')
 table_columns = 'model,sampler,seed,bs,lr,model_loc,fold,voter,epoch,set_type,loss,fn,fp,tn,tp,acc,prec,rec,f1'
 main_results_table = pd.DataFrame(columns=table_columns.split(','))
@@ -389,7 +389,7 @@ def get_weights_matrix(data, emb_fp, emb_dim=None):
 
 
 if EMB_TYPE in ['use', 'sbert']:
-    embed_fp = f"data/sent_clf/embeddings/basil_w_{EMB_TYPE}.csv"
+    embed_fp = f"/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/embeddings/basil_w_{EMB_TYPE}.csv"
     weights_matrix = get_weights_matrix(data, embed_fp, emb_dim=EMB_DIM)
     logger.info(f" --> Loaded from {embed_fp}, shape: {weights_matrix.shape}")
 
