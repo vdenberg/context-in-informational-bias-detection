@@ -184,10 +184,11 @@ else:
 
 DATA_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/sent_clf/cam_input/{CONTEXT_TYPE}'
 DATA_FP = os.path.join(DATA_DIR, 'cim_basil.tsv')
-CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
+CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/cam/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
 REPORTS_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/reports/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
 FIG_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/figures/cim/{CONTEXT_TYPE}/subset{SUBSET}/{TASK_NAME}'
 CACHE_DIR = '/home/mitarb/vdberg/Projects/EntityFramingDetection/models/cache/' # This is where BERT will look for pre-trained models to load parameters from.
+PREDICTION_DIR = f'data/predictions/{TASK_NAME}/'
 
 TABLE_DIR = f"/home/mitarb/vdberg/Projects/EntityFramingDetection/reports/cim/tables/{CONTEXT_TYPE}/{TASK_NAME}"
 MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'{TASK_NAME}.csv')
@@ -202,6 +203,8 @@ if not os.path.exists(FIG_DIR):
     os.makedirs(FIG_DIR)
 if not os.path.exists(TABLE_DIR):
     os.makedirs(TABLE_DIR)
+if not os.path.exists(PREDICTION_DIR):
+    os.makedirs(PREDICTION_DIR)
 
 # set device
 device, USE_CUDA = get_torch_device()
@@ -413,74 +416,88 @@ for HIDDEN in hiddens:
                 setting_name = base_name + f"_{SEED_VAL}" + h_name + bs_name + lr_name
                 setting_table_fp = f'{TABLE_DIR}/{setting_name}.csv'
                 logger.info(f' Setting table in: {setting_table_fp}.')
-                FORCE = True
-                if os.path.exists(setting_table_fp) and not FORCE:
-                    logger.info(f'Setting {setting_name} done already.')
-                    setting_results_table = pd.read_csv(setting_table_fp, index_col=None)
 
-                else:
-                    setting_results_table = pd.DataFrame(columns=table_columns.split(','))
+                pred_fp = os.path.join(PREDICTION_DIR, f'{setting_name}_test_preds.csv')
 
-                    all_preds = []
-                    test_results = {'model': base_name, 'fold': fold["name"], 'seed': SEED_VAL,
-                                    'bs': BATCH_SIZE, 'lr': LR, 'h': HIDDEN,
-                                    'voter': 'maj_vote', 'set_type': 'test'}
+                test_ids = []
+                test_predictions = []
+                test_labels = []
+                test_results = {'model': base_name, 'fold': fold["name"], 'seed': SEED_VAL,
+                                'bs': BATCH_SIZE, 'lr': LR, 'h': HIDDEN,
+                                'voter': 'maj_vote', 'set_type': 'test'}
 
-                    for fold in folds:
+                FORCE = False
+                setting_results_table = pd.DataFrame(columns=table_columns.split(','))
 
-                        logger.info(f"--------------- CAM ON FOLD {fold['name']} ---------------")
-                        logger.info(f" Hidden layer size: {HIDDEN}")
-                        logger.info(f" Batch size: {BATCH_SIZE}")
-                        logger.info(f" Starting LR: {LR}")
-                        logger.info(f" Seed: {SEED_VAL}")
-                        logger.info(f" Nr batches: {len(fold['train_batches'])}")
-                        logger.info(f" Logging to: {LOG_NAME}.")
-                        fold_name = setting_name + f"_f{fold['name']}"
-                        fold_table_fp = f'{TABLE_DIR}/{fold_name}.csv'
+                logger.info(f"--------------- {setting_name} ---------------")
+                logger.info(f" Hidden layer size: {HIDDEN}")
+                logger.info(f" Batch size: {BATCH_SIZE}")
+                logger.info(f" Starting LR: {LR}")
+                logger.info(f" Seed: {SEED_VAL}")
+                logger.info(f" Nr batches: {len(fold['train_batches'])}")
+                logger.info(f" Logging to: {LOG_NAME}.")
 
-                        FORCE = False
-                        if os.path.exists(fold_table_fp) and not FORCE:
-                            logger.info(f'Fold {fold_name} done already.')
-                            fold_results_table = pd.read_csv(fold_table_fp, index_col=None)
-                        else:
-                            fold_results_table = pd.DataFrame(columns=table_columns.split(','))
+                for fold in folds:
 
-                            voter_preds = []
-                            for i in range(N_VOTERS):
-                                logger.info(f"------------ VOTER {i} ------------")
-                                voter_name = fold_name + f"_v{i}"
-                                val_results = {'model': base_name, 'fold': fold["name"], 'seed': SEED_VAL,
-                                               'bs': BATCH_SIZE, 'lr': LR, 'h': HIDDEN, 'set_type': 'dev', 'voter': i}
-                                test_results = {'model': base_name, 'fold': fold["name"], 'seed': SEED_VAL,
-                                                'bs': BATCH_SIZE, 'lr': LR, 'h': HIDDEN,
-                                                'voter': i, 'set_type': 'test'}
+                    logger.info(f"--------------- CIM ON FOLD {fold['name']} ---------------")
+                    fold_name = setting_name + f"_f{fold['name']}"
 
-                                cam = CIMClassifier(start_epoch=START_EPOCH, cp_dir=CHECKPOINT_DIR, tr_labs=fold['train'][i].label,
-                                                    weights_mat=fold['weights_matrices'][i], emb_dim=EMB_DIM, hid_size=HIDDEN, layers=BILSTM_LAYERS,
-                                                    b_size=BATCH_SIZE, lr=LR, step=1, gamma=GAMMA, cam_type=CAM_TYPE, context=CONTEXT_TYPE)
+                    test_ids.extend(fold['test'].index)
+                    test_labels.extend(fold['test'].label)
 
-                                cam_cl = Classifier(model=cam, logger=logger, fig_dir=FIG_DIR, name=voter_name, patience=PATIENCE, n_eps=N_EPOCHS,
-                                                printing=PRINT_STEP_EVERY, load_from_ep=None)
+                    FORCE_PRED = False
+                    if not os.path.exists(pred_fp) or FORCE_PRED:
 
+                        voter_preds = []
+                        for i in range(N_VOTERS):
+                            logger.info(f"------------ VOTER {i} ------------")
+                            voter_name = fold_name + f"_v{i}"
+
+                            best_model_loc = os.path.join(CHECKPOINT_DIR, voter_name)
+                            cam = CIMClassifier(start_epoch=START_EPOCH, cp_dir=CHECKPOINT_DIR, tr_labs=fold['train'][i].label,
+                                                weights_mat=fold['weights_matrices'][i], emb_dim=EMB_DIM, hid_size=HIDDEN, layers=BILSTM_LAYERS,
+                                                b_size=BATCH_SIZE, lr=LR, step=1, gamma=GAMMA, cam_type=CAM_TYPE, context=CONTEXT_TYPE)
+
+                            cam_cl = Classifier(model=cam, logger=logger, fig_dir=FIG_DIR, name=voter_name, patience=PATIENCE, n_eps=N_EPOCHS,
+                                            printing=PRINT_STEP_EVERY, load_from_ep=None)
+
+                            FORCE_TRAIN = False
+                            if not os.path.exists(best_model_loc) or FORCE_TRAIN:
+                                print(best_model_loc)
+                                exit(0)
                                 best_val_mets, test_mets, preds = cam_cl.train_on_fold(fold, voter_i=i)
-                                # todo compute average val perf
-                                val_results.update(best_val_mets)
-                                val_results.update({'model_loc': cam_cl.best_model_loc})
-                                fold_results_table = fold_results_table.append(val_results, ignore_index=True)
-                                voter_preds.append(preds)
-                                fold_results_table.to_csv(fold_table_fp, index=False)
-                            preds = voter_preds[0]
+                            else:
+                                preds, losses = cam_cl.produce_preds(fold, voter_name)
 
-                            maj_vote = [Counter(line).most_common()[0][0] for line in zip(*all_preds)]
-                            test_mets, test_perf = my_eval(fold['test'].label, maj_vote, name='majority vote',
-                                                           set_type='test')
-                            test_results.update(test_mets)
+                            voter_preds.append(preds)
 
-                            setting_results_table = setting_results_table.append(fold_results_table)
+                        test_predictions = voter_preds[0]
+                    test_labels.extend(test_predictions)
 
-                    logging.info(f'Setting {setting_name} results: \n{setting_results_table[["model", "seed", "bs", "lr", "fold", "set_type", "f1"]]}')
-                    setting_results_table.to_csv(setting_table_fp, index=False)
-                    main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
+                logger.info(f"***** Predict {setting_name} *****")
+
+                if not os.path.exists(pred_fp) or FORCE_PRED:
+                    # compute performance on setting
+                    assert len(test_predictions) == len(test_ids)
+                    assert len(test_predictions) == len(test_labels)
+                    basil_w_pred = pd.DataFrame(index=test_ids)
+                    basil_w_pred['pred'] = test_predictions
+                    basil_w_pred['label'] = test_labels
+                    basil_w_pred.to_csv(pred_fp)
+
+                # load predictions
+                basil_w_pred = pd.read_csv(pred_fp)  # , dtype={'pred': np.int64})
+                logger.info(f'Preds from {pred_fp}')
+
+                logger.info(f"***** Eval {setting_name} *****")
+
+                test_mets, test_perf = my_eval(basil_w_pred.label, basil_w_pred.pred, name='majority vote',
+                                               set_type='test')
+                test_results.update(test_mets)
+
+                logging.info(f'Setting {setting_name} results: \n{setting_results_table[["model", "seed", "bs", "lr", "fold", "set_type", "f1"]]}')
+                setting_results_table.to_csv(setting_table_fp, index=False)
+                main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
 
 if os.path.exists(MAIN_TABLE_FP):
     main_results_table_orig = pd.read_csv(MAIN_TABLE_FP)

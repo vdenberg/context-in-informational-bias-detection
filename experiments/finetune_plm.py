@@ -172,7 +172,7 @@ else:
     else:
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta'
 
-PREDICTION_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
+PREDICTION_DIR = f'data/predictions/{TASK_NAME}/'
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
 if MODEL != 'bert' and CLF_TASK == 'sent_clf':
     CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
@@ -181,6 +181,8 @@ TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 CACHE_DIR = 'models/cache/'
 MAIN_TABLE_FP = os.path.join(TABLE_DIR, f'{TASK_NAME}_results.csv')
 
+if not os.path.exists(PREDICTION_DIR):
+    os.makedirs(PREDICTION_DIR)
 if not os.path.exists(CHECKPOINT_DIR):
     os.makedirs(CHECKPOINT_DIR)
 if not os.path.exists(REPORTS_DIR):
@@ -226,10 +228,6 @@ if __name__ == '__main__':
             torch.manual_seed(SEED_VAL)
             torch.cuda.manual_seed_all(SEED_VAL)
 
-            prediction_dir = f'data/predictions/{TASK_NAME}/'
-            if not os.path.exists(prediction_dir):
-                os.makedirs(prediction_dir)
-
             embedding_dir = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/embeddings/{MODEL}/'
             if not os.path.exists(embedding_dir):
                 os.makedirs(embedding_dir)
@@ -240,12 +238,12 @@ if __name__ == '__main__':
                     setting_name = bs_name + f"_lr{LEARNING_RATE}"
                     setting_results_table = pd.DataFrame(columns=table_columns.split(','))
 
-                    pred_fp = os.path.join(prediction_dir, f'{setting_name}_test_preds.csv')
+                    pred_fp = os.path.join(PREDICTION_DIR, f'{setting_name}_test_preds.csv')
 
                     test_ids = []
                     test_predictions = []
                     test_labels = []
-                    test_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': SPLIT, 'bs': BATCH_SIZE,
+                    test_results = {'model': MODEL, 'seed': SEED_VAL, 'fold': SPLIT, 'bs': BATCH_SIZE,
                                  'lr': LEARNING_RATE, 'set_type': 'test', 'sampler': SAMPLER}
 
                     feat_fp = os.path.join(FEAT_DIR, f"all_features.pkl")
@@ -404,9 +402,9 @@ if __name__ == '__main__':
                                                                output_mode=CLF_TASK)
 
                     logging.info(f"{test_perf}")
-                    test_res.update(test_mets)
+                    test_results.update(test_mets)
 
-                    setting_results_table = setting_results_table.append(test_res, ignore_index=True)
+                    setting_results_table = setting_results_table.append(test_results, ignore_index=True)
                     setting_results_table = setting_results_table.append(fold_results_table, ignore_index=True)
                     setting_fp = os.path.join(TABLE_DIR, f'{setting_name}_results_table.csv')
 
