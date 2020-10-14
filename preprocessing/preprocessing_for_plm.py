@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-seqlen', '--sequence_length', type=int, default=1,
                         help='If task is seq_sent_clf: Number of sentences per example')
-    parser.add_argument('-w', '--windowed', action='store_true', default=False,
+    parser.add_argument('-win', '--windowed', action='store_true', default=False,
                         help='If task is seq_sent_clf: Choose Windowed SSC or not')
 
     args = parser.parse_args()
