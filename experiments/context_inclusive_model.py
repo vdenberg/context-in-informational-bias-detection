@@ -272,7 +272,7 @@ if PREPROCESS:
     raw_data['quartile'] = quartiles
 
     processor = Processor(sentence_ids=raw_data.sentence_ids.values, max_doc_length=MAX_DOC_LEN)
-    print(raw_data.loc['46fox24'].sentence.dtype)
+    print(list(raw_data.loc['46fox24'].sentence))
     raw_data = raw_data.dropna()
     print(raw_data.loc['46fox24'])
     exit(0)
