@@ -649,6 +649,7 @@ class Inferencer():
         :param model: model to evaluate
         :param data: batches to predict on
         :param labels:
+        :param preds:
         if output_mode == 'sent_clf':
                 labels = list or series of ints
                 preds = list or series of ints
@@ -659,11 +660,10 @@ class Inferencer():
                 labels = array of arrays or series of strings
                 preds = array of arrays or series of strings
 
-        :param preds:
-        :param av_loss:
-        :param set_type:
-        :param name:
-        :param output_mode:
+        :param av_loss: average loss of model
+        :param set_type: development or test data
+        :param name: name of the model
+        :param output_mode: sent_clf | tok_clf | seq_sent_clf
         :return:
         """
         if preds is None:
