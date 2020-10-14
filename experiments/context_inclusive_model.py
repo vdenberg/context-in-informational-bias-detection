@@ -256,7 +256,7 @@ if PREPROCESS:
     sentences.index = [el.lower() for el in sentences.index]
     sentences.source = [el.lower() for el in sentences.source]
 
-    raw_data_fp = os.path.join(DATA_DIR, 'basil_art_and_cov.tsv')
+    raw_data_fp = os.path.join(DATA_DIR, 'cim_basil.tsv')
     raw_data = pd.read_csv(raw_data_fp, sep='\t', index_col=False,
                            names=['sentence_ids', 'art_context_document', 'cov1_context_document',
                                   'cov2_context_document', 'label', 'position'],
@@ -331,7 +331,6 @@ NR_FOLDS = len(folds)
 # folds = [folds[4]]
 
 logger.info(f" --> Read {len(data)} data points")
-#ogger.info(f" --> Example: {data.sample(n=1).context_doc_num.values}")
 logger.info(f" --> Fold sizes: {[f['sizes'] for f in folds]}")
 logger.info(f" --> Columns: {list(data.columns)}")
 
@@ -340,28 +339,6 @@ logger.info(f" --> Columns: {list(data.columns)}")
 # =====================================================================================
 
 for fold in folds:
-    '''
-    train_fp = os.path.join('data/sent_clf/features_for_bert', f"folds/{fold['name']}_train_features.pkl")
-    dev_fp = os.path.join('data/sent_clf/features_for_bert', f"folds/{fold['name']}_dev_features.pkl")
-    test_fp = os.path.join('data/sent_clf/features_for_bert', f"folds/{fold['name']}_test_features.pkl")
-
-    with open(train_fp, "rb") as f:
-        train_features = pickle.load(f)
-
-    with open(dev_fp, "rb") as f:
-        dev_features = pickle.load(f)
-
-    with open(test_fp, "rb") as f:
-        test_features = pickle.load(f)
-    '''
-
-    #train_batches = to_batches(to_tensors(features=train_features, device=device), batch_size=BATCH_SIZE)
-    # dev_batches = to_batches(to_tensors(features=dev_features, device=device), batch_size=BATCH_SIZE)
-    # test_batches = to_batches(to_tensors(features=test_features, device=device), batch_size=BATCH_SIZE)
-
-    # train_batches = to_batches(to_tensors(split=fold['train'], device=device), batch_size=BATCH_SIZE, sampler=SAMPLER)
-    # dev_batches = to_batches(to_tensors(split=fold['dev'], device=device), batch_size=BATCH_SIZE, sampler=SAMPLER)
-    # test_batches = to_batches(to_tensors(split=fold['test'], device=device), batch_size=BATCH_SIZE, sampler=SAMPLER)
     fold['train_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in fold['train']]
     fold['dev_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in fold['dev']]
     fold['test_batches'] = to_batches(to_tensors(split=fold['test'], device=device), batch_size=BATCH_SIZE, sampler=SAMPLER)
@@ -373,7 +350,6 @@ for fold in folds:
 logger.info("============ LOAD EMBEDDINGS =============")
 logger.info(f" Embedding type: {EMB_TYPE}")
 
-
 def get_weights_matrix(data, emb_fp, emb_dim=None):
     data_w_emb = pd.read_csv(emb_fp, index_col=0).fillna('')
     data_w_emb = data_w_emb.rename(
@@ -381,7 +357,6 @@ def get_weights_matrix(data, emb_fp, emb_dim=None):
                  'unpoolbert': 'embeddings', 'crossbert': 'embeddings', 'cross4bert': 'embeddings'})
     data_w_emb.index = [standardise_id(el) for el in data_w_emb.index]
     data.index = [standardise_id(el) for el in data.index]
-    #tmp = set(data.index) - set(data_w_emb.index)
     data.loc[data_w_emb.index, 'embeddings'] = data_w_emb['embeddings']
     # transform into matrix
     wm = make_weight_matrix(data, emb_dim)
@@ -436,7 +411,7 @@ if LEX:
 
 hiddens = [HIDDEN]
 batch_sizes = [BATCH_SIZE]
-learning_rates = [LR] #, 0.001, 0.002]
+learning_rates = [LR]
 seeds = [SEED_VAL] #SEED_VAL, SEED_VAL*2, SEED_VAL*3, 34 68 102 136 170
 
 for HIDDEN in hiddens:
@@ -516,7 +491,7 @@ for HIDDEN in hiddens:
                                 voter_preds.append(preds)
                                 fold_results_table.to_csv(fold_table_fp, index=False)
                             preds = voter_preds[0]
-                                     
+
                             maj_vote = [Counter(line).most_common()[0][0] for line in zip(*all_preds)]
                             test_mets, test_perf = my_eval(fold['test'].label, maj_vote, name='majority vote',
                                                            set_type='test')
