@@ -145,7 +145,7 @@ def get_torch_device():
 def arrays_in_series(series):
     flat = []
     for el in series:
-        el = el.strip('[ ]') #.strip('\n')
+        el = el.strip('[]').strip(' ')
         # el = re.sub(',','',el)
         el = tuple(map(int, el.split(' ')))
         flat.extend(el)
