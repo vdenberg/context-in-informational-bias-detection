@@ -648,6 +648,7 @@ class Inferencer():
             preds = self.predict(model, data, output_mode=output_mode)
 
             if output_mode == 'sent_clf':
+                pass
                 #labels = list of ints
                 #preds = list of ints
             print(type(labels), type(labels[0]))
