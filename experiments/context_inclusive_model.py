@@ -40,8 +40,8 @@ class Processor():
         with open("data/inputs/sent_clf/features_for_bert/all_features.pkl", "rb") as f:
             features = pickle.load(f)
         feat_dict = {f.my_id.lower(): f for f in features}
-        token_ids = [feat_dict[i].input_ids for i in sentence_ids]
-        token_mask = [feat_dict[i].input_mask for i in sentence_ids]
+        token_ids = [feat_dict[i].input_ids for i in sentence_ids if i != '11fox23']
+        token_mask = [feat_dict[i].input_mask for i in sentence_ids if i != '11fox23']
         self.max_sent_length = len(token_ids[0])
         return token_ids, token_mask
 
