@@ -2,15 +2,12 @@ import argparse, os, sys, logging, re
 from datetime import datetime
 import random
 from collections import Counter
-
 import torch
 import numpy as np
 import pandas as pd
-
-from lib.classifiers.ContextAwareClassifier import ContextAwareClassifier
 import pickle
 
-from lib.classifiers.Classifier import Classifier
+from lib.classifiers.CIMClassifier import Classifier, CIMClassifier
 from lib.handle_data.SplitData import Split
 from lib.utils import get_torch_device, standardise_id, to_batches, to_tensors
 from lib.evaluate.Eval import my_eval
@@ -497,9 +494,9 @@ for HIDDEN in hiddens:
                                                 'bs': BATCH_SIZE, 'lr': LR, 'h': HIDDEN,
                                                 'voter': i, 'set_type': 'test'}
 
-                                cam = ContextAwareClassifier(start_epoch=START_EPOCH, cp_dir=CHECKPOINT_DIR, tr_labs=fold['train'][i].label,
-                                                         weights_mat=fold['weights_matrices'][i], emb_dim=EMB_DIM, hid_size=HIDDEN, layers=BILSTM_LAYERS,
-                                                         b_size=BATCH_SIZE, lr=LR, step=1, gamma=GAMMA, cam_type=CAM_TYPE, context=CONTEXT_TYPE)
+                                cam = CIMClassifier(start_epoch=START_EPOCH, cp_dir=CHECKPOINT_DIR, tr_labs=fold['train'][i].label,
+                                                    weights_mat=fold['weights_matrices'][i], emb_dim=EMB_DIM, hid_size=HIDDEN, layers=BILSTM_LAYERS,
+                                                    b_size=BATCH_SIZE, lr=LR, step=1, gamma=GAMMA, cam_type=CAM_TYPE, context=CONTEXT_TYPE)
 
                                 cam_cl = Classifier(model=cam, logger=logger, fig_dir=FIG_DIR, name=voter_name, patience=PATIENCE, n_eps=N_EPOCHS,
                                                 printing=PRINT_STEP_EVERY, load_from_ep=None)
