@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import pickle
 
-from lib.classifiers.CIMClassifier import Classifier, CIMClassifier
+from lib.classifiers.ContextAwareClassifier import Classifier, CIMClassifier
 from lib.handle_data.SplitData import Split
 from lib.utils import get_torch_device, standardise_id, to_batches, to_tensors
 from lib.evaluate.Eval import my_eval
