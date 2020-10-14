@@ -352,9 +352,7 @@ if EMB_TYPE in ['use', 'sbert']:
 
 for fold in folds:
     weights_matrices = []
-    print(len(fold['train']))
-    exit(0)
-    for v in range(len(fold['train'])):
+    for v in range(len([fold['train']])):
         # read embeddings file
         if EMB_TYPE not in ['use', 'sbert']:
             # embed_fp = f"data/bert_231_bs16_lr2e-05_f{fold['name']}_basil_w_{EMB_TYPE}.csv"
