@@ -9,7 +9,7 @@ import pickle
 
 from lib.classifiers.ContextAwareClassifier import Classifier, CIMClassifier
 from lib.handle_data.SplitData import Split
-from lib.utils import get_torch_device, standardise_id, to_batches, to_tensors
+from lib.utils import get_torch_device, standardise_id, to_batches, to_tensors, clean_mean
 from lib.evaluate.Eval import my_eval
 
 
@@ -421,7 +421,6 @@ for HIDDEN in hiddens:
                 torch.cuda.manual_seed_all(SEED_VAL)
 
                 setting_name = base_name + f"_{SEED_VAL}" + h_name + bs_name + lr_name
-                setting_table_fp = f'{TABLE_DIR}/{setting_name}.csv'
                 logger.info(f' Setting table in: {setting_table_fp}.')
 
                 pred_fp = os.path.join(PREDICTION_DIR, f'{setting_name}_test_preds.csv')
@@ -483,9 +482,6 @@ for HIDDEN in hiddens:
 
                 if not os.path.exists(pred_fp) or FORCE_PRED:
                     # compute performance on setting
-                    print(type(test_predictions), type(test_predictions[0]), test_predictions[0])
-                    print(type(test_ids), type(test_ids[0]), test_ids[0])
-                    print(type(test_labels), type(test_labels[0]), test_labels[0])
                     assert len(test_predictions) == len(test_ids)
                     assert len(test_predictions) == len(test_labels)
                     basil_w_pred = pd.DataFrame(index=test_ids)
@@ -501,14 +497,37 @@ for HIDDEN in hiddens:
 
                 test_mets, test_perf = my_eval(basil_w_pred.label, basil_w_pred.pred, name='majority vote',
                                                set_type='test')
+                logging.info(f"{test_perf}")
                 test_results.update(test_mets)
 
-                logging.info(f'Setting {setting_name} results: \n{setting_results_table[["model", "seed", "bs", "lr", "fold", "set_type", "f1"]]}')
-                setting_results_table.to_csv(setting_table_fp, index=False)
+                setting_results_table = setting_results_table.append(test_results, ignore_index=True)
+                setting_fp = os.path.join(TABLE_DIR, f'{setting_name}_results_table.csv')
+                setting_results_table.to_csv(setting_fp, index=False)
+
+                # store performance of setting
                 main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
 
-if os.path.exists(MAIN_TABLE_FP):
-    main_results_table_orig = pd.read_csv(MAIN_TABLE_FP)
-main_results_table = main_results_table_orig.append(main_results_table, ignore_index=True)
-main_results_table.to_csv(MAIN_TABLE_FP, index=False)
-logger.info(f"Logged to: {LOG_NAME}.")
+            main_results_table.to_csv(MAIN_TABLE_FP, index=False)
+
+            df = main_results_table
+            df[['prec', 'rec', 'f1']] = df[['prec', 'rec', 'f1']].round(4) * 100
+            df = df.fillna(0)
+            print(df[['model', 'seed', 'set_type', 'seed', 'prec', 'rec', 'f1']])
+
+            view = clean_mean(df, grby=['model', 'seed'], set_type='test')
+            view = view.fillna(0)
+            print(view)
+
+            test = df[df.set_type == 'test']
+            test = test[['set_type', 'seed', 'prec', 'rec', 'f1']]
+            test = test.groupby('seed').mean()
+            test = test.describe()
+            test_m = test.loc['mean'].round(2).astype(str)
+            test_std = test.loc['std'].round(2).astype(str)
+            result = test_m + ' \pm ' + test_std
+            print(f"\n{setting_name} results - {CONTEXT_TYPE}:")
+            print(main_results_table.seed.unique())
+            print(result)
+
+            logger.info(f"  Log in {LOG_NAME}")
+            logger.info(f"  Table in {MAIN_TABLE_FP}")

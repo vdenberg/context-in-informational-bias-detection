@@ -5,6 +5,15 @@ import numpy as np
 import re
 
 
+def clean_mean(df, grby='', set_type=''):
+    mets = ['f1']
+    if set_type:
+        tmp_df = df[df.set_type == set_type]
+    else:
+        tmp_df = df
+    return tmp_df.groupby(grby)[mets].mean().round(2)
+
+
 def standardise_id(basil_id):
     if not basil_id[1].isdigit():
         basil_id = '0' + basil_id

@@ -11,7 +11,7 @@ import random, argparse
 import numpy as np
 import pandas as pd
 import os, sys
-from lib.utils import get_torch_device
+from lib.utils import get_torch_device, clean_mean
 import logging
 
 '''
@@ -44,14 +44,6 @@ def select_model(model, clf_task):
         sel_mod = RobertaForSequentialSequenceClassification
     return sel_mod
 
-
-def clean_mean(df, grby='', set_type=''):
-    mets = ['f1']
-    if set_type:
-        tmp_df = df[df.set_type == set_type]
-    else:
-        tmp_df = df
-    return tmp_df.groupby(grby)[mets].mean().round(2)
 
 ########################
 # WHAT IS THE EXPERIMENT
