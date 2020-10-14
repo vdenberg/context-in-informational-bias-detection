@@ -99,8 +99,6 @@ def load_basil():
     basil_df = pd.read_csv(fp, index_col=0).fillna('')
     basil_df.index = [el.lower() for el in basil_df.index]
     basil_df = basil_df.rename({'bias': 'label'})
-    empty_sentences = ['46fox24', '48fox19', '11fox23', '47nyt19', '47fox22', '58fox62']
-    basil_df = basil_df.drop(empty_sentences)
     return basil_df
 
 

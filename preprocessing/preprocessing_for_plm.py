@@ -49,7 +49,7 @@ def enforce_max_sent_per_example(sentences, max_sent_per_example, labels=None):
         return [sentences]
 
 
-def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex):
+def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex, window):
     flat_input_ids = []
     flat_labels = []
     flat_ids = []
@@ -68,11 +68,12 @@ def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex):
 
     assert len(mask) == len(flat_input_ids)
 
+    if window:
+        max_sent_in_ex = max_sent_in_ex + 2
+
     lab_pad_len = max_sent_in_ex - len(flat_labels)
     flat_labels += [-1] * lab_pad_len
 
-    if not len(flat_labels) == max_sent_in_ex:
-        print(len(flat_labels), max_sent_in_ex)
     assert len(flat_labels) == max_sent_in_ex
 
     return InputFeatures(my_id=None,
@@ -116,7 +117,6 @@ def redistribute_feats(features, cls=0, pad=1, max_sent=10, max_len=None, window
 
         if window:
             row = [empty_feature]*window_size + row + [empty_feature]*window_size
-            max_sent -= 2
 
         sequences = enforce_max_sent_per_example(row, max_sent)
         nr_sequences = len(sequences)
@@ -147,7 +147,7 @@ def redistribute_feats(features, cls=0, pad=1, max_sent=10, max_len=None, window
 
     finfeats = []
     for row in sequence_rows:
-        ff = flatten_sequence(row, cls, pad, max_len, max_sent)
+        ff = flatten_sequence(row, cls, pad, max_len, max_sent, window)
         finfeats.append(ff)
     return finfeats
 
@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-seqlen', '--sequence_length', type=int, default=1,
                         help='If task is seq_sent_clf: Number of sentences per example')
-    parser.add_argument('-win', '--windowed', action='store_true', default=False,
+    parser.add_argument('-w', '--windowed', action='store_true', default=False,
                         help='If task is seq_sent_clf: Choose Windowed SSC or not')
 
     args = parser.parse_args()
