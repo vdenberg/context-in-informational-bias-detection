@@ -371,7 +371,7 @@ if __name__ == '__main__':
 
                     logger.info(f"***** Get results of Seed {SEED_VAL}, Fold {fold_name} (pred exists: {os.path.exists(pred_fp)}) *****")
 
-                    if not os.path.exists(pred_fp):
+                    if not os.path.exists(pred_fp) or FORCE_PRED:
                         # compute performance on setting
                         assert len(test_predictions) == len(test_ids)
                         assert len(test_predictions) == len(test_labels)
