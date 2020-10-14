@@ -40,8 +40,8 @@ class Processor():
         with open("data/inputs/sent_clf/features_for_bert/all_features.pkl", "rb") as f:
             features = pickle.load(f)
         feat_dict = {f.my_id.lower(): f for f in features}
-        token_ids = [feat_dict[i].input_ids for i in sentence_ids if i != '11fox23']
-        token_mask = [feat_dict[i].input_mask for i in sentence_ids if i != '11fox23']
+        token_ids = [feat_dict[i].input_ids for i in sentence_ids]
+        token_mask = [feat_dict[i].input_mask for i in sentence_ids]
         self.max_sent_length = len(token_ids[0])
         return token_ids, token_mask
 
@@ -272,6 +272,10 @@ if PREPROCESS:
     raw_data['quartile'] = quartiles
 
     processor = Processor(sentence_ids=raw_data.sentence_ids.values, max_doc_length=MAX_DOC_LEN)
+    print(raw_data.loc(['46fox24']))
+    raw_data = raw_data.dropna()
+    print(raw_data.loc(['46fox24']))
+    exit(0)
     raw_data['id_num'] = [processor.sent_id_map[i] for i in raw_data.sentence_ids.values]
     raw_data['art_context_doc_num'] = processor.to_numeric_documents(raw_data.art_context_document.values)
     raw_data['cov1_context_doc_num'] = processor.to_numeric_documents(raw_data.cov1_context_document.values)
