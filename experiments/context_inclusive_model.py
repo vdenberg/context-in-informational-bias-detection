@@ -401,7 +401,7 @@ if LEX:
 hiddens = [HIDDEN]
 batch_sizes = [BATCH_SIZE]
 learning_rates = [LR]
-seeds = [SEED_VAL] #SEED_VAL, SEED_VAL*2, SEED_VAL*3, 34 68 102 136 170
+seeds = [11, 22, 33, 44, 55] #SEED_VAL, SEED_VAL*2, SEED_VAL*3, 34 68 102 136 170
 
 for HIDDEN in hiddens:
     h_name = f"_h{HIDDEN}"
