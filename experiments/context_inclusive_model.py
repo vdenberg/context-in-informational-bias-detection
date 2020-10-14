@@ -256,7 +256,7 @@ if PREPROCESS:
     sentences.index = [el.lower() for el in sentences.index]
     sentences.source = [el.lower() for el in sentences.source]
 
-    raw_data_fp = os.path.join(DATA_DIR, 'cim_basil.tsv')
+    raw_data_fp = os.path.join(DATA_DIR, 'basil_art_and_cov.tsv')
     raw_data = pd.read_csv(raw_data_fp, sep='\t', index_col=False,
                            names=['sentence_ids', 'art_context_document', 'cov1_context_document',
                                   'cov2_context_document', 'label', 'position'],
