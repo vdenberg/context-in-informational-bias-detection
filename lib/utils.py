@@ -147,8 +147,10 @@ def arrays_in_series(series):
     for el in series:
         el = el.strip('[]')
         el = re.sub('  ',' ',el)
-        print(el)
-        el = tuple(map(int, el.split(' ')))
+        try:
+            el = tuple(map(int, el.split(' ')))
+        except:
+            print('Unusual input in series:', el)
         flat.extend(el)
     return np.asarray(flat)
 
