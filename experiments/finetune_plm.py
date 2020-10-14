@@ -66,21 +66,21 @@ model_mapping = {'bert': 'bert-base-cased',
                  'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-dapttapt',
                 }
 
-model_seeds = {'sent_clf': {
-                   'bert': [6, 11, 20, 22, 34],
-                   'rob_base': [49, 57, 33, 297, 181],
-                   'rob_dapt': [6, 22, 33, 34, 49],
-                   'rob_basil_tapt': [6, 33, 34, 49, 181],
-                   'rob_basil_dapttapt': [6, 33, 34, 49, 181],
-                   },
-               'tok_clf': {
-                    'bert': [6, 23, 49, 132, 281],
-                    'rob_base': [6, 33, 34, 132, 281]
-                    },
-                'seq_sent_clf': {
-                    'rob_base': [22, 34, 49, 181, 43]
+model_hyperparams = {'sent_clf': {
+                        'bert': {'lr': 2e-5, 'bs': 16, 'seeds': [6, 11, 20, 22, 34],},
+                        'rob_base': {'lr': 1e-5, 'bs': 16, 'seeds': [49, 57, 33, 297, 181]},
+                        'rob_dapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 22, 33, 34, 49]},
+                        'rob_basil_tapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]},
+                        'rob_basil_dapttapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]}
+                        },
+                     'tok_clf': {
+                        'bert': {'lr': 2e-5, 'bs': 16, 'seeds': [6, 23, 49, 132, 281],},
+                        'rob_base': {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 132, 281]}
+                        },
+                     'seq_sent_clf': {
+                        'rob_base': {'lr': 1.5e-5, 'bs': 4, 'seeds': [22, 34, 49, 181, 43]},
+                        }
                     }
-                }
 
 device, USE_CUDA = get_torch_device()
 
@@ -123,14 +123,9 @@ NUM_LABELS = 2 if CLF_TASK == 'sent_clf' else 4
 
 STORE_EMBEDS = args.embeds
 models = [args.model]
-seeds = [args.sv] if args.sv else model_seeds[CLF_TASK][MODEL]
-bss = [args.bs] if args.bs else [16]
-if args.lr:
-    lrs = [args.lr]
-elif MODEL == 'bert':
-    lrs = [2e-5]
-else:
-    lrs = [1e-5]
+seeds = [args.sv] if args.sv else model_hyperparams[CLF_TASK][MODEL]['seeds']
+bss = [args.bs] if args.bs else [model_hyperparams[CLF_TASK][MODEL]['bs']]
+lrs = [args.lr] if args.lr else [model_hyperparams[CLF_TASK][MODEL]['lr']]
 
 if SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
