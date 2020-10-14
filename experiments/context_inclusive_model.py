@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from lib.classifiers.ContextAwareClassifier import ContextAwareClassifier
-import pickle, time
+import pickle
 
 from lib.classifiers.Classifier import Classifier
 from lib.handle_data.SplitData import Split
@@ -80,8 +80,6 @@ def make_weight_matrix(embed_df, EMB_DIM):
     sentence_embeddings = {}
     for index, emb in zip(embed_df.index, embed_df.embeddings):
         if emb != 0:
-            #emb = re.sub('\s+', ' ', emb)
-            #emb = emb[6:-17]
             emb = re.sub('[\(\[\]\)]', '', emb)
             emb = emb.split(', ')
             emb = np.array(emb, dtype=float)
