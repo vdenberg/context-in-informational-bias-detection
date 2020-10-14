@@ -275,7 +275,7 @@ if PREPROCESS:
 
     processor = Processor(sentence_ids=raw_data.sentence_ids.values, max_doc_length=MAX_DOC_LEN)
     raw_data['sent_len'] = raw_data.sentence.apply(len)
-    raw_data = raw_data[raw_data.sentence > 0]
+    raw_data = raw_data[raw_data.sent_len > 0]
     raw_data['id_num'] = [processor.sent_id_map[i] for i in raw_data.sentence_ids.values]
     raw_data['art_context_doc_num'] = processor.to_numeric_documents(raw_data.art_context_document.values)
     raw_data['cov1_context_doc_num'] = processor.to_numeric_documents(raw_data.cov1_context_document.values)
