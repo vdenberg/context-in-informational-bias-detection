@@ -221,7 +221,7 @@ if __name__ == '__main__':
     # Sequences longer than this will be truncated, and sequences shorter than this will be padded.
     ###
 
-    folds = split_input_for_plm(DATA_DIR, recreate=True, sv=99)
+    folds = split_input_for_plm(DATA_DIR, recreate=False, sv=99)
     NR_FOLDS = len(folds)
 
     ###
