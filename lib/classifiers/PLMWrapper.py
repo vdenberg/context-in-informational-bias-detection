@@ -658,6 +658,7 @@ class Inferencer():
         """
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
+            print(output_mode)
             print(type(preds), type(preds[0]), preds[0])
             print(type(labels), type(labels[0]), labels[0])
             if output_mode != 'sent_clf':

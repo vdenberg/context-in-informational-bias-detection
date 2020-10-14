@@ -285,7 +285,6 @@ if __name__ == '__main__':
                             selected_model = select_model(MODEL, CLF_TASK)
 
                             if not os.path.exists(best_model_loc) or FORCE_TRAIN:
-                                logger.info(f"***** Training Seed {SEED_VAL}, Fold {fold_name} *****")
 
                                 model = selected_model.from_pretrained(EXACT_MODEL, cache_dir=CACHE_DIR,
                                                                        num_labels=NUM_LABELS,
@@ -307,6 +306,8 @@ if __name__ == '__main__':
                                                                             num_training_steps=num_tr_opt_steps)
 
                                 model.train()
+
+                                logger.info(f"***** Training {CLF_TASK} {setting_name} *****")
 
                                 for ep in range(1, N_EPS + 1):
                                     epoch_name = name + f"_ep{ep}"
