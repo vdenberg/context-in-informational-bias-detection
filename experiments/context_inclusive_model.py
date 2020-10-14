@@ -421,7 +421,6 @@ for HIDDEN in hiddens:
                 torch.cuda.manual_seed_all(SEED_VAL)
 
                 setting_name = base_name + f"_{SEED_VAL}" + h_name + bs_name + lr_name
-                logger.info(f' Setting table in: {setting_table_fp}.')
 
                 pred_fp = os.path.join(PREDICTION_DIR, f'{setting_name}_test_preds.csv')
 
