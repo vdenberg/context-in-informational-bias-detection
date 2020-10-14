@@ -256,7 +256,7 @@ if PREPROCESS:
     sentences.index = [el.lower() for el in sentences.index]
     sentences.source = [el.lower() for el in sentences.source]
 
-    raw_data_fp = os.path.join(DATA_DIR, 'basil_art_and_cov.tsv')
+    raw_data_fp = os.path.join('data/inputs/cim/', 'cim_basil.tsv')
     raw_data = pd.read_csv(raw_data_fp, sep='\t', index_col=False,
                            names=['sentence_ids', 'art_context_document', 'cov1_context_document',
                                   'cov2_context_document', 'label', 'position'],
@@ -270,12 +270,7 @@ if PREPROCESS:
         print("Failure")
         exit(0)
 
-    print(sentences.head())
-    print(sentences.head()[['source']])
-
     raw_data['source'] = sentences['source']
-    print(raw_data.head())
-    print(raw_data.head()[['source']])
     raw_data['src_num'] = raw_data.source.apply(lambda x: {'fox': 0, 'nyt': 1, 'hpo': 2}[x])
     raw_data['story'] = sentences['story']
     raw_data['sentence'] = sentences['sentence']
