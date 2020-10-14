@@ -347,7 +347,7 @@ if __name__ == '__main__':
                             best_model.to(device)
 
                             dev_mets, dev_perf = inferencer.evaluate(best_model, dev_batches, dev_labels,
-                                                                     av_loss=av_loss, set_type='dev',
+                                                                     set_type='dev',
                                                                      name=epoch_name, output_mode=CLF_TASK)
                             exit(0)
 
