@@ -119,7 +119,7 @@ if CLF_TASK == 'seq_sent_len':
 task_name_elements.extend([SPLIT, MODEL])
 TASK_NAME = '_'.join(task_name_elements)
 
-NUM_LABELS = 4 if CLF_TASK == 'seq_sent_clf' else 2
+NUM_LABELS = 4 if CLF_TASK == 'tok_clf' else 2
 
 STORE_EMBEDS = args.embeds
 models = [args.model]
