@@ -392,7 +392,7 @@ if __name__ == '__main__':
                     test_mets, test_perf = inferencer.evaluate(labels=basil_w_pred.label, preds=basil_w_pred.pred,
                                                                set_type='test', name=setting_name,
                                                                output_mode=CLF_TASK)
-                    exit(0)
+ 
                     logging.info(f"{test_perf}")
                     test_res.update(test_mets)
 
