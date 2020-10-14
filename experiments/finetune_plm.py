@@ -378,8 +378,6 @@ if __name__ == '__main__':
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
                         basil_w_pred['label'] = test_labels
-                        print(basil_w_pred.dtypes)
-                        exit(0)
                         basil_w_pred.to_csv(pred_fp)
 
                     # load predictions
