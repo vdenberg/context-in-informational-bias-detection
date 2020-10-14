@@ -650,11 +650,14 @@ class Inferencer():
         :param data: batches to predict on
         :param labels:
         if output_mode == 'sent_clf':
-                labels = list of ints
-                preds = list of ints
-        elif output_mode == 'sent_clf':
-                labels = list of ints
-                preds = list of ints
+                labels = list or series of ints
+                preds = list or series of ints
+        elif output_mode == 'tok_clf':
+                labels = list of lists or series of strings
+                preds = list of arrays or series of strings
+        elif output_mode == 'seq_sent_clf':
+                labels = list of lists or series of strings
+                preds = list of arrays or series of strings
 
         :param preds:
         :param av_loss:
@@ -668,10 +671,11 @@ class Inferencer():
             print(type(labels), type(labels[0]))
             print(type(preds), type(preds[0]))
             exit(0)
-            labels = np.asarray(labels).flatten()
-            preds = np.asarray(preds).flatten()
+            if output_mode != 'sent_clf':
+                labels = np.asarray(labels).flatten()
+                preds = np.asarray(preds).flatten()
         else:
-            if output_mode != 'tok_clf':
+            if output_mode != 'sent_clf':
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)
 
