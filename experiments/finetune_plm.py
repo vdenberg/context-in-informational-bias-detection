@@ -125,7 +125,13 @@ STORE_EMBEDS = args.embeds
 models = [args.model]
 seeds = [args.sv] if args.sv else model_seeds[CLF_TASK][MODEL]
 bss = [args.bs] if args.bs else [16]
-lrs = [args.lr] if args.lr else [1e-5]
+if args.lr:
+    lrs = [args.lr]
+elif MODEL == 'bert':
+    lrs = [2e-5]
+else:
+    lrs = [1e-5]
+
 if SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
 elif MODEL != 'bert' and CLF_TASK == 'sent_clf':
@@ -369,7 +375,7 @@ if __name__ == '__main__':
                             # store performance on just the fold in the table
                             fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
 
-                    logger.info(f"***** Get results of Seed {SEED_VAL}, Fold {fold_name} (pred exists: {os.path.exists(pred_fp)}) *****")
+                    logger.info(f"***** Get results of {setting_name} *****")
 
                     if not os.path.exists(pred_fp) or FORCE_PRED:
                         # compute performance on setting
@@ -378,9 +384,6 @@ if __name__ == '__main__':
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
                         basil_w_pred['label'] = test_labels
-                        print(type(test_labels), type(test_labels[0]))
-                        print(type(test_predictions), type(test_predictions[0]))
-                        print(basil_w_pred.dtypes)
                         basil_w_pred.to_csv(pred_fp)
 
                     # load predictions
@@ -388,11 +391,13 @@ if __name__ == '__main__':
                     logger.info(f'Preds from {pred_fp}')
 
                     logger.info(f"***** Results on Setting {setting_name} *****")
+                    logger.info(f"  Details: {best_val_res}")
+                    logger.info(f"  Logging to {LOG_FP}")
 
                     test_mets, test_perf = inferencer.evaluate(labels=basil_w_pred.label, preds=basil_w_pred.pred,
                                                                set_type='test', name=setting_name,
                                                                output_mode=CLF_TASK)
- 
+
                     logging.info(f"{test_perf}")
                     test_res.update(test_mets)
 
