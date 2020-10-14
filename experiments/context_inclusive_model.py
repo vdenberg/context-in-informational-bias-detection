@@ -301,7 +301,7 @@ logger.info(f" Max doc len: {MAX_DOC_LEN}")
 data = pd.read_json(DATA_FP)
 data.index = data.sentence_ids.values
 
-spl = Split(data, subset=SUBSET, recreate=PREPROCESS, n_voters=N_VOTERS)
+spl = Split(data, subset=SUBSET, recreate=PREPROCESS)
 folds = spl.apply_split(features=['story', 'source', 'id_num', 'art_context_doc_num', 'cov1_context_doc_num', 'cov2_context_doc_num', 'token_ids', 'token_mask', 'position', 'quartile', 'src_num'])
 if DEBUG:
     folds = [folds[0]] #, folds[1]
@@ -318,8 +318,8 @@ logger.info(f" --> Columns: {list(data.columns)}")
 # =====================================================================================
 
 for fold in folds:
-    fold['train_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in fold['train']]
-    fold['dev_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in fold['dev']]
+    fold['train_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in [fold['train']]]
+    fold['dev_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in [fold['dev']]]
     fold['test_batches'] = to_batches(to_tensors(split=fold['test'], device=device), batch_size=BATCH_SIZE, sampler=SAMPLER)
 
 # =====================================================================================
