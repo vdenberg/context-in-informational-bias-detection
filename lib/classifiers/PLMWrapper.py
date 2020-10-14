@@ -644,15 +644,30 @@ class Inferencer():
             return preds
 
     def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
+        """
+        Evaluate model (or provided predictions) on provided labels
+        :param model: model to evaluate
+        :param data: batches to predict on
+        :param labels:
+        if output_mode == 'sent_clf':
+                labels = list of ints
+                preds = list of ints
+        elif output_mode == 'sent_clf':
+                labels = list of ints
+                preds = list of ints
+
+        :param preds:
+        :param av_loss:
+        :param set_type:
+        :param name:
+        :param output_mode:
+        :return:
+        """
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
-
-            if output_mode == 'sent_clf':
-                pass
-                #labels = list of ints
-                #preds = list of ints
             print(type(labels), type(labels[0]))
             print(type(preds), type(preds[0]))
+            exit(0)
             labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
         else:
