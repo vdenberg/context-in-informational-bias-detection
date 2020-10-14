@@ -307,6 +307,9 @@ if __name__ == '__main__':
                                     scheduler = get_linear_schedule_with_warmup(optimizer,
                                                                                 num_warmup_steps=num_tr_warmup_steps,
                                                                                 num_training_steps=num_tr_opt_steps)
+                                else:
+                                    scheduler = None
+
                                 model.train()
 
                                 logger.info(f"***** Train {CLF_TASK} {fold_name} *****")
@@ -327,7 +330,8 @@ if __name__ == '__main__':
                                         loss.backward()
                                         tr_loss += loss.item()
                                         optimizer.step()
-                                        scheduler.step()
+                                        if scheduler:
+                                            scheduler.step()
 
                                         if step % PRINT_EVERY == 0 and step != 0:
                                             logging.info(f' Ep {ep} / {N_EPS} - {step} / {len(train_batches)} - Loss: {loss.item()}')
