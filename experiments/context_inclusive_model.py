@@ -63,6 +63,8 @@ def make_weight_matrix(embed_df, EMB_DIM):
     sent_id_map = {sent_id.lower(): sent_num_id+1 for sent_num_id, sent_id in enumerate(embed_df.index.values)}
     for sent_id, index in sent_id_map.items():  # word here is a sentence id like 91fox27
         if sent_id == '11fox23':
+            print('Found 11fox23!')
+            exit(0)
             pass
         else:
             embedding = sentence_embeddings[sent_id]
@@ -273,13 +275,7 @@ if PREPROCESS:
 
     processor = Processor(sentence_ids=raw_data.sentence_ids.values, max_doc_length=MAX_DOC_LEN)
     raw_data['sent_len'] = raw_data.sentence.apply(len)
-    print(list(raw_data.loc['46fox24'].sentence))
-    print(list(raw_data.loc['46fox24'].sentence))
-    raw_data = raw_data.fillna(0)
-    print(raw_data.loc['46fox24'])
-    raw_data = raw_data.dropna()
-    print(raw_data.loc['46fox24'])
-    exit(0)
+    raw_data = raw_data[raw_data.sentence > 0]
     raw_data['id_num'] = [processor.sent_id_map[i] for i in raw_data.sentence_ids.values]
     raw_data['art_context_doc_num'] = processor.to_numeric_documents(raw_data.art_context_document.values)
     raw_data['cov1_context_doc_num'] = processor.to_numeric_documents(raw_data.cov1_context_document.values)
