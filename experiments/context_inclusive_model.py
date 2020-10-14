@@ -443,9 +443,7 @@ for HIDDEN in hiddens:
 
                 for fold in folds:
 
-                    logger.info(f"--------------- CIM ON FOLD {fold['name']} ---------------")
                     fold_name = setting_name + f"_f{fold['name']}"
-
                     test_ids.extend(fold['test'].index.tolist())
                     test_labels.extend(fold['test'].label.tolist())
 
@@ -453,7 +451,6 @@ for HIDDEN in hiddens:
 
                         voter_preds = []
                         for i in range(N_VOTERS):
-                            logger.info(f"------------ VOTER {i} ------------")
                             voter_name = fold_name + f"_v{i}"
 
                             best_model_loc = os.path.join(CHECKPOINT_DIR, voter_name)
@@ -467,12 +464,15 @@ for HIDDEN in hiddens:
                             if not os.path.exists(best_model_loc) or FORCE_TRAIN:
                                 print(best_model_loc)
                                 exit(0)
+                                logger.info(f"--------------- TRAIN {setting_name} ON FOLD {fold['name']} V{i} ---------------")
                                 best_val_mets, test_mets, preds = cam_cl.train_on_fold(fold, voter_i=i)
                             else:
                                 preds, losses = cam_cl.produce_preds(fold, voter_name)
+                                test_mets, test_perf = my_eval(fold['test'].label, preds, set_type='test')
+                                print(test_perf)
+                            exit(0)
 
                             voter_preds.append(preds)
-                            print()
 
                         fold_test_predictions = voter_preds[0]
                     test_predictions.extend(fold_test_predictions)

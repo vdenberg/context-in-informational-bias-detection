@@ -3,7 +3,7 @@ import torch
 from torch import nn
 import os, pickle
 import numpy as np
-from lib.utils import to_tensor, to_batches, arrays_in_series
+from lib.utils import plm_feats_to_tensors, to_batches, arrays_in_series
 from lib.evaluate.Eval import my_eval
 from torch.nn import CrossEntropyLoss, MSELoss, Embedding, Dropout, Linear, Sigmoid, LSTM
 from transformers.configuration_roberta import RobertaConfig
@@ -27,7 +27,7 @@ class InputFeatures(object):
 
 def load_features(fp, batch_size, sampler='sequential'):
     with open(fp, "rb") as f:
-        ids, data, labels = to_tensor(pickle.load(f))
+        ids, data, labels = plm_feats_to_tensors(pickle.load(f))
     batches = to_batches(data, batch_size=batch_size, sampler=sampler)
     return ids, batches, labels
 

@@ -6,7 +6,7 @@ from torch.optim import lr_scheduler
 from torch.utils.data import (DataLoader, SequentialSampler, RandomSampler, TensorDataset)
 from lib.evaluate.Eval import my_eval
 from transformers import BertModel, BertPreTrainedModel, BertForSequenceClassification
-from lib.utils import format_runtime, format_checkpoint_filepath, get_torch_device
+from lib.utils import format_runtime, get_torch_device
 import os, time
 import numpy as np
 

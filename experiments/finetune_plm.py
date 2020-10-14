@@ -11,7 +11,7 @@ import random, argparse
 import numpy as np
 import pandas as pd
 import os, sys
-from lib.utils import get_torch_device, clean_mean
+from lib.utils import get_torch_device, clean_mean, InputFeatures
 import logging
 
 '''
@@ -352,7 +352,7 @@ if __name__ == '__main__':
 
                             # get embeddings
                             if STORE_EMBEDS:
-                                for EMB_TYPE in ['cross4bert']: #poolbert', 'avbert', 'unpoolbert', 'crossbert'
+                                for EMB_TYPE in ['cross4bert']:
                                     emb_fp = os.path.join(embedding_dir, f'{name}_basil_w_{EMB_TYPE}')
 
                                     PREFERRED_EMB_SV = 49
