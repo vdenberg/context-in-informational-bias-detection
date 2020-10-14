@@ -91,8 +91,8 @@ parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-clf_task', '--clf_task', help='tok_clf|sent_clf', type=str, default='sent_clf')
 parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
 parser.add_argument('-model', '--model', help='bert|rob_base',type=str, default='rob_base')
-parser.add_argument('-lr', '--lr', type=float, default=None) # 5e-5, 3e-5, 2e-5
-parser.add_argument('-bs', '--bs', type=int, default=None) # 16, 21
+parser.add_argument('-lr', '--lr', type=float, default=None)
+parser.add_argument('-bs', '--bs', type=int, default=None)
 parser.add_argument('-sv', '--sv', type=int, default=None)
 parser.add_argument('-embeds', '--embeds', action='store_true', default=False)
 parser.add_argument('-win', '--window', action='store_true', default=False)
