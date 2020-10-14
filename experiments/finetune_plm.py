@@ -320,14 +320,18 @@ if __name__ == '__main__':
                                     epoch_name = name + f"_ep{ep}"
                                     tr_loss = 0
                                     for step, batch in enumerate(train_batches):
+                                        print(batch)
                                         batch = tuple(t.to(device) for t in batch)
 
                                         model.zero_grad()
                                         outputs = model(batch[0], batch[1], labels=batch[2])
                                         loss = outputs[0]
 
+                                        print(batch[0])
+                                        print(batch[1])
+                                        print(batch[2])
+
                                         print(batch[0], batch[1], batch[2])
-                                        print(loss)
                                         exit(0)
                                         loss.backward()
                                         tr_loss += loss.item()
