@@ -664,6 +664,7 @@ class Inferencer():
         else:
             print(type(labels), type(labels[0]))
             print(type(preds), type(preds[0]))
+            exit(0)
             if output_mode != 'sent_clf':
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)

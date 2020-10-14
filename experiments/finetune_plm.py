@@ -382,7 +382,6 @@ if __name__ == '__main__':
                         print(type(test_predictions), type(test_predictions[0]))
                         print(basil_w_pred.dtypes)
                         basil_w_pred.to_csv(pred_fp)
-                        exit(0)
 
                     # load predictions
                     basil_w_pred = pd.read_csv(pred_fp) #, dtype={'pred': np.int64})
