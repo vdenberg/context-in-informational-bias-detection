@@ -352,6 +352,8 @@ if EMB_TYPE in ['use', 'sbert']:
 
 for fold in folds:
     weights_matrices = []
+    print(len(fold['train']))
+    exit(0)
     for v in range(len(fold['train'])):
         # read embeddings file
         if EMB_TYPE not in ['use', 'sbert']:
