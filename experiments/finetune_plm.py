@@ -119,7 +119,7 @@ if CLF_TASK == 'seq_sent_len':
 task_name_elements.extend([SPLIT, MODEL])
 TASK_NAME = '_'.join(task_name_elements)
 
-NUM_LABELS = 2 if CLF_TASK == 'sent_clf' else 4
+NUM_LABELS = 4 if CLF_TASK == 'seq_sent_clf' else 2
 
 STORE_EMBEDS = args.embeds
 models = [args.model]
@@ -312,7 +312,7 @@ if __name__ == '__main__':
 
                                 model.train()
 
-                                logger.info(f"***** Train {CLF_TASK} {fold_name} *****")
+                                logger.info(f"***** Train {CLF_TASK} {name} *****")
                                 logger.info(f"  Details: {best_val_res}")
                                 logger.info(f"  Logging to {LOG_FP}")
 
@@ -378,7 +378,7 @@ if __name__ == '__main__':
                             # store performance on just the fold in the table
                             fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
 
-                    logger.info(f"***** Predict {CLF_TASK} {fold_name} *****")
+                    logger.info(f"***** Predict {CLF_TASK} {name} *****")
                     logger.info(f"  Details: {best_val_res}")
                     logger.info(f"  Logging to {LOG_FP}")
 
@@ -395,8 +395,7 @@ if __name__ == '__main__':
                     basil_w_pred = pd.read_csv(pred_fp) #, dtype={'pred': np.int64})
                     logger.info(f'Preds from {pred_fp}')
 
-
-                    logger.info(f"***** Eval {CLF_TASK} {fold_name} *****")
+                    logger.info(f"***** Eval {CLF_TASK} {name} *****")
                     logger.info(f"  Details: {best_val_res}")
                     logger.info(f"  Logging to {LOG_FP}")
 

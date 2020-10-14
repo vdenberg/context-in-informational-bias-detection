@@ -270,9 +270,9 @@ if PREPROCESS:
         print("Failure")
         exit(0)
 
+    print(sentences.head())
+    print(sentences.head()[['source']])
     raw_data['source'] = sentences['source']
-    print(raw_data.head())
-    print(raw_data.head()[['source']])
     raw_data['src_num'] = raw_data.source.apply(lambda x: {'fox': 0, 'nyt': 1, 'hpo': 2}[x])
     raw_data['story'] = sentences['story']
     raw_data['sentence'] = sentences['sentence']
