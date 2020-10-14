@@ -12,6 +12,7 @@ from allennlp.training.metrics import F1Measure, CategoricalAccuracy
 from allennlp.modules import TimeDistributed
 from allennlp.modules.conditional_random_field import ConditionalRandomField
 
+
 # helpers
 class InputFeatures(object):
     """A single set of features of data."""

@@ -273,6 +273,8 @@ if PREPROCESS:
 
     processor = Processor(sentence_ids=raw_data.sentence_ids.values, max_doc_length=MAX_DOC_LEN)
     print(list(raw_data.loc['46fox24'].sentence))
+    raw_data = raw_data.fillna(0)
+    print(raw_data.loc['46fox24'])
     raw_data = raw_data.dropna()
     print(raw_data.loc['46fox24'])
     exit(0)

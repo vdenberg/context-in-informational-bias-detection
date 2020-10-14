@@ -1,6 +1,6 @@
 pandas
 transformers==2.3.0
 allennlp==0.9.0
-pytorch cudatoolkit=10.1 #conda install pytorch torchvision cudatoolkit=9.2 -c pytorch
+pytorch cudatoolkit=10.1
 scikit-learn
 statsmodels
