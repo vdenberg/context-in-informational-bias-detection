@@ -665,6 +665,8 @@ class Inferencer():
             if output_mode != 'sent_clf':
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)
+                print(preds[0])
+                print(labels[0])
 
         if output_mode == 'seq_sent_clf':
             m = labels != -1
