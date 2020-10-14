@@ -321,8 +321,10 @@ logger.info(f" --> Columns: {list(data.columns)}")
 # =====================================================================================
 
 for fold in folds:
-    fold['train_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in [fold['train']]]
-    fold['dev_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in [fold['dev']]]
+    fold['train'] = [fold['train']]
+    fold['dev'] = [fold['dev']]
+    fold['train_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in fold['train']]
+    fold['dev_batches'] = [to_batches(to_tensors(split=voter, device=device), batch_size=BATCH_SIZE, sampler=SAMPLER) for voter in fold['dev']]
     fold['test_batches'] = to_batches(to_tensors(split=fold['test'], device=device), batch_size=BATCH_SIZE, sampler=SAMPLER)
 
 # =====================================================================================
@@ -352,7 +354,7 @@ if EMB_TYPE in ['use', 'sbert']:
 
 for fold in folds:
     weights_matrices = []
-    for v in range(len([fold['train']])):
+    for v in range(len(fold['train'])):
         # read embeddings file
         if EMB_TYPE not in ['use', 'sbert']:
             # embed_fp = f"data/bert_231_bs16_lr2e-05_f{fold['name']}_basil_w_{EMB_TYPE}.csv"
