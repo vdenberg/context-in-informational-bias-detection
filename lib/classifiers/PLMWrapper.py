@@ -658,6 +658,9 @@ class Inferencer():
         """
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
+            print(preds[0])
+            print(labels[0])
+            exit(0)
             if output_mode != 'sent_clf':
                 labels = np.asarray(labels).flatten()
                 preds = np.asarray(preds).flatten()
@@ -665,9 +668,6 @@ class Inferencer():
             if output_mode != 'sent_clf':
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)
-                print(preds[0])
-                print(labels[0])
-            exit(0)
 
         if output_mode == 'seq_sent_clf':
             m = labels != -1
