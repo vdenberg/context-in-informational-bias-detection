@@ -641,7 +641,7 @@ class Inferencer():
         if return_embeddings:
             return embeddings
         else:
-            return preds
+            return np.asarray(preds)
 
     def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
         """
@@ -653,11 +653,11 @@ class Inferencer():
                 labels = list or series of ints
                 preds = list or series of ints
         elif output_mode == 'tok_clf':
-                labels = list of lists or series of strings
-                preds = list of arrays or series of strings
+                labels = array of arrays or series of strings
+                preds = array of arrays or series of strings
         elif output_mode == 'seq_sent_clf':
-                labels = list of lists or series of strings
-                preds = list of arrays or series of strings
+                labels = array of arrays or series of strings
+                preds = array of arrays or series of strings
 
         :param preds:
         :param av_loss:
@@ -668,13 +668,12 @@ class Inferencer():
         """
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
+            if output_mode != 'sent_clf':
+                labels = labels.flatten()
+                preds = preds.flatten()
+        else:
             print(type(labels), type(labels[0]))
             print(type(preds), type(preds[0]))
-            exit(0)
-            if output_mode != 'sent_clf':
-                labels = np.asarray(labels).flatten()
-                preds = np.asarray(preds).flatten()
-        else:
             if output_mode != 'sent_clf':
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)

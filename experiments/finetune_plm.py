@@ -346,11 +346,6 @@ if __name__ == '__main__':
                                                                         output_attentions=False)
                             best_model.to(device)
 
-                            dev_mets, dev_perf = inferencer.evaluate(best_model, dev_batches, dev_labels,
-                                                                     set_type='dev',
-                                                                     name=name, output_mode=CLF_TASK)
-                            exit(0)
-
                             # get predictions
                             fold_test_predictions = inferencer.predict(best_model, test_batches, output_mode=CLF_TASK)
                             test_predictions.extend(fold_test_predictions)
@@ -394,6 +389,7 @@ if __name__ == '__main__':
                     test_mets, test_perf = inferencer.evaluate(labels=basil_w_pred.label, preds=basil_w_pred.pred,
                                                                set_type='test', name=setting_name,
                                                                output_mode=CLF_TASK)
+                    exit(0)
                     logging.info(f"{test_perf}")
                     test_res.update(test_mets)
 
