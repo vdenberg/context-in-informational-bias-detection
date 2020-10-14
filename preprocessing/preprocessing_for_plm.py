@@ -49,7 +49,7 @@ def enforce_max_sent_per_example(sentences, max_sent_per_example, labels=None):
         return [sentences]
 
 
-def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex, window):
+def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex):
     flat_input_ids = []
     flat_labels = []
     flat_ids = []
@@ -71,6 +71,8 @@ def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex, window):
     lab_pad_len = max_sent_in_ex - len(flat_labels)
     flat_labels += [-1] * lab_pad_len
 
+    if not len(flat_labels) == max_sent_in_ex:
+        print(len(flat_labels), max_sent_in_ex)
     assert len(flat_labels) == max_sent_in_ex
 
     return InputFeatures(my_id=None,
