@@ -309,6 +309,8 @@ if __name__ == '__main__':
                                 model.train()
 
                                 logger.info(f"***** Train {CLF_TASK} {fold_name} *****")
+                                logger.info(f"  Details: {best_val_res}")
+                                logger.info(f"  Logging to {LOG_FP}")
 
                                 for ep in range(1, N_EPS + 1):
                                     epoch_name = name + f"_ep{ep}"
@@ -373,7 +375,9 @@ if __name__ == '__main__':
                             fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
 
                     logger.info(f"***** Predict {CLF_TASK} {fold_name} *****")
-
+                    logger.info(f"  Details: {best_val_res}")
+                    logger.info(f"  Logging to {LOG_FP}")
+                    
                     if not os.path.exists(pred_fp) or FORCE_PRED:
                         # compute performance on setting
                         assert len(test_predictions) == len(test_ids)
@@ -386,6 +390,7 @@ if __name__ == '__main__':
                     # load predictions
                     basil_w_pred = pd.read_csv(pred_fp) #, dtype={'pred': np.int64})
                     logger.info(f'Preds from {pred_fp}')
+
 
                     logger.info(f"***** Eval {CLF_TASK} {fold_name} *****")
                     logger.info(f"  Details: {best_val_res}")
