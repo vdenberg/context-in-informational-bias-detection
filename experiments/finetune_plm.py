@@ -322,7 +322,6 @@ if __name__ == '__main__':
                                     for step, batch in enumerate(train_batches):
                                         batch = tuple(t.to(device) for t in batch)
 
-
                                         model.zero_grad()
                                         outputs = model(batch[0], batch[1], labels=batch[2])
                                         loss = outputs[0]

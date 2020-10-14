@@ -672,10 +672,6 @@ class Inferencer():
             preds = preds[m]
             preds = [p if p != -1 else 0 for p in preds]
 
-        unique_labels = set(labels)
-        unique_preds = set(preds)
-        print(unique_labels, unique_preds)
-
         if len(preds) != len(labels):
             print(f'Sizes of {set_type} not equal')
             print(preds, labels)
