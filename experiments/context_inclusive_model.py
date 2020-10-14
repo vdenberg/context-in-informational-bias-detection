@@ -476,8 +476,8 @@ for HIDDEN in hiddens:
                             voter_preds.append(preds)
                             print()
 
-                        test_predictions = voter_preds[0]
-                    test_labels.extend(test_predictions)
+                        fold_test_predictions = voter_preds[0]
+                    test_predictions.extend(fold_test_predictions)
 
                 logger.info(f"***** Predict {setting_name} *****")
 
