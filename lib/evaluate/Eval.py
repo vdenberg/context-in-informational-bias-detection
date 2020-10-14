@@ -17,16 +17,13 @@ def convert_bio_to_binary(labels):
 def get_metrics(labels, preds, opmode):
     assert len(preds) == len(labels)
 
-    # assert set(labels) == {0, 1}
-    unique_labels = set(labels)
-    unique_preds = set(preds)
-    print(unique_labels, unique_preds)
-
     if opmode == 'tok_clf':
         preds = convert_bio_to_binary(preds)
         labels = convert_bio_to_binary(labels)
 
-
+    assert set(labels) == {0, 1}
+    # unique_labels = set(labels)
+    # unique_preds = set(preds)
 
     #mcc = matthews_corrcoef(labels, preds)
     acc = accuracy_score(labels, preds)
