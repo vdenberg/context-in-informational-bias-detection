@@ -646,7 +646,12 @@ class Inferencer():
     def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
+
+            if output_mode == 'sent_clf':
+                #labels = list of ints
+                #preds = list of ints
             print(type(labels), type(labels[0]))
+            print(type(preds), type(preds[0]))
             labels = np.asarray(labels).flatten()
             preds = np.asarray(preds).flatten()
         else:
