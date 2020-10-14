@@ -151,6 +151,7 @@ def arrays_in_series(series):
             el = tuple(map(int, el.split(' ')))
         except:
             print('Unusual input in series:', el)
+            print(el.split(' '))
         flat.extend(el)
     return np.asarray(flat)
 
