@@ -670,7 +670,7 @@ class Inferencer():
             m = labels != -1
             labels = labels[m]
             preds = preds[m]
-            preds = np.where(preds!=-1, 0, preds)
+            preds = [p if p != -1 else 0 for p in preds]
 
         unique_labels = set(labels)
         unique_preds = set(preds)
