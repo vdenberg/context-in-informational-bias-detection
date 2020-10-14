@@ -143,7 +143,7 @@ FORCE_TRAIN = args.force_train
 if DEBUG:
     FORCE_PRED = True
     FORCE_TRAIN = True
-    N_EPS = 1
+    N_EPS = 2
     #seeds = [0]
     #bss = [32]
     #lrs = [3e-5]
@@ -330,9 +330,6 @@ if __name__ == '__main__':
 
                                     av_loss = tr_loss / len(train_batches)
 
-                                    print('special case saving')
-                                    save_model(model, CHECKPOINT_DIR, model_loc_name)
-                                    print('dev eval starts')
                                     dev_mets, dev_perf = inferencer.evaluate(model, dev_batches, dev_labels,
                                                                                 av_loss=av_loss, set_type='dev',
                                                                                 name=epoch_name, output_mode=CLF_TASK)

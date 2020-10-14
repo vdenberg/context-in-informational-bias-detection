@@ -656,9 +656,6 @@ class Inferencer():
         :param output_mode: sent_clf | tok_clf | seq_sent_clf
         :return:
         """
-        print('dev eval entered')
-        print(preds)
-        print(labels[0])
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
             print(output_mode)
