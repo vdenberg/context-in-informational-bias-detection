@@ -666,10 +666,19 @@ class Inferencer():
                 preds = arrays_in_series(preds)
                 labels = arrays_in_series(labels)
 
+        unique_labels = set(labels)
+        unique_preds = set(preds)
+        print(unique_labels, unique_preds)
+
         if output_mode == 'seq_sent_clf':
             m = labels != -1
             labels = labels[m]
             preds = preds[m]
+
+        unique_labels = set(labels)
+        unique_preds = set(preds)
+        print(unique_labels, unique_preds)
+        exit(0)
 
         if len(preds) != len(labels):
             print(f'Sizes of {set_type} not equal')
