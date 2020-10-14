@@ -293,11 +293,10 @@ if __name__ == '__main__':
                                                                        output_attentions=False)
 
                                 model.to(device)
-                                optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.01,
-                                                  eps=1e-6)  # To reproduce BertAdam specific behavior set correct_bias=False
 
                                 BERT_TOK_CLF = (CLF_TASK == 'tok_clf') & (MODEL == 'bert')
                                 if not BERT_TOK_CLF:
+                                    optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.01, eps=1e-6)
                                     n_train_batches = len(train_batches)
                                     half_train_batches = int(n_train_batches / 2)
                                     GRADIENT_ACCUMULATION_STEPS = 2
@@ -308,6 +307,7 @@ if __name__ == '__main__':
                                                                                 num_warmup_steps=num_tr_warmup_steps,
                                                                                 num_training_steps=num_tr_opt_steps)
                                 else:
+                                    optimizer = AdamW(model.parameters(), lr=LEARNING_RATE, eps=1e-8)
                                     scheduler = None
 
                                 model.train()
