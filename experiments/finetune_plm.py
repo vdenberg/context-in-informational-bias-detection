@@ -348,7 +348,7 @@ if __name__ == '__main__':
 
                             dev_mets, dev_perf = inferencer.evaluate(best_model, dev_batches, dev_labels,
                                                                      set_type='dev',
-                                                                     name=epoch_name, output_mode=CLF_TASK)
+                                                                     name=name, output_mode=CLF_TASK)
                             exit(0)
 
                             # get predictions
