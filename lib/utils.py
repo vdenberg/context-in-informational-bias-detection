@@ -148,6 +148,7 @@ def arrays_in_series(series):
         print(el)
         el = el.strip('[]')
         el = re.sub('  ','',el)
+        print(el)
         el = tuple(map(int, el.split(' ')))
         flat.extend(el)
     return np.asarray(flat)
