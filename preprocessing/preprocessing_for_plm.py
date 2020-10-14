@@ -147,7 +147,7 @@ def redistribute_feats(features, cls=0, pad=1, max_sent=10, max_len=None, window
 
     finfeats = []
     for row in sequence_rows:
-        ff = flatten_sequence(row, cls, pad, max_len, max_sent, window)
+        ff = flatten_sequence(row, cls, pad, max_len, max_sent)
         finfeats.append(ff)
     return finfeats
 
