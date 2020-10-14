@@ -37,37 +37,12 @@ class Processor():
         return numeric_context_docs
 
     def to_numeric_sentences(self, sentence_ids):
-        with open("data/features_for_bert/folds/all_features.pkl", "rb") as f:
+        with open("data/inputs/sent_clf/features_for_bert/all_features.pkl", "rb") as f:
             features = pickle.load(f)
         feat_dict = {f.my_id.lower(): f for f in features}
         token_ids = [feat_dict[i].input_ids for i in sentence_ids]
         token_mask = [feat_dict[i].input_mask for i in sentence_ids]
         self.max_sent_length = len(token_ids[0])
-        '''
-        tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=False)
-
-        all_tokens = [tokenizer.tokenize(sent) for sent in sentences]
-        all_tokens = [["[CLS]"] + tokens + ["[SEP]"] for tokens in all_tokens]
-        max_sent_length = max([len(t) for t in all_tokens])
-        self.max_sent_length = max_sent_length
-
-        token_ids = []
-        token_mask = []
-        tok_seg_ids = []
-
-        for tokens in all_tokens:
-            segment_ids = [0] * len(tokens)
-            input_ids = tokenizer.convert_tokens_to_ids(tokens)
-            input_mask = [1] * len(input_ids)
-            padding = [0] * (max_sent_length - len(input_ids))
-            input_ids += padding
-            input_mask += padding
-            segment_ids += padding
-
-            token_ids.append(input_ids)
-            token_mask.append(input_mask)
-            tok_seg_ids.append(segment_ids)
-        '''
         return token_ids, token_mask
 
 
