@@ -106,11 +106,11 @@ parser.add_argument('-wu', '--warmup_proportion', type=float, default=0.1)
 parser.add_argument('-g', '--gamma', type=float, default=.95)
 
 # NEURAL NETWORK DIMS
-parser.add_argument('-hid', '--hidden_size', type=int, default=600)
+parser.add_argument('-hid', '--hidden_size', type=int, default=1200)
 parser.add_argument('-lay', '--bilstm_layers', type=int, default=2)
 
 # OTHER NN PARAMS
-parser.add_argument('-sv', '--seed_val', type=int, default=34)
+parser.add_argument('-sv', '--seed_val', type=int, default=11)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-nopad', '--no_padding', action='store_true', default=False)
 parser.add_argument('-inf', '--step_info_every', type=int, default=250)
