@@ -377,7 +377,7 @@ if __name__ == '__main__':
                     logger.info(f"***** Predict {CLF_TASK} {fold_name} *****")
                     logger.info(f"  Details: {best_val_res}")
                     logger.info(f"  Logging to {LOG_FP}")
-                    
+
                     if not os.path.exists(pred_fp) or FORCE_PRED:
                         # compute performance on setting
                         assert len(test_predictions) == len(test_ids)
