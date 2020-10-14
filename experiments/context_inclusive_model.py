@@ -272,6 +272,8 @@ if PREPROCESS:
     raw_data['quartile'] = quartiles
 
     processor = Processor(sentence_ids=raw_data.sentence_ids.values, max_doc_length=MAX_DOC_LEN)
+    raw_data['sent_len'] = raw_data.sentence.apply(len)
+    print(list(raw_data.loc['46fox24'].sentence))
     print(list(raw_data.loc['46fox24'].sentence))
     raw_data = raw_data.fillna(0)
     print(raw_data.loc['46fox24'])
