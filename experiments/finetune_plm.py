@@ -331,7 +331,6 @@ if __name__ == '__main__':
                                     dev_mets, dev_perf = inferencer.evaluate(model, dev_batches, dev_labels,
                                                                                 av_loss=av_loss, set_type='dev',
                                                                                 name=epoch_name, output_mode=CLF_TASK)
-                                    exit(0)
 
                                     # check if best
                                     high_score = ''
@@ -346,6 +345,11 @@ if __name__ == '__main__':
                                                                         output_hidden_states=True,
                                                                         output_attentions=False)
                             best_model.to(device)
+
+                            dev_mets, dev_perf = inferencer.evaluate(best_model, dev_batches, dev_labels,
+                                                                     av_loss=av_loss, set_type='dev',
+                                                                     name=epoch_name, output_mode=CLF_TASK)
+                            exit(0)
 
                             # get predictions
                             fold_test_predictions = inferencer.predict(best_model, test_batches, output_mode=CLF_TASK)
