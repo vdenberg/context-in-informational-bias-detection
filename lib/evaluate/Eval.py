@@ -21,7 +21,7 @@ def get_metrics(labels, preds, opmode):
         preds = convert_bio_to_binary(preds)
         labels = convert_bio_to_binary(labels)
 
-    assert set(labels) == {0, 1}
+    # assert set(labels) == {0, 1}
     # unique_labels = set(labels)
     # unique_preds = set(preds)
 
