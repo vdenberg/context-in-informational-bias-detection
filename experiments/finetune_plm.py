@@ -144,9 +144,10 @@ if DEBUG:
     FORCE_PRED = True
     FORCE_TRAIN = True
     N_EPS = 2
-    #seeds = [0]
-    #bss = [32]
-    #lrs = [3e-5]
+    seeds = [0]
+    if CLF_TASK != 'seq_sent_clf':
+        bss = [32]
+        lrs = [3e-5]
     folds = ['1']
 
 ########################
