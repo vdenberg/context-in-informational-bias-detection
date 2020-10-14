@@ -448,8 +448,8 @@ for HIDDEN in hiddens:
                     logger.info(f"--------------- CIM ON FOLD {fold['name']} ---------------")
                     fold_name = setting_name + f"_f{fold['name']}"
 
-                    test_ids.extend(fold['test'].index)
-                    test_labels.extend(fold['test'].label)
+                    test_ids.extend(fold['test'].index.tolist())
+                    test_labels.extend(fold['test'].label.tolist())
 
                     if not os.path.exists(pred_fp) or FORCE_PRED:
 
@@ -474,6 +474,7 @@ for HIDDEN in hiddens:
                                 preds, losses = cam_cl.produce_preds(fold, voter_name)
 
                             voter_preds.append(preds)
+                            print()
 
                         test_predictions = voter_preds[0]
                     test_labels.extend(test_predictions)
@@ -482,6 +483,9 @@ for HIDDEN in hiddens:
 
                 if not os.path.exists(pred_fp) or FORCE_PRED:
                     # compute performance on setting
+                    print(type(test_predictions), type(test_predictions[0]), test_predictions[0])
+                    print(type(test_ids), type(test_ids[0]), test_ids[0])
+                    print(type(test_labels), type(test_labels[0]), test_labels[0])
                     assert len(test_predictions) == len(test_ids)
                     assert len(test_predictions) == len(test_labels)
                     basil_w_pred = pd.DataFrame(index=test_ids)
