@@ -326,6 +326,9 @@ if __name__ == '__main__':
                                         outputs = model(batch[0], batch[1], labels=batch[2])
                                         loss = outputs[0]
 
+                                        print(batch[0], batch[1], batch[2])
+                                        print(loss)
+                                        exit(0)
                                         loss.backward()
                                         tr_loss += loss.item()
                                         optimizer.step()
