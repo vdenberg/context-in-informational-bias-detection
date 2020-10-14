@@ -461,10 +461,13 @@ for HIDDEN in hiddens:
                             cam_cl = Classifier(model=cam, logger=logger, fig_dir=FIG_DIR, name=voter_name, patience=PATIENCE, n_eps=N_EPOCHS,
                                             printing=PRINT_STEP_EVERY, load_from_ep=None)
 
+                            cam_cl.best_model_loc = best_model_loc
+                            best_val_mets, test_mets, preds = cam_cl.train_on_fold(fold, voter_i=i)
                             if not os.path.exists(best_model_loc) or FORCE_TRAIN:
                                 print(best_model_loc)
                                 exit(0)
                                 logger.info(f"--------------- TRAIN {setting_name} ON FOLD {fold['name']} V{i} ---------------")
+
                                 best_val_mets, test_mets, preds = cam_cl.train_on_fold(fold, voter_i=i)
                             else:
                                 preds, losses = cam_cl.produce_preds(fold, voter_name)

@@ -136,8 +136,8 @@ class Classifier:
 
     def train_on_fold(self, fold, voter_i):
         self.cur_fold = fold['name']
-        train_elapsed, losses = self.train_all_epochs(fold, voter_i)
-        self.train_time = train_elapsed
+        #train_elapsed, losses = self.train_all_epochs(fold, voter_i)
+        #self.train_time = train_elapsed
 
         # plot learning curve
         #loss_plt = plot_scores(losses)
