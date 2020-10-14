@@ -641,7 +641,7 @@ class Inferencer():
         if return_embeddings:
             return embeddings
         else:
-            return np.asarray(preds)
+            return preds
 
     def evaluate(self, model=None, data=None, labels=None, preds=None, av_loss=None, set_type='dev', name='Basil', output_mode='sent_clf'):
         """
@@ -649,17 +649,7 @@ class Inferencer():
         :param model: model to evaluate
         :param data: batches to predict on
         :param labels:
-        :param preds:
-        if output_mode == 'sent_clf':
-                labels = list or series of ints
-                preds = list or series of ints
-        elif output_mode == 'tok_clf':
-                labels = array of arrays or series of strings
-                preds = array of arrays or series of strings
-        elif output_mode == 'seq_sent_clf':
-                labels = array of arrays or series of strings
-                preds = array of arrays or series of strings
-
+        :param preds: predictions, either produced on the spot or loaded from a csv
         :param av_loss: average loss of model
         :param set_type: development or test data
         :param name: name of the model
@@ -669,8 +659,8 @@ class Inferencer():
         if preds is None:
             preds = self.predict(model, data, output_mode=output_mode)
             if output_mode != 'sent_clf':
-                labels = labels.flatten()
-                preds = preds.flatten()
+                labels = np.asarray(labels).flatten()
+                preds = np.asarray(preds).flatten()
         else:
             print(type(labels), type(labels[0]))
             print(type(preds), type(preds[0]))

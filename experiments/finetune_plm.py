@@ -378,11 +378,7 @@ if __name__ == '__main__':
                         basil_w_pred = pd.DataFrame(index=test_ids)
                         basil_w_pred['pred'] = test_predictions
                         basil_w_pred['label'] = test_labels
-                        print(type(test_labels), type(test_labels[0]))
-                        print(type(test_predictions), type(test_predictions[0]))
-                        print(basil_w_pred.dtypes)
                         basil_w_pred.to_csv(pred_fp)
-                        exit(0)
 
                     # load predictions
                     basil_w_pred = pd.read_csv(pred_fp) #, dtype={'pred': np.int64})
