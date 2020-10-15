@@ -1,32 +1,61 @@
 # Context In Informational Bias Detection
 
+### Citing
+
+
+```bibtex
+@inproceedings{dontstoppretraining2020,
+ author = {Suchin Gururangan and Ana Marasović and Swabha Swayamdipta and Kyle Lo and Iz Beltagy and Doug Downey and Noah A. Smith},
+ title = {Don't Stop Pretraining: Adapt Language Models to Domains and Tasks},
+ year = {2020},
+ booktitle = {Proceedings of ACL},
+}
+```
+
 ### Installing
 
-1. 
+1. Clone this repository and install dependencies:
 
-    ```shell script
+   ```shell script
    git clone https://github.com/vdenberg/context-in-informational-bias-detection.git
    pip install -r requirements.txt
    ```
- 
-3. Run preprocessing script.
 
-    ```shell script
+2. Download and unzip BASIL Corpus from: https://github.com/marshallwhiteorg/emnlp19-media-bias/blob/master/emnlp19-BASIL.zip
+   to **context-in-informational-bias-detection/data/emnlp19-BASIL**
+
+3. Preprocess data.
+
+```shell script
     sh preprocess.sh
    ```
 
-4. Choose the experiment you're interested in, and continue instructions.
+4. Choose the experiment you're interested in, and continue instructions below, or, to reproduce the analyses from the paper,
+run the following:
+
+ ```shell script
+    python experiments/finetune_plm.py 
+    python experiments/context_inclusive.py -context ev -cim_type cim
+    python analyses/sign_test.py
+    python analyses/in_depth_analysis.py
+   ```
+
+### BERT and RoBERTa baselines: 
+
+ ```shell script
+    python experiments/finetune_plm.py -clf_task [sent_clf|tok_clf] -model [bert|rob_base]
+   ```
 
 ### Sequential Sentence Classification: 
 
-```shell python3
-experiments/finetune_plm.py -clf_task seq_sent_clf -exlen [5|10]] -win
+```shell script
+python experiments/finetune_plm.py -clf_task seq_sent_clf -exlen [5|10]] -win
 ```
 
 ### Article & Context: 
 
-```shell python3
-experiments/context_inclusive.py -context [ART|EV] -cim_type [cim|cim*]
+```shell script
+python experiments/context_inclusive.py -context [art|ev] -cim_type [cim|cim*]
 ```
 
 ### Domain Context
@@ -38,8 +67,8 @@ experiments/context_inclusive.py -context [ART|EV] -cim_type [cim|cim*]
 3. Run following commands to get basil-adapted models:
 
     ##### TAPT
-    ```
-    /opt/slurm/bin/srun --partition gpushort --gres=gpu:1 --mem 20GB python -m scripts.run_language_modeling --train_data_file data/inputs/tapt/basil_train.txt \
+    ```shell script
+    python -m scripts.run_language_modeling --train_data_file data/inputs/tapt/basil_train.txt \
                                             --line_by_line \
                                             --output_dir roberta-basil-tapt \
                                             --model_type roberta-base \
@@ -57,8 +86,8 @@ experiments/context_inclusive.py -context [ART|EV] -cim_type [cim|cim*]
                                             --logging_steps 50
     ```
     ##### DAPTTAPT
-    ```
-    /opt/slurm/bin/srun --partition gpushort --gres=gpu:1 --mem 20GB python -m scripts.run_language_modeling --train_data_file data/inputs/tapt/basil_train.txt \
+    ```shell script
+    python -m scripts.run_language_modeling --train_data_file data/inputs/tapt/basil_train.txt \
                                             --line_by_line \
                                             --output_dir roberta-basil-dapttapt \
                                             --model_type roberta-base \
@@ -76,14 +105,3 @@ experiments/context_inclusive.py -context [ART|EV] -cim_type [cim|cim*]
                                             --logging_steps 50
     ```
             
-### Reproduce analyses:
-
-To reproduce significance test:
-```shell python3
-analyses/sign_test.py 
-```
-
-To reproduce comparisons of performance on different data:
-```shell python3
-analyses/analysis.py 
-```

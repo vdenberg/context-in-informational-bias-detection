@@ -1,8 +1,21 @@
 import pandas as pd
 from lib.ErrorAnalysis import ErrorAnalysis
+from scipy.stats import ttest_ind
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.max_colwidth', 1000)
 pd.set_option('display.width', 2000)
+
+
+def students_t_test(results1, results2):
+	stat, p = ttest_ind(results1, results2)
+	print('stat=%.3f, p=%.3f' % (stat, p))
+	if p > 0.05:
+		print('Probably the same distribution')
+	else:
+		print('Probably different distributions')
+
+
+
 
 ea = ErrorAnalysis('base_best')
 
