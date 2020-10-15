@@ -144,7 +144,7 @@ class ErrorAnalysis:
         return [n] + lat([N, Percbias] + mets)
 
     def compare_subsets(self, df, grby, model):
-        basic_columns = [grby, 'N', '%Bias', 'F1']
+        basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
 
         out = pd.DataFrame(columns=basic_columns)
 
