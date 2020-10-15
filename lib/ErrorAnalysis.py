@@ -143,11 +143,10 @@ class ErrorAnalysis:
         basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
 
         out = pd.DataFrame(columns=basic_columns)
+        print(df.head())
 
         if grby is not None:
             for n, gr in df.groupby(grby):
-                print(gr.head())
-                print(n)
                 r = self.row4compare(n, gr, model)
                 rows = pd.DataFrame([r], columns=basic_columns)
                 out = out.append(rows, ignore_index=True)
