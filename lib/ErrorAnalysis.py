@@ -152,7 +152,7 @@ class ErrorAnalysis:
 
     def compare_subsets(self, df, grby, model, metrics=['prec', 'rec', 'f1']):
         #basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
-        basic_columns = [grby, 'N', '%Bias', 'F1']
+        basic_columns = [grby, 'N', '%Bias'] + metrics
 
         out = pd.DataFrame(columns=basic_columns)
 
