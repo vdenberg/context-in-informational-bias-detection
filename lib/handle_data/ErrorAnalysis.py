@@ -3,7 +3,6 @@ from lib.utils import standardise_id
 from lib.evaluate.Eval import my_eval
 import re
 from collections import Counter
-import numpy as np
 
 
 def extract_e(string):
@@ -31,7 +30,7 @@ def flatten_e(top_e):
 def collect_preds(model, context):
     df = pd.DataFrame()
     for f in [str(el) for el in range(1, 11)]:
-        subdf = pd.read_csv(f"data/test_w_preds/test_w_{model}_{context}_preds/{f}_test_w_pred.csv", index_col=0)
+        subdf = pd.read_csv(f"data/predictions/test_w_{model}_{context}_preds/{f}_test_w_pred.csv", index_col=0)
         df = df.append(subdf)
 
     df.index = [standardise_id(el) for el in df.index]
@@ -88,27 +87,6 @@ def bin_subj_score(subj_score, quantiles):
     #    return "13.52-66.67"
 
 
-def load_mpqa_lex():
-    "input looks like: type=weaksubj len=1 word1=abandoned pos1=adj stemmed1=n priorpolarity=negative"
-    fn = 'subjectivity_clues_hltemnlp05/subjclueslen1-HLTEMNLP05.tff'
-    with open(fn, 'r') as f:
-        ls = f.readlines()
-        tags = [tag.split('=')[0] for tag in ls[0].split(' ')]
-        vals = [[tag.split('=')[1].strip() for tag in l.split(' ')] for l in ls]
-    lex = pd.DataFrame(vals, columns=tags)
-    lex = lex[((lex.pos1 == 'verb') | (lex.pos1 == 'anypos')) & (lex.priorpolarity != 'both')]
-    lex.priorpolarity = lex.priorpolarity.replace({'neutral': 0, 'positive': 1, 'negative': -1})
-    lex.priorpolarity = lex.priorpolarity.replace({'neutral_eb': 0, 'positive_eb': 1, 'negative_eb': -1}).astype(float)
-    lex.priorpolarity = lex.priorpolarity.astype(float)
-    lex['subj_score'] = lex.type.apply(lambda x: 1 if x == 'weaksubj' else 2)
-    #weakmask = lex.type.str.startswith('weak')
-    #lex.loc[weakmask, 'priorpolarity'] = lex[weakmask]['priorpolarity'] / 2
-    #lex = lex[['word1', 'subj_score']]
-    lex = lex.drop_duplicates('word1')
-    lex = lex.set_index('word1')
-    return lex
-
-
 models2compare = {'all':
                   [('cim+', 'article'), ('cim+', 'story'), ('rob', 'none')], # ('cim++', 'article'), ('cim++', 'story'),
                   'base_best':
@@ -120,15 +98,11 @@ models2compare = {'all':
 
 class ErrorAnalysis:
     """
-    Functions to analysis basil w preds
+    Functions to analyses basil w preds
     """
 
     def __init__(self, models):
         self.models = models2compare[models]
-
-        self.sent_lex = load_mpqa_lex()
-        self.subj_words = set(self.sent_lex.index.values)
-
         self.w_preds = self.contruct_df()
         self.N = len(self.w_preds)
 
@@ -149,9 +123,6 @@ class ErrorAnalysis:
         out['len'] = out.sentence.apply(len)
         len_quantiles = out.len.quantile([0.25, 0.5, 0.75, 1.0]).values
         out['len'] = out.len.apply(lambda x: bin_length(x, len_quantiles))
-        out['subj'] = out.sentence.apply(lambda x: give_subj_score(x, self.sent_lex, self.subj_words))
-        subj_pos_quantiles = out.subj.quantile([0.5, 0.75, 1.0]).values
-        out['subj'] = out.subj.apply(lambda x: bin_subj_score(x, subj_pos_quantiles))
         return out
 
     def inf_bias_only(self):

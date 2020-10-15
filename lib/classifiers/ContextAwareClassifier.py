@@ -220,7 +220,7 @@ class ContextAwareModel(nn.Module):
     :param hidden_size: size of hidden layer
     :param weights_matrix: matrix of embeddings of size vocab_size * embedding dimension
     """
-    def __init__(self, input_size, hidden_size, bilstm_layers, weights_matrix, cam_type, device, context='article',
+    def __init__(self, input_size, hidden_size, bilstm_layers, weights_matrix, cam_type, device, context='art',
                  pos_dim=100, src_dim=100, pos_quartiles=4, nr_srcs=3):
         super(ContextAwareModel, self).__init__()
 
@@ -237,8 +237,8 @@ class ContextAwareModel(nn.Module):
         self.emb_size = weights_matrix.shape[1]
 
         self.lstm_art = LSTM(self.input_size, self.hidden_size, num_layers=self.bilstm_layers, bidirectional=True, dropout=0.2)
-        self.lstm_cov1 = LSTM(self.input_size, self.hidden_size, num_layers=self.bilstm_layers, bidirectional=True, dropout=0.2)
-        self.lstm_cov2 = LSTM(self.input_size, self.hidden_size, num_layers=self.bilstm_layers, bidirectional=True, dropout=0.2)
+        self.lstm_ev1 = LSTM(self.input_size, self.hidden_size, num_layers=self.bilstm_layers, bidirectional=True, dropout=0.2)
+        self.lstm_ev2 = LSTM(self.input_size, self.hidden_size, num_layers=self.bilstm_layers, bidirectional=True, dropout=0.2)
         self.attention = BahdanauAttention(self.hidden_size, key_size=self.hidden_size * 2, query_size=self.emb_size)
         self.dropout = Dropout(0.6)
         self.num_labels = 2
@@ -247,16 +247,13 @@ class ContextAwareModel(nn.Module):
         self.cam_type = cam_type
         self.context = context
 
-        if self.cam_type == 'cim':
-            self.context_rep_dim = self.hidden_size * 2 # + self.hidden_size * 2 + src_dim
-        elif self.cam_type == 'cim':
+        if self.context == 'art':
+            self.context_rep_dim = self.hidden_size * 2
+        else:
             self.context_rep_dim = self.emb_size + self.hidden_size * 6
-        elif self.cam_type == 'cim*':
-            self.context_rep_dim = self.emb_size + self.hidden_size * 6 + src_dim
-        elif self.cam_type == 'cim$':
-            self.context_rep_dim = self.emb_size + self.hidden_size * 6 + pos_dim
-        elif self.cam_type == 'cim#':
-            self.context_rep_dim = self.emb_size + self.hidden_size * 6 + pos_dim + src_dim
+
+        if self.cam_type == 'cim*':
+            self.context_rep_dim += src_dim
 
         self.half_context_rep_dim = int(self.context_rep_dim*0.5)
         self.dense = nn.Linear(self.context_rep_dim, self.half_context_rep_dim)
@@ -281,7 +278,7 @@ class ContextAwareModel(nn.Module):
 
         # inputs
         # token_ids, token_mask, contexts, positions = inputs
-        token_ids, token_mask, article, cov1, cov2, positions, quartiles, srcs = inputs
+        token_ids, token_mask, article, ev1, ev2, positions, quartiles, srcs = inputs
 
         # shapes and sizes
         batch_size = inputs[0].shape[0]
@@ -293,9 +290,9 @@ class ContextAwareModel(nn.Module):
         rep_dimension = self.emb_size if self.cam_type == 'cnm' else self.hidden_size * 2
         art_representations = torch.zeros(batch_size, seq_len, rep_dimension, device=self.device)
 
-        if self.context != 'article':
-            cov1_representations = torch.zeros(batch_size, seq_len, rep_dimension, device=self.device)
-            cov2_representations = torch.zeros(batch_size, seq_len, rep_dimension, device=self.device)
+        if self.context != 'art':
+            ev1_representations = torch.zeros(batch_size, seq_len, rep_dimension, device=self.device)
+            ev2_representations = torch.zeros(batch_size, seq_len, rep_dimension, device=self.device)
 
         target_sent_reps = torch.zeros(batch_size, self.emb_size, device=self.device)
 
@@ -328,23 +325,23 @@ class ContextAwareModel(nn.Module):
                 art_representations[:, seq_idx] = encoded
             final_article_reps = art_representations[:, -1, :]
 
-            # embedding first coverage piece
+            # embedding first event piece
 
             hidden = self.init_hidden(batch_size)
             for seq_idx in range(article.shape[0]):
-                embedded_sentence = self.embedding(cov1[:, seq_idx]).view(1, batch_size, -1)
-                encoded, hidden = self.lstm_cov1(embedded_sentence, hidden)
-                cov1_representations[:, seq_idx] = encoded
-            final_cov1_reps = cov1_representations[:, -1, :]
+                embedded_sentence = self.embedding(ev1[:, seq_idx]).view(1, batch_size, -1)
+                encoded, hidden = self.lstm_ev1(embedded_sentence, hidden)
+                ev1_representations[:, seq_idx] = encoded
+            final_ev1_reps = ev1_representations[:, -1, :]
 
             hidden = self.init_hidden(batch_size)
             for seq_idx in range(article.shape[0]):
-                embedded_sentence = self.embedding(cov2[:, seq_idx]).view(1, batch_size, -1)
-                encoded, hidden = self.lstm_cov2(embedded_sentence, hidden)
-                cov2_representations[:, seq_idx] = encoded
-            final_cov2_reps = cov2_representations[:, -1, :]
+                embedded_sentence = self.embedding(ev2[:, seq_idx]).view(1, batch_size, -1)
+                encoded, hidden = self.lstm_ev2(embedded_sentence, hidden)
+                ev2_representations[:, seq_idx] = encoded
+            final_ev2_reps = ev2_representations[:, -1, :]
 
-            context_reps = torch.cat((final_article_reps, final_cov1_reps, final_cov2_reps), dim=-1)
+            context_reps = torch.cat((final_article_reps, final_ev1_reps, final_ev2_reps), dim=-1)
 
             # target_sent_reps = self.rob_squeezer(target_sent_reps)
             # query = target_sent_reps.unsqueeze(1)
@@ -358,16 +355,6 @@ class ContextAwareModel(nn.Module):
             elif self.cam_type == 'cim*':
                 # heavy_context_rep = torch.cat((target_sent_reps, sent_reps, embedded_pos, embedded_src), dim=-1)
                 context_and_target_rep = torch.cat((target_sent_reps, context_reps, embedded_src), dim=-1)
-            '''
-            elif self.cam_type == 'cim$':
-                # heavy_context_rep = torch.cat((target_sent_reps, sent_reps, embedded_pos, embedded_src), dim=-1)
-                context_rep = torch.cat((target_sent_reps, final_sent_reps, embedded_pos), dim=-1)
-                target_sent_reps = context_rep
-            elif self.cam_type == 'cim#':
-                # heavy_context_rep = torch.cat((target_sent_reps, sent_reps, embedded_pos, embedded_src), dim=-1)
-                context_rep = torch.cat((target_sent_reps, final_sent_reps, embedded_src, embedded_pos), dim=-1)
-                target_sent_reps = context_rep
-            '''
 
         features = self.dropout(context_and_target_rep)
         features = self.dense(features)
@@ -386,7 +373,7 @@ class ContextAwareModel(nn.Module):
 class CIMClassifier():
     def __init__(self, emb_dim=768, hid_size=32, layers=1, weights_mat=None, tr_labs=None,
                  b_size=24, cp_dir='models/checkpoints/cim', lr=0.001, start_epoch=0, patience=3,
-                 step=1, gamma=0.75, n_eps=10, cam_type='cim', context='article'):
+                 step=1, gamma=0.75, n_eps=10, cam_type='cim', context='art'):
         self.start_epoch = start_epoch
         self.cp_dir = cp_dir
         self.device, self.use_cuda = get_torch_device()

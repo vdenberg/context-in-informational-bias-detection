@@ -14,15 +14,24 @@ from lib.evaluate.Eval import my_eval
 
 
 class Processor():
+    """
+    Creates numerical representations as input for the CIM model
+    """
     def __init__(self, sentence_ids, max_doc_length):
-        self.sent_id_map = {str_i.lower(): i+1 for i, str_i in enumerate(sentence_ids)}
-        #self.id_map_reverse = {i: my_id for i, my_id in enumerate(data_ids)}
+        """
+        Stores indexes of sentences, End-of-Sentence index, maximum document and sentence length,
+        and pad index.
+        """
+        self.sent_id_map = {str_i.lower(): i+1 for i, str_i in enumerate(sentence_ids)} #
         self.EOD_index = len(self.sent_id_map)
         self.max_doc_length = max_doc_length + 1 # add 1 for EOD_index
         self.max_sent_length = None # set after processing
         self.PAD_index = 0
 
     def to_numeric_documents(self, documents):
+        """
+        Creates numerical representations (sentence ids) for documents
+        """
         numeric_context_docs = []
         for doc in documents:
             doc = doc.split(' ')
@@ -37,6 +46,9 @@ class Processor():
         return numeric_context_docs
 
     def to_numeric_sentences(self, sentence_ids):
+        """
+        Collects numerical representations (token ids) for sentences
+        """
         with open("data/inputs/sent_clf/features_for_bert/all_features.pkl", "rb") as f:
             features = pickle.load(f)
         feat_dict = {f.my_id.lower(): f for f in features}
@@ -47,6 +59,12 @@ class Processor():
 
 
 def make_weight_matrix(embed_df, EMB_DIM):
+    """
+    Puts embeddings from dataframe into a matrix
+    :param embed_df: dataframe with embeddings of each sentence in corpus
+    :param EMB_DIM: length of embedding vectors, 768 for BERT/RoBERTa
+    :return: numpy matrix
+    """
     # clean embedding string
     embed_df = embed_df.fillna(0).replace({'\n', ' '})
     sentence_embeddings = {}
@@ -310,7 +328,7 @@ for fold in folds:
     for v in range(len(fold['train'])):
         # read embeddings file
         if EMB_TYPE not in ['use', 'sbert']:
-            embed_fp = f"data/embeddings/sent_clf_story_split_rob_{BASE}/rob_{BASE}_sequential_49_bs16_lr1e-05_f{fold['name']}_basil_w_{EMB_TYPE}.csv
+            embed_fp = f"data/embeddings/sent_clf_story_split_rob_{BASE}/rob_{BASE}_sequential_49_bs16_lr1e-05_f{fold['name']}_basil_w_{EMB_TYPE}.csv"
             weights_matrix = get_weights_matrix(data, embed_fp, emb_dim=EMB_DIM)
             logger.info(f" --> Loaded from {embed_fp}, shape: {weights_matrix.shape}")
             weights_matrices.append(weights_matrix)
@@ -336,7 +354,7 @@ base_name = TASK_NAME
 hiddens = [HIDDEN]
 batch_sizes = [BATCH_SIZE]
 learning_rates = [LR]
-seeds = [args.sv] if args.sv else [11, 22, 33, 44, 55] #SEED_VAL, SEED_VAL*2, SEED_VAL*3, 34 68 102 136 170
+seeds = [args.sv] if args.sv else [11, 22, 33, 44, 55] #sometimes: 34 68 102 136 170
 
 for HIDDEN in hiddens:
     h_name = f"_h{HIDDEN}"
@@ -431,15 +449,15 @@ for HIDDEN in hiddens:
                 logging.info(f"{test_perf}")
                 test_results.update(test_mets)
 
+                # store performance
                 setting_results_table = setting_results_table.append(test_results, ignore_index=True)
                 setting_fp = os.path.join(TABLE_DIR, f'{setting_name}_results_table.csv')
                 setting_results_table.to_csv(setting_fp, index=False)
-
-                # store performance of setting
                 main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
 
             main_results_table.to_csv(MAIN_TABLE_FP, index=False)
 
+            # compute results
             df = main_results_table
             df[['prec', 'rec', 'f1']] = df[['prec', 'rec', 'f1']].round(4) * 100
             df = df.fillna(0)

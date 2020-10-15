@@ -50,7 +50,7 @@ def select_model(model, clf_task):
 ########################
 
 
-# find GPU if present
+# locations of models or name of model as recognised by huggingface transformers library
 model_mapping = {'bert': 'bert-base-cased',
                  'rob_base': 'roberta-base',
                  'rob_dapt': 'experiments/adapt_dapt_tapt/pretrained_models/news_roberta_base',
@@ -58,6 +58,7 @@ model_mapping = {'bert': 'bert-base-cased',
                  'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-dapttapt',
                 }
 
+# hyperparameters for reproduction of COLING 'Context in Informational Bias' paper
 model_hyperparams = {'sent_clf': {
                         'bert': {'lr': 2e-5, 'bs': 16, 'seeds': [6, 11, 20, 22, 34],},
                         'rob_base': {'lr': 1e-5, 'bs': 16, 'seeds': [49, 57, 33, 297, 181]},
@@ -393,22 +394,20 @@ if __name__ == '__main__':
                     logging.info(f"{test_perf}")
                     test_results.update(test_mets)
 
+                    # store performance of setting
                     setting_results_table = setting_results_table.append(test_results, ignore_index=True)
                     setting_results_table = setting_results_table.append(fold_results_table, ignore_index=True)
                     setting_fp = os.path.join(TABLE_DIR, f'{setting_name}_results_table.csv')
-
                     #if os.path.exists(setting_fp):
                     #    orig_setting_results_table = pd.read_csv(setting_fp)
                     #    setting_results_table = pd.concat((orig_setting_results_table, setting_results_table))
                     #    setting_results_table = setting_results_table.drop_duplicates(keep='first')
-
                     setting_results_table.to_csv(setting_fp, index=False)
-
-                    # store performance of setting
                     main_results_table = main_results_table.append(setting_results_table, ignore_index=True)
 
         main_results_table.to_csv(MAIN_TABLE_FP, index=False)
 
+        # compute results
         df = main_results_table
         df[['prec', 'rec', 'f1']] = df[['prec', 'rec', 'f1']].round(4) * 100
         df = df.fillna(0)
