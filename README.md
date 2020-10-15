@@ -2,11 +2,13 @@
 
 ### Installing
 
-1. Download & Unzip BASIL Corpus into ```data``` from:
-github.com/marshallwhiteorg/emnlp19-media-bias/blob/master/emnlp19-BASIL.zip
+1. 
 
-2. Ensure installation of Pytorch.
-
+    ```shell script
+   git clone https://github.com/vdenberg/context-in-informational-bias-detection.git
+   pip install -r requirements.txt
+   ```
+ 
 3. Run preprocessing script.
 
     ```shell script
@@ -14,12 +16,6 @@ github.com/marshallwhiteorg/emnlp19-media-bias/blob/master/emnlp19-BASIL.zip
    ```
 
 4. Choose the experiment you're interested in, and continue instructions.
-
-- Sentence Classification & Token Classification 
-- Sentence Classification - BERT: sent_clf/finetune_bert.py
-- Sentence Classification - RoBERTa: sent_clf/finetune_roberta.py
-- Token Classification - BERT: tok_clf/finetune_bert_for_tokclf.py
-- Token Classification - RoBERTa: tok_clf/finetune_roberta_for_tokclf.py
 
 ### Sequential Sentence Classification: 
 
