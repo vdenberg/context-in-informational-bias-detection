@@ -19,7 +19,7 @@ ea = ErrorAnalysis('base_only')
 
 # LEXICAL BIAS
 
-stance_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model, context) for model, context in ea.models]
+stance_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_dfs)
 print(stance_df.to_latex())
 
@@ -28,14 +28,14 @@ exit(0)
 
 # SENTENCE LENGTH ANALYSIS
 
-sentlen_dfs = [ea.compare_subsets(ea.w_preds, 'len', model, context) for model, context in ea.models]
+sentlen_dfs = [ea.compare_subsets(ea.w_preds, 'len', model) for model, _ in ea.models]
 sentlen_df = ea.concat_comparisons(sentlen_dfs)
 sentlen_df.index = ["0-90", "91-137", "138-192", "193-647", "All"]
 print(sentlen_df.to_latex())
 
 # IN QUOTE OR NOT + PRESENCE OF QUOTATION MARKS
 
-quote_dfs = [ea.compare_subsets(ea.w_preds, 'quote', model, context) for model, context in ea.models]
+quote_dfs = [ea.compare_subsets(ea.w_preds, 'quote', model, model) for model, _ in ea.models]
 quote_df = ea.concat_comparisons(quote_dfs)
 print(quote_df)
 
@@ -57,16 +57,16 @@ for model, context in [('rob', '22'), ('cim', 'coverage')]: # , ('rob', '22'),  
 
 # SOURCE AND STANCE
 
-source_dfs = [ea.compare_subsets(ea.w_preds, 'source', model, context) for model, context in ea.models]
+source_dfs = [ea.compare_subsets(ea.w_preds, 'source', model, model) for model, _ in ea.models]
 source_df = ea.concat_comparisons(source_dfs)
 print(source_df.to_latex())
 
-stance_dfs = [ea.compare_subsets(ea.w_preds, 'stance', model, context) for model, context in ea.models]
+stance_dfs = [ea.compare_subsets(ea.w_preds, 'stance', model, model) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_dfs)
 print(stance_df.to_latex())
 
 # LEXICAL BIAS
 
-stance_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model, context) for model, context in ea.models]
+stance_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model, model) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_dfs)
 print(stance_df.to_latex())

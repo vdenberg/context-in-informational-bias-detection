@@ -123,7 +123,7 @@ class ErrorAnalysis:
     def no_bias_only(self):
         self.w_preds = self.w_preds[(self.w_preds.bias == 0) & (self.w_preds.lex_bias == 0)]
 
-    def row4compare(self, n, gr=None, model=None, context=None):
+    def row4compare(self, n, gr=None, model=None):
         N = len(gr)
         Nbias = sum(gr.bias == 1)
         Percbias = str(round(Nbias / N * 100,2)) + '%'
@@ -138,18 +138,18 @@ class ErrorAnalysis:
 
         return [n] + lat([N, Percbias] + mets)
 
-    def compare_subsets(self, df, grby, model, context):
+    def compare_subsets(self, df, grby, model):
         basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
 
         out = pd.DataFrame(columns=basic_columns)
 
         if grby is not None:
             for n, gr in df.groupby(grby):
-                r = self.row4compare(n, gr, model, context)
+                r = self.row4compare(n, gr, model)
                 rows = pd.DataFrame([r], columns=basic_columns)
                 out = out.append(rows, ignore_index=True)
 
-        r = self.row4compare(f'{model}_{context}', df, model, context)
+        r = self.row4compare(f'{model}', df, model)
 
         row = pd.DataFrame([r], columns=basic_columns)
         out = out.append(row, ignore_index=True)
