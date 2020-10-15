@@ -62,15 +62,20 @@ def make_weight_matrix(embed_df, EMB_DIM):
 
     sent_id_map = {sent_id.lower(): sent_num_id+1 for sent_num_id, sent_id in enumerate(embed_df.index.values)}
     for sent_id, index in sent_id_map.items():  # word here is a sentence id like 91fox27
-        if sent_id == '11fox23':
-            print('Found 11fox23!')
-            exit(0)
-            pass
-        else:
-            embedding = sentence_embeddings[sent_id]
-            weights_matrix[index] = embedding
+        embedding = sentence_embeddings[sent_id]
+        weights_matrix[index] = embedding
 
     return weights_matrix
+
+
+def get_weights_matrix(data, emb_fp, emb_dim=None):
+    data_w_emb = pd.read_csv(emb_fp, index_col=0).fillna('')
+    data_w_emb = data_w_emb.rename(
+        columns={'USE': 'embeddings', 'sbert_pre': 'embeddings', 'avbert': 'embeddings', 'poolbert': 'embeddings',
+                 'unpoolbert': 'embeddings', 'crossbert': 'embeddings', 'cross4bert': 'embeddings'})
+    data.loc[data_w_emb.index, 'embeddings'] = data_w_emb['embeddings']
+    wm = make_weight_matrix(data, emb_dim)
+    return wm
 
 
 # =====================================================================================
@@ -80,99 +85,83 @@ def make_weight_matrix(embed_df, EMB_DIM):
 # Read arguments from command line
 parser = argparse.ArgumentParser()
 
-# DATA PARAMS
-parser.add_argument('-n_voters', '--n_voters', help='Nr voters when splitting', type=int, default=1)
-parser.add_argument('-subset', '--subset_of_data', type=float, help='Section of data to experiment on', default=1.0)
-parser.add_argument('-pp', '--preprocess', action='store_true', default=False, help='Whether to proprocess again')
-
-# EMBEDDING PARAMS
-parser.add_argument('-emb', '--embedding_type', type=str, help='Options: avbert|sbert|poolbert|use|crossbert', default='cross4bert')
-
-# TRAINING PARAMS
+# RUNNING PARAMS
 parser.add_argument('-mode', '--mode', type=str, help='Options: train|eval|debug', default='train')
-parser.add_argument('-lex', '--lex', action='store_true', default=False, help='lex')
-parser.add_argument('-context', '--context_type', type=str, help='Options: art|cov', default='cov')
+parser.add_argument('-force_pred', '--force_pred', action='store_true', default=False)
+parser.add_argument('-force_train', '--force_train', action='store_true', default=False)
+parser.add_argument('-pp', '--preprocess', action='store_true', default=False, help='Whether to proprocess again')
+parser.add_argument('-sv', '--seed_val', type=int, default=None)
+parser.add_argument('-inf', '--step_info_every', type=int, default=250)
+
+# SETTING PARAMS
+parser.add_argument('-context', '--context_type', type=str, help='Options: art|ev', default='ev')
 parser.add_argument('-cim_type', '--cim_type', type=str, help='Options: cim|cim*', default='cim')
 parser.add_argument('-base', '--base', type=str, help='Options: base|tapt', default='base')
+parser.add_argument('-emb', '--embedding_type', type=str, help='Options: avbert|sbert|poolbert|use|crossbert', default='cross4bert')
+parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
+
+# NN PARAMS
 parser.add_argument('-ep', '--epochs', type=int, default=150)  # 75
 parser.add_argument('-pat', '--patience', type=int, default=5)  # 15
-
-# OPTIMIZING PARAMS
 parser.add_argument('-bs', '--batch_size', type=int, default=32)
 parser.add_argument('-lr', '--learning_rate', type=float, default=0.001)
-parser.add_argument('-wu', '--warmup_proportion', type=float, default=0.1)
-parser.add_argument('-g', '--gamma', type=float, default=.95)
-
-# NEURAL NETWORK DIMS
 parser.add_argument('-hid', '--hidden_size', type=int, default=1000)
 parser.add_argument('-lay', '--bilstm_layers', type=int, default=2)
 
-# OTHER NN PARAMS
-parser.add_argument('-sv', '--seed_val', type=int, default=11)
-parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
-parser.add_argument('-nopad', '--no_padding', action='store_true', default=False)
-parser.add_argument('-inf', '--step_info_every', type=int, default=250)
-
-parser.add_argument('-force_pred', '--force_pred', action='store_true', default=False)
-parser.add_argument('-force_train', '--force_train', action='store_true', default=False)
-
+# CURRENTLY NOT IN USE
+parser.add_argument('-n_voters', '--n_voters', help='Nr voters when splitting', type=int, default=1)
+parser.add_argument('-subset', '--subset_of_data', type=float, help='Section of data to experiment on', default=1.0)
+# parser.add_argument('-nopad', '--no_padding', action='store_true', default=False)
+# parser.add_argument('-wu', '--warmup_proportion', type=float, default=0.1)
+# parser.add_argument('-g', '--gamma', type=float, default=.95)
+# parser.add_argument('-lex', '--lex', action='store_true', default=False, help='lex')
 args = parser.parse_args()
 
-# set to variables for readability
-
-# DATA PARAMS
+# CURRENTLY NOT IN USE
 SUBSET = args.subset_of_data # not in use
 N_VOTERS = args.n_voters # not in use
-PREPROCESS = args.preprocess
-EMB_TYPE = args.embedding_type
-EMB_DIM = 512 if EMB_TYPE == 'use' else 768
-MAX_DOC_LEN = 76
+LEX = args.lex # not in use
+#GAMMA = args.gamma
+#WARMUP_PROPORTION = args.warmup_proportion # not in use
+#GRADIENT_ACCUMULATION_STEPS = 1 # not in use
 
-# TRAINING PARAMS
 MODE = args.mode
 TRAIN = True if args.mode != 'eval' else False
 EVAL = True if args.mode == 'eval' else False
 DEBUG = True if args.mode == 'debug' else False
 FORCE_TRAIN = args.force_train
 FORCE_PRED = args.force_pred if not FORCE_TRAIN else True
+PREPROCESS = args.preprocess
+SEED_VAL = args.seed_val
+PRINT_STEP_EVERY = args.step_info_every
 
-# SETTING
 CONTEXT_TYPE = args.context_type
 CIM_TYPE = args.cam_type
 BASE = args.base
-LEX = args.lex # not in use
+EMB_TYPE = args.embedding_type
+EMB_DIM = 512 if EMB_TYPE == 'use' else 768
+SAMPLER = args.sampler
 TASK_NAME = '_'.join([CONTEXT_TYPE, CIM_TYPE, BASE])
 
-# OPTIMIZING PARAMS
-N_EPOCHS = args.epochs
-if DEBUG:
-    N_EPOCHS = 5
+N_EPOCHS = args.epochs if not DEBUG else 5
 PATIENCE = args.patience
 BATCH_SIZE = args.batch_size
 LR = args.learning_rate
-#WARMUP_PROPORTION = args.warmup_proportion # not in use
-#GRADIENT_ACCUMULATION_STEPS = 1 # not in use
-GAMMA = args.gamma
-
-# NEURAL NETWORK DIMS
 HIDDEN = args.hidden_size
 BILSTM_LAYERS = args.bilstm_layers
 
-# OTHER NN PARAMS
-SEED_VAL = args.seed_val
-SAMPLER = args.sampler
-PRINT_STEP_EVERY = args.step_info_every  # steps
 NUM_LABELS = 2
-
+MAX_DOC_LEN = 76
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
+device, USE_CUDA = get_torch_device()
+if not USE_CUDA:
+    exit(0)
 
-# set directories
-
+# DIRECTORIES
 DATA_DIR = f'data/inputs/cim/'
 DATA_FP = os.path.join(DATA_DIR, 'cim_basil.tsv')
 CHECKPOINT_DIR = f'models/checkpoints/cim/{TASK_NAME}'
-CACHE_DIR = 'models/cache/' # This is where BERT will look for pre-trained models to load parameters from.
 PREDICTION_DIR = f'data/predictions/{TASK_NAME}/'
 REPORTS_DIR = f'reports/cim/{TASK_NAME}'
 TABLE_DIR = f"reports/cim/tables/{TASK_NAME}"
@@ -188,11 +177,6 @@ if not os.path.exists(TABLE_DIR):
     os.makedirs(TABLE_DIR)
 if not os.path.exists(PREDICTION_DIR):
     os.makedirs(PREDICTION_DIR)
-
-# set device
-device, USE_CUDA = get_torch_device()
-if not USE_CUDA:
-    exit(0)
 
 # set logger
 now = datetime.now()
@@ -288,12 +272,10 @@ data = pd.read_json(DATA_FP)
 data.index = data.sentence_ids.values
 
 spl = Split(data, subset=SUBSET, recreate=False, sv=99)
-folds = spl.apply_split(features=['story', 'source', 'id_num', 'art_context_doc_num', 'cov1_context_doc_num', 'cov2_context_doc_num', 'token_ids', 'token_mask', 'position', 'quartile', 'src_num'])
+folds = spl.apply_split(features=['story', 'source', 'id_num', 'token_ids', 'token_mask',
+                                  'art_context_doc_num', 'cov1_context_doc_num', 'cov2_context_doc_num', 'src_num'])
 if DEBUG:
-    folds = [folds[0]] #, folds[1]
-NR_FOLDS = len(folds)
-
-# folds = [folds[4]]
+    folds = [folds[0]]
 
 logger.info(f" --> Read {len(data)} data points")
 logger.info(f" --> Fold sizes: {[f['sizes'] for f in folds]}")
@@ -318,38 +300,17 @@ logger.info("============ LOAD EMBEDDINGS =============")
 logger.info(f" Embeddin"
             f"g type: {EMB_TYPE}")
 
-def get_weights_matrix(data, emb_fp, emb_dim=None):
-    data_w_emb = pd.read_csv(emb_fp, index_col=0).fillna('')
-    data_w_emb = data_w_emb.rename(
-        columns={'USE': 'embeddings', 'sbert_pre': 'embeddings', 'avbert': 'embeddings', 'poolbert': 'embeddings',
-                 'unpoolbert': 'embeddings', 'crossbert': 'embeddings', 'cross4bert': 'embeddings'})
-    data_w_emb.index = [standardise_id(el) for el in data_w_emb.index]
-    data.index = [standardise_id(el) for el in data.index]
-    data.loc[data_w_emb.index, 'embeddings'] = data_w_emb['embeddings']
-    # transform into matrix
-    wm = make_weight_matrix(data, emb_dim)
-    return wm
-
 # if EMB_TYPE in ['use', 'sbert']:
 #    embed_fp = f"data/sent_clf/embeddings/basil_w_{EMB_TYPE}.csv"
 #    weights_matrix = get_weights_matrix(data, embed_fp, emb_dim=EMB_DIM)
 #    logger.info(f" --> Loaded from {embed_fp}, shape: {weights_matrix.shape}")
-
+# else
 for fold in folds:
     weights_matrices = []
     for v in range(len(fold['train'])):
         # read embeddings file
         if EMB_TYPE not in ['use', 'sbert']:
-            # embed_fp = f"data/bert_231_bs16_lr2e-05_f{fold['name']}_basil_w_{EMB_TYPE}.csv"
-            # embed_fp = f"data/rob_base_sequential_34_bs16_lr1e-05_f{fold['name']}_basil_w_{EMB_TYPE}"
-            # embed_fp = f"data/rob_base_sequential_34_bs16_lr1e-05_f{fold['name']}_basil_w_{EMB_TYPE}"
-            # embed_fp = f"data/rob_{BASE}_sequential_34_bs16_lr1e-05_f{fold['name']}_basil_w_{EMB_TYPE}"
-            # embed_fp = f"data/rob_{BASE}_sequential_11_bs16_lr1e-05_f{fold['name']}_v{v}_basil_w_{EMB_TYPE}"
-            if BASE == 'basil_tapt':
-                s = 22
-            else:
-                s = 11
-            embed_fp = f"/home/mitarb/vdberg/Projects/EntityFramingDetection/data/embeddings/rob_{BASE}/rob_{BASE}_sequential_{s}_bs16_lr1e-05_f{fold['name']}_v{v}_basil_w_{EMB_TYPE}"
+            embed_fp = f"data/embeddings/sent_clf_story_split_rob_{BASE}/rob_{BASE}_sequential_49_bs16_lr1e-05_f{fold['name']}_basil_w_{EMB_TYPE}.csv
             weights_matrix = get_weights_matrix(data, embed_fp, emb_dim=EMB_DIM)
             logger.info(f" --> Loaded from {embed_fp}, shape: {weights_matrix.shape}")
             weights_matrices.append(weights_matrix)
@@ -361,7 +322,6 @@ for fold in folds:
 
 logger.info("============ TRAINING CAM =============")
 logger.info(f" Num epochs: {N_EPOCHS}")
-logger.info(f" Starting from: {START_EPOCH}")
 logger.info(f" Patience: {PATIENCE}")
 logger.info(f" Mode: {'train' if not EVAL else 'eval'}")
 logger.info(f" CAM type: {CIM_TYPE}")
@@ -372,14 +332,11 @@ logger.info(f" Nr layers: {BILSTM_LAYERS}")
 table_columns = 'model,seed,bs,lr,model_loc,fold,voter,epoch,set_type,loss,acc,prec,rec,f1,fn,fp,tn,tp,h'
 main_results_table = pd.DataFrame(columns=table_columns.split(','))
 
-base_name = CIM_TYPE + '_' + BASE
-if LEX:
-    base_name += "_lex"
-
+base_name = TASK_NAME
 hiddens = [HIDDEN]
 batch_sizes = [BATCH_SIZE]
 learning_rates = [LR]
-seeds = [11, 22, 33, 44, 55] #SEED_VAL, SEED_VAL*2, SEED_VAL*3, 34 68 102 136 170
+seeds = [args.sv] if args.sv else [11, 22, 33, 44, 55] #SEED_VAL, SEED_VAL*2, SEED_VAL*3, 34 68 102 136 170
 
 for HIDDEN in hiddens:
     h_name = f"_h{HIDDEN}"
@@ -432,11 +389,11 @@ for HIDDEN in hiddens:
                             voter_name = fold_name + f"_v{i}"
 
                             best_model_loc = os.path.join(CHECKPOINT_DIR, voter_name)
-                            cam = CIMClassifier(start_epoch=START_EPOCH, cp_dir=CHECKPOINT_DIR, tr_labs=fold['train'][i].label,
+                            cam = CIMClassifier(cp_dir=CHECKPOINT_DIR, tr_labs=fold['train'][i].label,
                                                 weights_mat=fold['weights_matrices'][i], emb_dim=EMB_DIM, hid_size=HIDDEN, layers=BILSTM_LAYERS,
-                                                b_size=BATCH_SIZE, lr=LR, step=1, gamma=GAMMA, cam_type=CIM_TYPE, context=CONTEXT_TYPE)
+                                                b_size=BATCH_SIZE, lr=LR, step=1, cam_type=CIM_TYPE, context=CONTEXT_TYPE)
 
-                            cam_cl = Classifier(model=cam, logger=logger, fig_dir=FIG_DIR, name=voter_name, patience=PATIENCE, n_eps=N_EPOCHS,
+                            cam_cl = Classifier(model=cam, logger=logger, name=voter_name, patience=PATIENCE, n_eps=N_EPOCHS,
                                             printing=PRINT_STEP_EVERY, load_from_ep=None)
 
                             if not os.path.exists(best_model_loc) or FORCE_TRAIN:
