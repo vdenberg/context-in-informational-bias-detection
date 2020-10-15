@@ -134,7 +134,7 @@ class ErrorAnalysis:
     def no_bias_only(self):
         self.w_preds = self.w_preds[(self.w_preds.bias == 0) & (self.w_preds.lex_bias == 0)]
 
-    def row4compare(self, n, gr=None, model=None):
+    def row4compare(self, n, gr=None, model=None, metrics=['prec', 'rec', 'f1']):
         N = len(gr)
         Nbias = sum(gr.bias == 1)
         Percbias = str(round(Nbias / N * 100,2)) + '%'
@@ -142,15 +142,15 @@ class ErrorAnalysis:
         cross_mets = []
         for i in range(5):
             mets, _ = my_eval(gr.bias, gr[f'{model}{i}'])
-            #cross_mets.append(np.asarray([mets['prec'], mets['rec'], mets['f1']]))
-            cross_mets.append(np.asarray([mets['f1']]))
+            mets = [v for k, v in mets.items() if k in metrics]
+            cross_mets.append(np.asarray(mets))
         cross_mets = np.asarray(cross_mets)
         mets = np.mean(cross_mets, axis=0)
         mets = [round(el*100, 2) for el in mets]
 
         return [n] + lat([N, Percbias] + mets)
 
-    def compare_subsets(self, df, grby, model):
+    def compare_subsets(self, df, grby, model, metrics=['prec', 'rec', 'f1']):
         #basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
         basic_columns = [grby, 'N', '%Bias', 'F1']
 
@@ -158,7 +158,7 @@ class ErrorAnalysis:
 
         if grby is not None:
             for n, gr in df.groupby(grby):
-                r = self.row4compare(n, gr, model)
+                r = self.row4compare(n, gr, model, metrics)
                 rows = pd.DataFrame([r], columns=basic_columns)
                 out = out.append(rows, ignore_index=True)
 

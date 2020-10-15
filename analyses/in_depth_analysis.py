@@ -27,8 +27,7 @@ print('Difference in performance depending on sentence length:')
 print(sentlen_df.to_latex())
 
 # IN QUOTE OR NOT + PRESENCE OF QUOTATION MARKS
-
-quote_dfs = [ea.compare_subsets(ea.w_preds, 'quote', model) for model, _ in ea.models]
+quote_dfs = [ea.compare_subsets(ea.w_preds, 'quote', model, metrics=['rec', 'f1']) for model, _ in ea.models]
 quote_df = ea.concat_comparisons(quote_dfs)
 
 print('Difference in performance depending on whether in a quotes:')
@@ -53,7 +52,6 @@ for model, _ in ea.models:
 """
 
 # SOURCE AND STANCE
-
 source_dfs = [ea.compare_subsets(ea.w_preds, 'source', model) for model, _ in ea.models]
 source_df = ea.concat_comparisons(source_dfs)
 print('Difference in performance depending on publisher:')
