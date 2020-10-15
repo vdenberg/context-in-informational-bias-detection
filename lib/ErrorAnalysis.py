@@ -34,7 +34,7 @@ def lat(x):
         el = str(el)
         if '.' in el and len(el) == 4:
             el += '0'
-        #el = '$' + el + '$'
+        el = '$' + el + '$'
         out.append(el)
     return out
 
