@@ -130,6 +130,7 @@ class ErrorAnalysis:
 
         cross_mets = []
         for i in range(5):
+            print(gr[f'{model}{i}'])
             mets, _ = my_eval(gr.bias, gr[f'{model}{i}'])
             cross_mets.append(np.asarray([mets['prec'], mets['rec'], mets['f1']]))
             # cross_mets.append(np.asarray([mets['f1']]))
