@@ -172,8 +172,7 @@ class ErrorAnalysis:
 
     def concat_comparisons(self, dfs, only_rec=False, incl_lex=False):
         info_col_n = 3
-        print(dfs[1])
-        basic_info = dfs[1].iloc[:,:info_col_n]
+        basic_info = dfs[0].iloc[:,:info_col_n]
         new_df = pd.DataFrame(basic_info, columns=dfs[1].columns[:info_col_n])
 
         for df in dfs:
