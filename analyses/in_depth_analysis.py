@@ -54,15 +54,15 @@ for model, _ in ea.models:
 # SOURCE AND STANCE
 source_dfs = [ea.compare_subsets(ea.w_preds, 'source', model, metrics=['f1']) for model, _ in ea.models]
 source_df = ea.concat_comparisons(source_dfs)
-source_df = source_df.loc[['fox', 'nyt', 'hpo']]
-quote_df.index = ['FOX', 'NYT', 'HPO']
+source_df = source_df.loc[['fox', 'nyt', 'hpo', 'All']]
+source_df.index = ['FOX', 'NYT', 'HPO', 'All']
 
 print('Difference in performance depending on publisher:')
 print(source_df.to_latex())
 
 stance_dfs = [ea.compare_subsets(ea.w_preds, 'stance', model, metrics=['f1']) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_dfs)
-stance_df = stance_df.loc[['Right', 'Center', 'Left']]
+stance_df = stance_df.loc[['Right', 'Center', 'Left', 'All']]
 print('Difference in performance depending on stance of article:')
 print(stance_df.to_latex())
 
