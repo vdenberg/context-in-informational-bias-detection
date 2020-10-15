@@ -146,8 +146,6 @@ class ErrorAnalysis:
         if grby is not None:
             for n, gr in df.groupby(grby):
                 r = self.row4compare(n, gr, model, context)
-                print(r)
-
                 rows = pd.DataFrame([r], columns=basic_columns)
                 out = out.append(rows, ignore_index=True)
 
@@ -174,6 +172,7 @@ class ErrorAnalysis:
 
     def concat_comparisons(self, dfs, only_rec=False, incl_lex=False):
         info_col_n = 3
+        print(dfs[1])
         basic_info = dfs[1].iloc[:,:info_col_n]
         new_df = pd.DataFrame(basic_info, columns=dfs[1].columns[:info_col_n])
 
