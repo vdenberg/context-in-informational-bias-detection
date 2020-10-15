@@ -121,7 +121,7 @@ class ErrorAnalysis:
 
                 if model == 'ev_cim':
                     subdf['uniq_id'] = standardise_id(subdf.story + subdf.source + subdf.position)
-                    subdf.set_index('uniq_id')
+                    subdf = subdf.set_index('uniq_id')
                 out[n] = subdf.pred
         return out
 
@@ -139,8 +139,8 @@ class ErrorAnalysis:
         cross_mets = []
         for i in range(5):
             mets, _ = my_eval(gr.bias, gr[f'{model}{i}'])
-            cross_mets.append(np.asarray([mets['prec'], mets['rec'], mets['f1']]))
-            #cross_mets.append(np.asarray([mets['f1']]))
+            #cross_mets.append(np.asarray([mets['prec'], mets['rec'], mets['f1']]))
+            cross_mets.append(np.asarray([mets['f1']]))
         cross_mets = np.asarray(cross_mets)
         mets = np.mean(cross_mets, axis=0)
         mets = [round(el*100, 2) for el in mets]
@@ -148,7 +148,8 @@ class ErrorAnalysis:
         return [n] + lat([N, Percbias] + mets)
 
     def compare_subsets(self, df, grby, model):
-        basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
+        #basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
+        basic_columns = [grby, 'N', '%Bias', 'F1']
 
         out = pd.DataFrame(columns=basic_columns)
 
