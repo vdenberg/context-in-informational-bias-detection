@@ -27,13 +27,11 @@ def flatten_e(top_e):
     return ents
 
 
-def collect_preds(model, context):
+def collect_preds(seeds, location):
     df = pd.DataFrame()
-    for f in [str(el) for el in range(1, 11)]:
-        subdf = pd.read_csv(f"data/predictions/test_w_{model}_{context}_preds/{f}_test_w_pred.csv", index_col=0)
+    for SEED_VAL in seeds:
+        subdf = pd.read_csv(location, index_col=0)
         df = df.append(subdf)
-
-    df.index = [standardise_id(el) for el in df.index]
     return df
 
 
@@ -87,12 +85,9 @@ def bin_subj_score(subj_score, quantiles):
     #    return "13.52-66.67"
 
 
-models2compare = {'all':
-                  [('cim+', 'article'), ('cim+', 'story'), ('rob', 'none')], # ('cim++', 'article'), ('cim++', 'story'),
-                  'base_best':
-                  [('rob', '22'), ('cim', 'coverage')], # ('cim', 'article'),
-                  'cimcov':
-                   [('cim', 'coverage')] #[('cim+', 'story')]
+models2compare = {'base_best':
+                  [('rob_base', [49, 57, 33, 297, 181]),
+                   ('ev_cim', [49, 57, 33, 297, 181])
                   }
 
 
@@ -110,8 +105,8 @@ class ErrorAnalysis:
         out = pd.read_csv('data/basil.csv', index_col=0).fillna('')
         out.index = [standardise_id(el) for el in out.index]
 
-        for model, context in self.models:
-            predn = f'{model}_{context}'
+        for model, context, seeds in self.models:
+            predn = f'{model}_{context}_seeds'
             df = collect_preds(model, context)
             out.loc[df.index, predn] = df.pred
 
