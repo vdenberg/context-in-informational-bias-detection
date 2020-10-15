@@ -1,6 +1,6 @@
 import pandas as pd
 from lib.utils import standardise_id
-from lib.evaluate.Eval import my_eval
+from lib.Eval import my_eval
 import re
 from collections import Counter
 

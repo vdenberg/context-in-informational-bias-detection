@@ -1,5 +1,5 @@
 import pandas as pd
-from lib.handle_data.ErrorAnalysis import ErrorAnalysis
+from lib.ErrorAnalysis import ErrorAnalysis
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.max_colwidth', 500)
 pd.set_option('display.width', 200)

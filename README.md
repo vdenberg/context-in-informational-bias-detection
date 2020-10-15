@@ -23,17 +23,23 @@ github.com/marshallwhiteorg/emnlp19-media-bias/blob/master/emnlp19-BASIL.zip
 
 ### Sequential Sentence Classification: 
 
-seq_sent_clf/seq_sent_clf.py
+```shell python3
+experiments/finetune_plm.py -clf_task seq_sent_clf -exlen [5|10]] -win
+```
 
 ### Article & Context: 
 
-sent_clf/context_inclusive_model.py
+```shell python3
+experiments/context_inclusive.py -context [ART|EV] -cim_type [cim|cim*]
+```
 
 ### Domain Context
 
-1. Follow instructions of https://github.com/allenai/dont-stop-pretraining.
+1. Clone https://github.com/allenai/dont-stop-pretraining into experiments directory
 
-2. Run following commands.
+2. Follow install instructions of https://github.com/allenai/dont-stop-pretraining.
+
+3. Run following commands to get basil-adapted models:
 
     ##### TAPT
     ```
@@ -74,3 +80,14 @@ sent_clf/context_inclusive_model.py
                                             --logging_steps 50
     ```
             
+### Reproduce analyses:
+
+To reproduce significance test:
+```shell python3
+analyses/sign_test.py 
+```
+
+To reproduce comparisons of performance on different data:
+```shell python3
+analyses/analysis.py 
+```

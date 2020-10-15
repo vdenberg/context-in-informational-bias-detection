@@ -1,17 +1,16 @@
 from __future__ import absolute_import, division, print_function
 from transformers.optimization import AdamW, get_linear_schedule_with_warmup
-from lib.classifiers.PLMWrapper import Inferencer, save_model, load_features
-from lib.classifiers.PLMWrapper import BertForTokenClassification, BertForSequenceClassification
-from lib.classifiers.PLMWrapper import RobertaForTokenClassification, RobertaForSequenceClassification
-from lib.classifiers.PLMWrapper import RobertaForSequentialSequenceClassification
-from lib.handle_data.PreprocessForRoberta import *
+from lib.PLMWrapper import Inferencer, save_model, load_features
+from lib.PLMWrapper import BertForTokenClassification, BertForSequenceClassification
+from lib.PLMWrapper import RobertaForTokenClassification, RobertaForSequenceClassification
+from lib.PLMWrapper import RobertaForSequentialSequenceClassification
 from datetime import datetime
 import torch
 import random, argparse
 import numpy as np
 import pandas as pd
 import os, sys
-from lib.utils import get_torch_device, clean_mean, InputFeatures
+from lib.utils import get_torch_device, clean_mean
 import logging
 
 '''
@@ -54,8 +53,8 @@ def select_model(model, clf_task):
 model_mapping = {'bert': 'bert-base-cased',
                  'rob_base': 'roberta-base',
                  'rob_dapt': 'experiments/adapt_dapt_tapt/pretrained_models/news_roberta_base',
-                 'rob_basil_tapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-tapt',
-                 'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-dapttapt',
+                 'rob_basil_tapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-basil-tapt',
+                 'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-basil-dapttapt',
                 }
 
 # hyperparameters for reproduction of COLING 'Context in Informational Bias' paper

@@ -4,8 +4,8 @@ from torch import nn
 import os, pickle
 import numpy as np
 from lib.utils import plm_feats_to_tensors, to_batches, arrays_in_series
-from lib.evaluate.Eval import my_eval
-from torch.nn import CrossEntropyLoss, MSELoss, Embedding, Dropout, Linear, Sigmoid, LSTM
+from lib.Eval import my_eval
+from torch.nn import CrossEntropyLoss, MSELoss, Dropout, Linear
 from transformers.configuration_roberta import RobertaConfig
 from transformers.modeling_roberta import RobertaModel, ROBERTA_PRETRAINED_MODEL_ARCHIVE_MAP
 from allennlp.training.metrics import F1Measure, CategoricalAccuracy

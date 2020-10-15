@@ -1,16 +1,13 @@
 import torch
 from torch import nn
 from torch.autograd import Variable
-from transformers.optimization import AdamW, get_linear_schedule_with_warmup
-from torch.optim import lr_scheduler
-from torch.utils.data import (DataLoader, SequentialSampler, RandomSampler, TensorDataset)
-from lib.evaluate.Eval import my_eval
-from transformers import BertModel, BertPreTrainedModel, BertForSequenceClassification
+from transformers.optimization import AdamW
+from lib.Eval import my_eval
 from lib.utils import format_runtime, get_torch_device
 import os, time
 import numpy as np
 
-from torch.nn import CrossEntropyLoss, NLLLoss, MSELoss, Embedding, Dropout, Linear, Sigmoid, LSTM
+from torch.nn import CrossEntropyLoss, Embedding, Dropout, Linear, Sigmoid, LSTM
 
 
 class Classifier:

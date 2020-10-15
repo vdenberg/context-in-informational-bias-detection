@@ -1,16 +1,15 @@
 import argparse, os, sys, logging, re
 from datetime import datetime
 import random
-from collections import Counter
 import torch
 import numpy as np
 import pandas as pd
 import pickle
 
-from lib.classifiers.ContextAwareClassifier import Classifier, CIMClassifier
+from lib.ContextAwareClassifier import Classifier, CIMClassifier
 from lib.handle_data.SplitData import Split
-from lib.utils import get_torch_device, standardise_id, to_batches, to_tensors, clean_mean
-from lib.evaluate.Eval import my_eval
+from lib.utils import get_torch_device, to_batches, to_tensors, clean_mean
+from lib.Eval import my_eval
 
 
 class Processor():
@@ -223,8 +222,8 @@ if PREPROCESS:
 
     raw_data_fp = os.path.join('data/inputs/cim/', 'cim_basil.tsv')
     raw_data = pd.read_csv(raw_data_fp, sep='\t', index_col=False,
-                           names=['sentence_ids', 'art_context_document', 'cov1_context_document',
-                                  'cov2_context_document', 'label', 'position'],
+                           names=['sentence_ids', 'art_context_document', 'ev1_context_document',
+                                  'ev2_context_document', 'label', 'position'],
                            dtype={'sentence_ids': str, 'tokens': str, 'label': int, 'position': int})
     raw_data = raw_data.set_index('sentence_ids', drop=False)
 
@@ -266,8 +265,8 @@ if PREPROCESS:
     raw_data = raw_data[raw_data.sent_len > 0]
     raw_data['id_num'] = [processor.sent_id_map[i] for i in raw_data.sentence_ids.values]
     raw_data['art_context_doc_num'] = processor.to_numeric_documents(raw_data.art_context_document.values)
-    raw_data['cov1_context_doc_num'] = processor.to_numeric_documents(raw_data.cov1_context_document.values)
-    raw_data['cov2_context_doc_num'] = processor.to_numeric_documents(raw_data.cov2_context_document.values)
+    raw_data['ev1_context_doc_num'] = processor.to_numeric_documents(raw_data.ev1_context_document.values)
+    raw_data['ev2_context_doc_num'] = processor.to_numeric_documents(raw_data.ev2_context_document.values)
     token_ids, token_mask = processor.to_numeric_sentences(raw_data.sentence_ids)
     raw_data['token_ids'], raw_data['token_mask'] = token_ids, token_mask
 
@@ -291,7 +290,7 @@ data.index = data.sentence_ids.values
 
 spl = Split(data, subset=SUBSET, recreate=False, sv=99)
 folds = spl.apply_split(features=['story', 'source', 'id_num', 'token_ids', 'token_mask',
-                                  'art_context_doc_num', 'cov1_context_doc_num', 'cov2_context_doc_num', 'src_num'])
+                                  'art_context_doc_num', 'ev1_context_doc_num', 'ev2_context_doc_num', 'src_num'])
 if DEBUG:
     folds = [folds[0]]
 
