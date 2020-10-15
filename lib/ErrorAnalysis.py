@@ -155,10 +155,12 @@ class ErrorAnalysis:
         basic_columns = [grby, 'N', '%Bias'] + metrics
 
         out = pd.DataFrame(columns=basic_columns)
+        print(out)
 
         if grby is not None:
             for n, gr in df.groupby(grby):
                 r = self.row4compare(n, gr, model, metrics)
+                print(r)
                 rows = pd.DataFrame([r], columns=basic_columns)
                 out = out.append(rows, ignore_index=True)
 
