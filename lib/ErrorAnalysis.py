@@ -168,8 +168,8 @@ class ErrorAnalysis:
         out = out.append(row, ignore_index=True)
         return out
 
-    def conf_mat(self, df, model, context):
-        predn = f'{model}_{context}'
+    def conf_mat(self, df, model):
+        predn = f'{model}'
 
         df['gp'] = (df.bias == 1)
         df['pp'] = (df[predn] == 1)

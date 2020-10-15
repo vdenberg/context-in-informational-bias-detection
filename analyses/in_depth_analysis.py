@@ -31,14 +31,14 @@ quote_df = ea.concat_comparisons(quote_dfs)
 print(quote_df)
 
 df_for_quote_marks = ea.w_preds
-for model, context in [('rob', '22'), ('cim', 'coverage')]: # , ('rob', '22'),  ('cim+', 'story'), ('cim++', 'story'),
+for model in [('rob_base'), ('ev_cim')]: # , ('rob', '22'),  ('cim+', 'story'), ('cim++', 'story'),
     print()
-    print(model, context)
+    print(model)
 
     rate_of_quotes = sum(df_for_quote_marks.quote) / len(df_for_quote_marks)
     print(ea.N, rate_of_quotes)
 
-    df_w_conf_mat = ea.conf_mat(df_for_quote_marks, model, context)
+    df_w_conf_mat = ea.conf_mat(df_for_quote_marks, model)
 
     for el in ['tp', 'fp', 'tn', 'fn']:
         subdf = df_for_quote_marks[df_for_quote_marks[el]]
