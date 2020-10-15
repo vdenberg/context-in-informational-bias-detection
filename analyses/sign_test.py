@@ -25,9 +25,9 @@ artcimstar = [44.16, 44.14, 42.96, 42.73, 41.61]
 students_t_test(rob_base, artcimstar)
 
 # Compare baseline to EvCIM
-evcim = [44.16, 44.14, 42.96, 42.73, 41.61]
+evcim = [44.28, 43.92, 44.17, 44.15, 43.97]
 students_t_test(rob_base, evcim)
 
 # Compare baseline to EvCIM*
-evcimstar = [44.28, 43.92, 44.17, 44.15, 43.97]
+evcimstar = [43.31, 43.22, 42.96, 42.84, 42.46]
 students_t_test(rob_base, evcimstar)
