@@ -19,7 +19,7 @@ ea = ErrorAnalysis('base_best')
 
 # SENTENCE LENGTH ANALYSIS
 
-sentlen_dfs = [ea.compare_subsets(ea.w_preds, 'len', model) for model, _ in ea.models]
+sentlen_dfs = [ea.compare_subsets(ea.w_preds, 'len', model,  metrics=['f1']) for model, _ in ea.models]
 sentlen_df = ea.concat_comparisons(sentlen_dfs)
 sentlen_df.index = ["0-90", "91-137", "138-192", "193-647", "All"]
 
@@ -52,7 +52,7 @@ for model, _ in ea.models:
 """
 
 # SOURCE AND STANCE
-source_dfs = [ea.compare_subsets(ea.w_preds, 'source', model) for model, _ in ea.models]
+source_dfs = [ea.compare_subsets(ea.w_preds, 'source', model, metrics=['f1']) for model, _ in ea.models]
 source_df = ea.concat_comparisons(source_dfs)
 source_df = source_df.loc[['fox', 'nyt', 'hpo']]
 quote_df.index = ['FOX', 'NYT', 'HPO']
@@ -60,7 +60,7 @@ quote_df.index = ['FOX', 'NYT', 'HPO']
 print('Difference in performance depending on publisher:')
 print(source_df.to_latex())
 
-stance_dfs = [ea.compare_subsets(ea.w_preds, 'stance', model) for model, _ in ea.models]
+stance_dfs = [ea.compare_subsets(ea.w_preds, 'stance', model, metrics=['f1']) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_dfs)
 stance_df = stance_df.loc[['Right', 'Center', 'Left']]
 print('Difference in performance depending on stance of article:')
@@ -68,7 +68,7 @@ print(stance_df.to_latex())
 
 # LEXICAL BIAS
 
-lex_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model) for model, _ in ea.models]
+lex_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model, metrics=['f1']) for model, _ in ea.models]
 lex_df = ea.concat_comparisons(lex_dfs)
 
 print('Difference in performance depending on presence of lexical bias:')
