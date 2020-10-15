@@ -116,6 +116,7 @@ class ErrorAnalysis:
                 subdf = pd.read_csv(os.path.join(pred_dir, f), index_col=0)
                 print(subdf.head())
                 print(subdf.pred)
+                print(os.path.join(pred_dir, f))
                 out[n] = subdf.pred
         return out
 
