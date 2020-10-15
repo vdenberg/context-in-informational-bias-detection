@@ -180,7 +180,7 @@ class ErrorAnalysis:
         df['tp'] = (df.bias == 1) & (df[predn] == 1)
         df['fp'] = (df.bias == 0) & (df[predn] == 1)
         df['tn'] = (df.bias == 0) & (df[predn] == 0)
-        df['fn'] = (df.bias == 1) &(df[predn] == 0)
+        df['fn'] = (df.bias == 1) & (df[predn] == 0)
         return df
 
     def concat_comparisons(self, dfs, only_rec=False, incl_lex=False):

@@ -30,6 +30,7 @@ quote_dfs = [ea.compare_subsets(ea.w_preds, 'quote', model) for model, _ in ea.m
 quote_df = ea.concat_comparisons(quote_dfs)
 print(quote_df)
 
+"""
 df_for_quote_marks = ea.w_preds
 for model, _ in ea.models:
     print()
@@ -45,6 +46,7 @@ for model, _ in ea.models:
         print(el)
         prop = sum(subdf.quote) / len(subdf)
         print(el, len(subdf), '\%' + str(round(prop*100,2)))
+"""
 
 # SOURCE AND STANCE
 
