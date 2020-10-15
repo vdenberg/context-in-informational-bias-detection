@@ -7,17 +7,15 @@ pd.set_option('display.width', 2000)
 
 
 def students_t_test(results1, results2):
-	stat, p = ttest_ind(results1, results2)
-	print('stat=%.3f, p=%.3f' % (stat, p))
-	if p > 0.05:
-		print('Probably the same distribution')
-	else:
-		print('Probably different distributions')
+    stat, p = ttest_ind(results1, results2)
+    print('stat=%.3f, p=%.3f' % (stat, p))
+    if p > 0.05:
+        print('Probably the same distribution')
+    else:
+        print('Probably different distributions')
 
 
-
-
-ea = ErrorAnalysis('base_best')
+ea = ErrorAnalysis('base_only')
 
 # LEXICAL BIAS
 

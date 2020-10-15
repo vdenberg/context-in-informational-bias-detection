@@ -1,7 +1,7 @@
 import pandas as pd
 from lib.utils import standardise_id
 from lib.Eval import my_eval
-import re
+import re, os
 from collections import Counter
 
 
@@ -25,14 +25,6 @@ def flatten_e(top_e):
     for e in top_e:
         ents.extend(extract_e(e))
     return ents
-
-
-def collect_preds(seeds, location):
-    df = pd.DataFrame()
-    for SEED_VAL in seeds:
-        subdf = pd.read_csv(location, index_col=0)
-        df = df.append(subdf)
-    return df
 
 
 def lat(x):
@@ -85,8 +77,11 @@ def bin_subj_score(subj_score, quantiles):
     #    return "13.52-66.67"
 
 
-models2compare = {'base_best':
-                  [('rob', )
+models2compare = {'base_only':
+                  [('Rob', 'sent_clf_story_split_rob_base')],
+                  'base_best':
+                  [('Rob', 'sent_clf_story_split_rob_base'),
+                   ('EvCIM', 'ev_cim')]
                   }
 
 
@@ -104,11 +99,6 @@ class ErrorAnalysis:
         out = pd.read_csv('data/basil.csv', index_col=0).fillna('')
         out.index = [standardise_id(el) for el in out.index]
 
-        for model, context, seeds in self.models:
-            predn = f'{model}_{context}_seeds'
-            df = collect_preds(model, context)
-            out.loc[df.index, predn] = df.pred
-
         out = out.fillna(0)
         out.main_entities = out.main_entities.apply(lambda x: re.sub('Lawmakers', 'lawmakers', x))
         out['source'] = [el.lower() for el in out.source]
@@ -117,6 +107,18 @@ class ErrorAnalysis:
         out['len'] = out.sentence.apply(len)
         len_quantiles = out.len.quantile([0.25, 0.5, 0.75, 1.0]).values
         out['len'] = out.len.apply(lambda x: bin_length(x, len_quantiles))
+
+        for model, pred_dir in self.models:
+            for i, f in enumerate(os.listdir(pred_dir)):
+                n = f'{model}{i}'
+                print(i, f)
+                subdf = pd.read_csv(os.path.join(pred_dir, f), index_col=0)
+                print(subdf.head())
+                exit()
+                out[n] = subdf['pred']
+                print(out.head())
+                exit(0)
+
         return out
 
     def inf_bias_only(self):
