@@ -17,7 +17,8 @@ rob_basil_tapt = [44.16, 44.14, 42.96, 42.73, 41.61]
 students_t_test(rob_base, rob_basil_tapt)
 
 # Compare baseline to ArtCIM
-artcim = [44.16, 44.14, 42.96, 42.73, 41.61]
+# 34, 68, 102, 170 (43.54), 204
+artcim = [44.16, 44.14, 42.96, 43.54, 41.61]
 students_t_test(rob_base, artcim)
 
 # Compare baseline to ArtCIM*
