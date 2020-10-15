@@ -118,6 +118,9 @@ class ErrorAnalysis:
                 except:
                     print(os.path.join(pred_dir, f))
                     exit()
+
+                subdf['uniq_id'] = standardise_id(subdf.story + subdf.source + subdf.position)
+                subdf.set_index('uniq_id')
                 out[n] = subdf.pred
         return out
 
