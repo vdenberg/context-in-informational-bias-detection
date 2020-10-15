@@ -119,8 +119,6 @@ class ErrorAnalysis:
                     print(os.path.join(pred_dir, f))
                     exit()
                 out[n] = subdf.pred
-                print(n, out[n].head(3))
-                print(n, subdf.pred.head(3))
         return out
 
     def inf_bias_only(self):
