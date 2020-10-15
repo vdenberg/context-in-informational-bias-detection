@@ -17,15 +17,6 @@ def students_t_test(results1, results2):
 
 ea = ErrorAnalysis('base_only')
 
-# LEXICAL BIAS
-
-stance_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model) for model, _ in ea.models]
-stance_df = ea.concat_comparisons(stance_dfs)
-print(stance_df.to_latex())
-
-
-exit(0)
-
 # SENTENCE LENGTH ANALYSIS
 
 sentlen_dfs = [ea.compare_subsets(ea.w_preds, 'len', model) for model, _ in ea.models]
