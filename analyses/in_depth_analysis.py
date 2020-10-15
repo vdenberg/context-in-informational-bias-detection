@@ -22,13 +22,17 @@ ea = ErrorAnalysis('base_best')
 sentlen_dfs = [ea.compare_subsets(ea.w_preds, 'len', model) for model, _ in ea.models]
 sentlen_df = ea.concat_comparisons(sentlen_dfs)
 sentlen_df.index = ["0-90", "91-137", "138-192", "193-647", "All"]
+
+print('Difference in performance depending on sentence length:')
 print(sentlen_df.to_latex())
 
 # IN QUOTE OR NOT + PRESENCE OF QUOTATION MARKS
 
 quote_dfs = [ea.compare_subsets(ea.w_preds, 'quote', model) for model, _ in ea.models]
 quote_df = ea.concat_comparisons(quote_dfs)
-print(quote_df)
+
+print('Difference in performance depending on whether in a quotes:')
+print(quote_df.to_latex())
 
 """
 df_for_quote_marks = ea.w_preds
@@ -52,14 +56,17 @@ for model, _ in ea.models:
 
 source_dfs = [ea.compare_subsets(ea.w_preds, 'source', model) for model, _ in ea.models]
 source_df = ea.concat_comparisons(source_dfs)
+print('Difference in performance depending on publisher:')
 print(source_df.to_latex())
 
 stance_dfs = [ea.compare_subsets(ea.w_preds, 'stance', model) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_dfs)
+print('Difference in performance depending on stance of article:')
 print(stance_df.to_latex())
 
 # LEXICAL BIAS
 
 stance_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_dfs)
+print('Difference in performance depending on presence of lexical bias:')
 print(stance_df.to_latex())
