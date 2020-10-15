@@ -115,6 +115,8 @@ class ErrorAnalysis:
                 n = f'{model}{i}'
                 subdf = pd.read_csv(os.path.join(pred_dir, f), index_col=0)
                 out[n] = subdf.pred
+                print(subdf.pred.head())
+                print(out[n].pred.head())
         return out
 
     def inf_bias_only(self):
