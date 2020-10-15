@@ -121,7 +121,6 @@ class ErrorAnalysis:
                 out[n] = subdf.pred
                 print(n, out[n].head(3))
                 print(n, subdf.pred.head(3))
-                exit(0)
         return out
 
     def inf_bias_only(self):
