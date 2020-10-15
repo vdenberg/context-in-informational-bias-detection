@@ -108,7 +108,8 @@ class ErrorAnalysis:
         len_quantiles = out.len.quantile([0.25, 0.5, 0.75, 1.0]).values
         out['len'] = out.len.apply(lambda x: bin_length(x, len_quantiles))
 
-        for model, pred_dir in self.models:
+        for model, pred_loc in self.models:
+            pred_dir = os.path.join('data/predictions/', pred_loc)
             for i, f in enumerate(os.listdir(pred_dir)):
                 n = f'{model}{i}'
                 print(i, f)
