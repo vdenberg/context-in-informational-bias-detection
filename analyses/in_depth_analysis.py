@@ -15,7 +15,7 @@ def students_t_test(results1, results2):
         print('Probably different distributions')
 
 
-ea = ErrorAnalysis('base_best')
+ea = ErrorAnalysis('best_only')
 
 # SENTENCE LENGTH ANALYSIS
 

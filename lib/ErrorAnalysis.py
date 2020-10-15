@@ -80,6 +80,8 @@ def bin_subj_score(subj_score, quantiles):
 
 models2compare = {'base_only':
                   [('Rob', 'sent_clf_story_split_rob_base')],
+                  'best_only':
+                  [('EvCIM', 'ev_cim')],
                   'base_best':
                   [('Rob', 'sent_clf_story_split_rob_base'),
                    ('EvCIM', 'ev_cim')]
