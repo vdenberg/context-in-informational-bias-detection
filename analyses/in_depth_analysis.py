@@ -70,8 +70,6 @@ print(stance_df.to_latex())
 
 lex_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model) for model, _ in ea.models]
 lex_df = ea.concat_comparisons(lex_dfs)
-lex_df = lex_df.loc[['True', 'False']]
-lex_df.index = ['Yes', 'No']
 
 print('Difference in performance depending on presence of lexical bias:')
 print(stance_df.to_latex())
