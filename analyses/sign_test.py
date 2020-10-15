@@ -10,27 +10,24 @@ def students_t_test(results1, results2):
 		print('Probably different distributions')
 
 
-# Compare baseline to best domain context model
 rob_base = [42.93, 42.93, 42.93, 42.93, 42.93]
+
+# Compare baseline to best domain context model
 rob_basil_tapt = [44.16, 44.14, 42.96, 42.73, 41.61]
 students_t_test(rob_base, rob_basil_tapt)
 
 # Compare baseline to ArtCIM
-rob_base = [42.93, 42.93, 42.93, 42.93, 42.93]
-covcim = [44.16, 44.14, 42.96, 42.73, 41.61]
-students_t_test(rob_base, rob_basil_tapt)
+artcim = [44.16, 44.14, 42.96, 42.73, 41.61]
+students_t_test(rob_base, artcim)
 
 # Compare baseline to ArtCIM*
-rob_base = [42.93, 42.93, 42.93, 42.93, 42.93]
-covcim = [44.16, 44.14, 42.96, 42.73, 41.61]
-students_t_test(rob_base, rob_basil_tapt)
+artcimstar = [44.16, 44.14, 42.96, 42.73, 41.61]
+students_t_test(rob_base, artcimstar)
 
 # Compare baseline to EvCIM
-rob_base = [42.93, 42.93, 42.93, 42.93, 42.93]
-covcim = [44.16, 44.14, 42.96, 42.73, 41.61]
-students_t_test(rob_base, rob_basil_tapt)
+evcim = [44.16, 44.14, 42.96, 42.73, 41.61]
+students_t_test(rob_base, evcim)
 
 # Compare baseline to EvCIM*
-rob_base = [42.93, 42.93, 42.93, 42.93, 42.93]
-covcim = [44.16, 44.14, 42.96, 42.73, 41.61]
-students_t_test(rob_base, rob_basil_tapt)
+evcimstar = [44.28, 43.92, 44.17, 44.15, 43.97]
+students_t_test(rob_base, evcimstar)

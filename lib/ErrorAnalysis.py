@@ -146,6 +146,7 @@ class ErrorAnalysis:
         if grby is not None:
             for n, gr in df.groupby(grby):
                 r = self.row4compare(n, gr, model, context)
+                print(r)
 
                 rows = pd.DataFrame([r], columns=basic_columns)
                 out = out.append(rows, ignore_index=True)
