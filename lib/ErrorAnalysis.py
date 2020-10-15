@@ -115,6 +115,8 @@ class ErrorAnalysis:
                 n = f'{model}{i}'
                 subdf = pd.read_csv(os.path.join(pred_dir, f), index_col=0)
                 out[n] = subdf.pred
+                print(subdf.pred.head())
+                print(out[n].head())
         return out
 
     def inf_bias_only(self):
@@ -143,7 +145,6 @@ class ErrorAnalysis:
         basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
 
         out = pd.DataFrame(columns=basic_columns)
-        print(df.head())
 
         if grby is not None:
             for n, gr in df.groupby(grby):
