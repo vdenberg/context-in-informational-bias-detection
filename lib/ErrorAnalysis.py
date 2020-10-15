@@ -112,11 +112,9 @@ class ErrorAnalysis:
             pred_dir = os.path.join('data/predictions/', pred_loc)
             for i, f in enumerate(os.listdir(pred_dir)):
                 n = f'{model}{i}'
-                print(i, f)
                 subdf = pd.read_csv(os.path.join(pred_dir, f), index_col=0)
                 print(subdf.head())
-                exit()
-                out[n] = subdf['pred']
+                out[n] = subdf.pred
                 print(out.head())
                 exit(0)
 
