@@ -125,7 +125,7 @@ class ErrorAnalysis:
                     subdf['uniq_id'] = standardise_id(subdf.story + subdf.source + subdf.position)
                     subdf = subdf.set_index('uniq_id')
                 out[n] = subdf.pred
-                out.label = subdf.label
+                out['label'] = subdf.label
         return out
 
     def inf_bias_only(self):
