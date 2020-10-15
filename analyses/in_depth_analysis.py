@@ -72,4 +72,4 @@ lex_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model, metrics=['f1']) for
 lex_df = ea.concat_comparisons(lex_dfs)
 
 print('Difference in performance depending on presence of lexical bias:')
-print(stance_df.to_latex())
+print(lex_df.to_latex())
