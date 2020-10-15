@@ -29,6 +29,8 @@ print(sentlen_df.to_latex())
 # IN QUOTE OR NOT + PRESENCE OF QUOTATION MARKS
 quote_dfs = [ea.compare_subsets(ea.w_preds, 'quote', model, metrics=['rec', 'f1']) for model, _ in ea.models]
 quote_df = ea.concat_comparisons(quote_dfs)
+quote_df = quote_df.loc[['True', 'False']]
+quote_df.index = ['Yes', 'No']
 
 print('Difference in performance depending on whether in a quotes:')
 print(quote_df.to_latex())
@@ -54,17 +56,24 @@ for model, _ in ea.models:
 # SOURCE AND STANCE
 source_dfs = [ea.compare_subsets(ea.w_preds, 'source', model) for model, _ in ea.models]
 source_df = ea.concat_comparisons(source_dfs)
+source_df = source_df.loc[['fox', 'nyt', 'hpo']]
+quote_df.index = ['FOX', 'NYT', 'HPO']
+
 print('Difference in performance depending on publisher:')
 print(source_df.to_latex())
 
 stance_dfs = [ea.compare_subsets(ea.w_preds, 'stance', model) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_dfs)
+stance_df = stance_df.loc[['Right', 'Center', 'Left']]
 print('Difference in performance depending on stance of article:')
 print(stance_df.to_latex())
 
 # LEXICAL BIAS
 
-stance_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model) for model, _ in ea.models]
-stance_df = ea.concat_comparisons(stance_dfs)
+lex_dfs = [ea.compare_subsets(ea.w_preds, 'lex_bias', model) for model, _ in ea.models]
+lex_df = ea.concat_comparisons(lex_dfs)
+lex_df = lex_df.loc[['True', 'False']]
+lex_df.index = ['Yes', 'No']
+
 print('Difference in performance depending on presence of lexical bias:')
 print(stance_df.to_latex())
