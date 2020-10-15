@@ -31,7 +31,7 @@ quote_df = ea.concat_comparisons(quote_dfs)
 print(quote_df)
 
 df_for_quote_marks = ea.w_preds
-for model, _ in ea.models():
+for model, _ in ea.models:
     print()
     print(model)
 
