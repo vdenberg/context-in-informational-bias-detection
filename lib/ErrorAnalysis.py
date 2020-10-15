@@ -3,6 +3,7 @@ from lib.utils import standardise_id
 from lib.Eval import my_eval
 import re, os
 from collections import Counter
+import numpy as np
 
 
 def extract_e(string):
@@ -109,12 +110,11 @@ class ErrorAnalysis:
         out['len'] = out.len.apply(lambda x: bin_length(x, len_quantiles))
 
         for model, pred_loc in self.models:
-            pred_dir = os.path.join('data/predictions/', pred_loc)
+            pred_dir = os.path.join('data/predictions/', pred_loc.lower())
             for i, f in enumerate(os.listdir(pred_dir)):
                 n = f'{model}{i}'
                 subdf = pd.read_csv(os.path.join(pred_dir, f), index_col=0)
                 out[n] = subdf.pred
-        print(out.columns)
         return out
 
     def inf_bias_only(self):
@@ -127,7 +127,19 @@ class ErrorAnalysis:
         N = len(gr)
         Nbias = sum(gr.bias == 1)
         Percbias = str(round(Nbias / N * 100,2)) + '%'
-        mets, _ = my_eval(gr.bias, gr[f'{model}_{context}'])
+
+        cross_mets = []
+        for i in range(5):
+            mets, _ = my_eval(gr.bias, gr[f'{model}{i}'])
+            cross_mets.append(np.asarray(mets))
+        cross_mets = np.asarray(cross_mets)
+        print(cross_mets)
+        mets = np.mean(cross_mets, axis=1)
+        print(mets)
+        exit(0)
+
+
+
         mets = [round(el*100, 2) for el in [mets['prec'], mets['rec'], mets['f1']]]
 
         return [n] + lat([N, Percbias] + mets)
@@ -305,11 +317,3 @@ class ErrorAnalysis:
         for n, art in df.groupby(['article']):
             inf_bias = art[['inf_pol', 'lex_pol']]  # [art['bias'] == 1]
             print(inf_bias)
-
-'''
-for e, c in top_e:
-    s = surface_e[e]
-    abrev = self.get_e_abrev(e)
-    df[f'{abrev}_sent'] = df.sentence.apply(lambda x: (s in x) if isinstance(x, str) else False)
-    df[f'{abrev}_art'] = df.main_entities.apply(lambda x: top_in_row(x, e))
-'''
