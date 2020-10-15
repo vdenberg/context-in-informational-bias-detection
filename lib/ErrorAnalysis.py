@@ -114,6 +114,7 @@ class ErrorAnalysis:
             for i, f in enumerate(os.listdir(pred_dir)):
                 n = f'{model}{i}'
                 subdf = pd.read_csv(os.path.join(pred_dir, f), index_col=0)
+                print(subdf.columns)
                 print(subdf.head())
                 out[n] = subdf.pred
         return out
