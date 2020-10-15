@@ -234,7 +234,7 @@ if __name__ == '__main__':
 
                     pred_fp = os.path.join(PREDICTION_DIR, f'{setting_name}_test_preds.csv')
                     print(pred_fp)
-
+                    exit(0)
                     test_ids = []
                     test_predictions = []
                     test_labels = []

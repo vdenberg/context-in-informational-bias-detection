@@ -86,8 +86,7 @@ def bin_subj_score(subj_score, quantiles):
 
 
 models2compare = {'base_best':
-                  [('rob_base', [49, 57, 33, 297, 181]),
-                   ('ev_cim', [49, 57, 33, 297, 181])
+                  [('rob', )
                   }
 
 
