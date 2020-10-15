@@ -114,6 +114,7 @@ class ErrorAnalysis:
             for i, f in enumerate(os.listdir(pred_dir)):
                 n = f'{model}{i}'
                 subdf = pd.read_csv(os.path.join(pred_dir, f), index_col=0)
+                print(subdf.head())
                 out[n] = subdf.pred
         return out
 
@@ -130,7 +131,6 @@ class ErrorAnalysis:
 
         cross_mets = []
         for i in range(5):
-            print(gr[f'{model}{i}'])
             mets, _ = my_eval(gr.bias, gr[f'{model}{i}'])
             cross_mets.append(np.asarray([mets['prec'], mets['rec'], mets['f1']]))
             # cross_mets.append(np.asarray([mets['f1']]))
