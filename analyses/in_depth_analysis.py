@@ -29,8 +29,6 @@ print(sentlen_df.to_latex())
 # IN QUOTE OR NOT + PRESENCE OF QUOTATION MARKS
 quote_dfs = [ea.compare_subsets(ea.w_preds, 'quote', model, metrics=['rec', 'f1']) for model, _ in ea.models]
 quote_df = ea.concat_comparisons(quote_dfs)
-quote_df = quote_df.loc[['True', 'False']]
-quote_df.index = ['Yes', 'No']
 
 print('Difference in performance depending on whether in a quotes:')
 print(quote_df.to_latex())
