@@ -114,9 +114,6 @@ class ErrorAnalysis:
             for i, f in enumerate(os.listdir(pred_dir)):
                 n = f'{model}{i}'
                 subdf = pd.read_csv(os.path.join(pred_dir, f), index_col=0)
-                print(subdf.head())
-                print(subdf.pred)
-                print(os.path.join(pred_dir, f))
                 out[n] = subdf.pred
         return out
 
@@ -149,6 +146,8 @@ class ErrorAnalysis:
 
         if grby is not None:
             for n, gr in df.groupby(grby):
+                print(gr.head())
+                print(n)
                 r = self.row4compare(n, gr, model)
                 rows = pd.DataFrame([r], columns=basic_columns)
                 out = out.append(rows, ignore_index=True)
