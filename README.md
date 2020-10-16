@@ -52,7 +52,7 @@ run the following:
 python experiments/finetune_plm.py -clf_task seq_sent_clf -exlen [5|10]] -win
 ```
 
-### Article & Context
+### Article and Event Context
 
 ```shell script
 python experiments/context_inclusive.py -context [art|ev] -cim_type [cim|cim*]
