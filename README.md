@@ -5,7 +5,7 @@
 
 ```bibtex
 @inproceedings{berg2020context,
- author = {Esther van den Berg and Katja Marker},
+ author = {Esther van den Berg and Katja Markert},
  title = {Context in Informational Bias Detection},
  year = {2020},
  booktitle = {Proceedings of COLING},
