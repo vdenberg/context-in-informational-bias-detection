@@ -4,11 +4,11 @@
 
 
 ```bibtex
-@inproceedings{dontstoppretraining2020,
- author = {Suchin Gururangan and Ana Marasović and Swabha Swayamdipta and Kyle Lo and Iz Beltagy and Doug Downey and Noah A. Smith},
- title = {Don't Stop Pretraining: Adapt Language Models to Domains and Tasks},
+@inproceedings{berg2020context,
+ author = {Esther van den Berg and Katja Marker},
+ title = {Context in Informational Bias Detection},
  year = {2020},
- booktitle = {Proceedings of ACL},
+ booktitle = {Proceedings of COLING},
 }
 ```
 
