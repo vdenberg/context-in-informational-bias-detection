@@ -40,19 +40,19 @@ run the following:
     python analyses/in_depth_analysis.py
    ```
 
-### BERT and RoBERTa baselines: 
+### BERT and RoBERTa baselines
 
  ```shell script
     python experiments/finetune_plm.py -clf_task [sent_clf|tok_clf] -model [bert|rob_base]
    ```
 
-### Sequential Sentence Classification: 
+### Sequential Sentence Classification
 
 ```shell script
 python experiments/finetune_plm.py -clf_task seq_sent_clf -exlen [5|10]] -win
 ```
 
-### Article & Context: 
+### Article & Context
 
 ```shell script
 python experiments/context_inclusive.py -context [art|ev] -cim_type [cim|cim*]
