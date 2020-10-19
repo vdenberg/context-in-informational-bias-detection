@@ -20,7 +20,9 @@
    git clone https://github.com/vdenberg/context-in-informational-bias-detection.git
    cd context-in-informational-bias-detection
    conda create -n ciib python=3.7
+   conda activate ciib
    pip install -r requirements.txt
+   python -m spacy download en_core_web_sm
    conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
    ```
 

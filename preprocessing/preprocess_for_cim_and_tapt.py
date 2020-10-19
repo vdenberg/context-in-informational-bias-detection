@@ -1,5 +1,5 @@
 import pandas as pd
-import argparse
+import argparse, os
 # import tensorflow_hub as hub
 # from sentence_transformers import SentenceTransformer
 from lib.handle_data.BasilLoader import LoadBasil
@@ -185,6 +185,11 @@ if __name__ == '__main__':
     parser.add_argument('-add_sbert', '--add_sbert', action='store_true', default=False,
                         help='Add Sentence-BERT to BASIL voor CIM with SBERT input')
     args = parser.parse_args()
+
+    os.makedirs('data/inputs/tapt')
+    os.makedirs('data/inputs/sent_clf')
+    os.makedirs('data/inputs/tok_clf')
+    os.makedirs('data/inputs/seq_sent_clf')
 
     basil = LoadBasil().load_basil_raw()
     basil.to_csv('data/basil.csv')
