@@ -87,10 +87,10 @@ def give_subj_score(x, sent_lex, subj_words):
 def bin_subj_score(subj_score, quantiles):
     if subj_score == 0:
         return "No"
-    elif subj_score > 0 and subj_score <= quantiles[0]:
-        return "No" #"0-3.7" #"1-5.26"
-    else: # subj_score <= quantiles[1]:
-        return "Yes" #"5.37-8.57"
+    elif subj_score > 0: #and subj_score <= quantiles[0]:
+        return "Yes" #"0-3.7" #"1-5.26"
+    #else: # subj_score <= quantiles[1]:
+    #    return "Yes" #"5.37-8.57"
     #elif subj_score <= quantiles[2]:
     #    return "9.53-66.67" #"8.58-13.51"
     #elif subj_score <= quantiles[3]:
