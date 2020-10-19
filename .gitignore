@@ -12,7 +12,6 @@ data/emnlp19-BASIL/
 data/inputs/cim/*
 data/inputs/sent_clf/*
 data/inputs/seq_sent_clf/*
-data/inputs/tapt/*.txt
 data/inputs/tok_clf/*
 data/splits/*
 experiments/adapt_dapt_tapt/*
