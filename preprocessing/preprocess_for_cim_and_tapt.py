@@ -186,9 +186,12 @@ if __name__ == '__main__':
                         help='Add Sentence-BERT to BASIL voor CIM with SBERT input')
     args = parser.parse_args()
 
-    os.makedirs('data/inputs/sent_clf')
-    os.makedirs('data/inputs/tok_clf')
-    os.makedirs('data/inputs/seq_sent_clf')
+    if not os.path.exists('data/inputs/sent_clf'):
+        os.makedirs('data/inputs/sent_clf')
+    if not os.path.exists('data/inputs/tok_clf'):
+        os.makedirs('data/inputs/tok_clf')
+    if not os.path.exists('data/inputs/seq_sent_clf'):
+        os.makedirs('data/inputs/seq_sent_clf')
 
     basil = LoadBasil().load_basil_raw()
     basil.to_csv('data/basil.csv')
