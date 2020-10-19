@@ -113,6 +113,10 @@ class ErrorAnalysis:
 
     def __init__(self, models):
         self.models = models2compare[models]
+
+        self.sent_lex = load_subj_lex()
+        self.subj_words = set(self.sent_lex.index.values)
+
         self.w_preds = self.contruct_df()
         self.N = len(self.w_preds)
 
@@ -131,7 +135,7 @@ class ErrorAnalysis:
         out['subj'] = out.sentence.apply(lambda x: give_subj_score(x, self.sent_lex, self.subj_words))
         subj_pos_quantiles = out.subj.quantile([0.5, 0.75, 1.0]).values
         out['subj'] = out.subj.apply(lambda x: bin_subj_score(x, subj_pos_quantiles))
-        
+
         for model, pred_loc in self.models:
             pred_dir = os.path.join('data/predictions/', pred_loc.lower())
             for i, f in enumerate(os.listdir(pred_dir)):
