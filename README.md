@@ -18,6 +18,7 @@
 
    ```shell script
    git clone https://github.com/vdenberg/context-in-informational-bias-detection.git
+   cd context-in-informational-bias-detection
    pip install -r requirements.txt
    ```
 
