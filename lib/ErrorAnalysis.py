@@ -68,7 +68,7 @@ def load_subj_lex():
     lex.priorpolarity = lex.priorpolarity.replace({'neutral_eb': 0, 'positive_eb': 1, 'negative_eb': -1}).astype(float)
     lex.priorpolarity = lex.priorpolarity.astype(float)
     #lex['subj_score'] = lex.type.apply(lambda x: 1 if x == 'weaksubj' else 2)
-    lex['subj_score'] = lex.type.apply(lambda x: 0 if x == 'weaksubj' else 1)
+    lex['subj_score'] = lex.type.apply(lambda x: 1 if x == 'weaksubj' else 1)
     lex = lex.drop_duplicates('word1')
     lex = lex.set_index('word1')
     return lex
