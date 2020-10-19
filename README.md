@@ -20,6 +20,8 @@
    git clone https://github.com/vdenberg/context-in-informational-bias-detection.git
    cd context-in-informational-bias-detection
    pip install -r requirements.txt
+   conda install allennlp==0.9.0
+   conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
    ```
 
 2. Download and unzip BASIL Corpus from: https://github.com/marshallwhiteorg/emnlp19-media-bias/blob/master/emnlp19-BASIL.zip
@@ -35,8 +37,6 @@
 run the following:
 
  ```shell script
-    python experiments/finetune_plm.py 
-    python experiments/context_inclusive.py -context ev -cim_type cim
     python analyses/sign_test.py
     python analyses/in_depth_analysis.py
    ```

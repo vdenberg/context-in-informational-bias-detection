@@ -121,8 +121,6 @@ lrs = [args.lr] if args.lr else [model_hyperparams[CLF_TASK][MODEL]['lr']]
 
 if SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
-elif MODEL != 'bert' and CLF_TASK == 'sent_clf':
-    folds = ['fan']
 else:
     folds = ['sentence_split']
 
@@ -157,17 +155,9 @@ elif CLF_TASK == 'sent_clf':
     if MODEL == 'bert':
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
     else:
-        FEAT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/data/{CLF_TASK}/features_for_roberta'
-
-else:
-    if MODEL == 'bert':
-        FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
-    else:
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta'
 
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
-if MODEL != 'bert' and CLF_TASK == 'sent_clf':
-    CHECKPOINT_DIR = f'/home/mitarb/vdberg/Projects/EntityFramingDetection/models/checkpoints/SC_rob/'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
 CACHE_DIR = 'models/cache/'
@@ -248,10 +238,7 @@ if __name__ == '__main__':
                         name = setting_name + f"_f{fold_name}"
 
                         # init results containers
-                        if MODEL != 'bert' and fold_name == 'sentence_split' and CLF_TASK == 'sent_clf':
-                            model_loc_name = setting_name + f"_f{'fan'}"
-                        else:
-                            model_loc_name = name
+                        model_loc_name = name
                         best_model_loc = os.path.join(CHECKPOINT_DIR, model_loc_name)
                         best_val_res = {'model': MODEL, 'seed': SEED_VAL, 'fold': fold_name, 'bs': BATCH_SIZE,
                                         'lr': LEARNING_RATE, 'set_type': 'dev', 'f1': 0, 'model_loc': best_model_loc,

@@ -1,4 +1,3 @@
 pandas
 transformers==2.3.0
 scikit-learn
-scipy
