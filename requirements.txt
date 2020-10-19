@@ -1,6 +1,6 @@
 pandas
 transformers==2.3.0
 allennlp==0.9.0
-pytorch cudatoolkit=10.1
+torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 scikit-learn
 scipy
