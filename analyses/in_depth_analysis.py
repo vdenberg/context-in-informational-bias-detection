@@ -73,3 +73,8 @@ lex_df = ea.concat_comparisons(lex_dfs)
 
 print('Difference in performance depending on presence of lexical bias:')
 print(lex_df.to_latex())
+
+subj_dfs = [ea.compare_subsets(ea.w_preds, 'subj', model, context) for model, context in ea.models]
+subj_df = ea.concat_comparisons(subj_dfs)
+#subj_df.index = ["No", "Yes", "All"]
+print(subj_df.to_latex())

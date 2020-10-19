@@ -55,6 +55,24 @@ def bin_length(len, quantiles):
         return "193-647"
 
 
+def load_subj_lex():
+    "input looks like: type=weaksubj len=1 word1=abandoned pos1=adj stemmed1=n priorpolarity=negative"
+    fn = 'data/subjectivity_clues_hltemnlp05/subjclueslen1-HLTEMNLP05.tff'
+    with open(fn, 'r') as f:
+        ls = f.readlines()
+        tags = [tag.split('=')[0] for tag in ls[0].split(' ')]
+        vals = [[tag.split('=')[1].strip() for tag in l.split(' ')] for l in ls]
+    lex = pd.DataFrame(vals, columns=tags)
+    lex = lex[((lex.pos1 == 'verb') | (lex.pos1 == 'anypos')) & (lex.priorpolarity != 'both')]
+    lex.priorpolarity = lex.priorpolarity.replace({'neutral': 0, 'positive': 1, 'negative': -1})
+    lex.priorpolarity = lex.priorpolarity.replace({'neutral_eb': 0, 'positive_eb': 1, 'negative_eb': -1}).astype(float)
+    lex.priorpolarity = lex.priorpolarity.astype(float)
+    lex['subj_score'] = lex.type.apply(lambda x: 1 if x == 'weaksubj' else 2)
+    lex = lex.drop_duplicates('word1')
+    lex = lex.set_index('word1')
+    return lex
+
+
 def give_subj_score(x, sent_lex, subj_words):
     tokens = x.split(' ')
     subj_score = 0
@@ -110,7 +128,10 @@ class ErrorAnalysis:
         out['len'] = out.sentence.apply(len)
         len_quantiles = out.len.quantile([0.25, 0.5, 0.75, 1.0]).values
         out['len'] = out.len.apply(lambda x: bin_length(x, len_quantiles))
-
+        out['subj'] = out.sentence.apply(lambda x: give_subj_score(x, self.sent_lex, self.subj_words))
+        subj_pos_quantiles = out.subj.quantile([0.5, 0.75, 1.0]).values
+        out['subj'] = out.subj.apply(lambda x: bin_subj_score(x, subj_pos_quantiles))
+        
         for model, pred_loc in self.models:
             pred_dir = os.path.join('data/predictions/', pred_loc.lower())
             for i, f in enumerate(os.listdir(pred_dir)):
