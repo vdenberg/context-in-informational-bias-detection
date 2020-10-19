@@ -186,7 +186,6 @@ if __name__ == '__main__':
                         help='Add Sentence-BERT to BASIL voor CIM with SBERT input')
     args = parser.parse_args()
 
-    os.makedirs('data/inputs/tapt')
     os.makedirs('data/inputs/sent_clf')
     os.makedirs('data/inputs/tok_clf')
     os.makedirs('data/inputs/seq_sent_clf')
