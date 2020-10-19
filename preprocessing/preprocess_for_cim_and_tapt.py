@@ -153,7 +153,7 @@ def preprocess_for_cim(basil, add_use=False, add_sbert=False, ofp="data/inputs/c
                     f.write('\n')
 
 
-def preprocess_for_tapt(basil, train_ofp = "data/tapt/basil_train.txt", test_ofp = "data/tapt/basil_test.txt"):
+def preprocess_for_tapt(basil, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
     """
     Split for tapt
     """

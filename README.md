@@ -14,13 +14,13 @@
 
 ### Installing
 
-1. Clone this repository and install dependencies:
+1. Clone this repository, ensure you are in an environment with Python 3.7, and install dependencies:
 
    ```shell script
    git clone https://github.com/vdenberg/context-in-informational-bias-detection.git
    cd context-in-informational-bias-detection
+   conda create -n ciib python=3.7
    pip install -r requirements.txt
-   conda install allennlp==0.9.0
    conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
    ```
 
