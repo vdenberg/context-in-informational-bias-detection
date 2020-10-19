@@ -121,6 +121,8 @@ def collect_sent_ids(set_type_stories, sent_by_story):
 class StorySplit:
     def __init__(self, split_input, split_dir='data/splits/story_split', subset=1.0):
         split_fn = 'split.json'
+        if not os.path.exists(split_dir):
+            os.makedirs(split_dir)
         self.split_fp = os.path.join(split_dir, split_fn)
         self.split_input = split_input
         self.basil = load_basil().sample(frac=subset)
@@ -171,6 +173,7 @@ class StorySplit:
             stories_split_ten_ways.append(stories_split_one_way)
 
         splits_json = {str(split_i): one_split for split_i, one_split in enumerate(stories_split_ten_ways)}
+
         with open(self.split_fp, 'w') as f:
             string = json.dumps(splits_json)
             f.write(string)
