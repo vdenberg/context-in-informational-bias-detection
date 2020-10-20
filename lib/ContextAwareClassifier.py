@@ -14,12 +14,11 @@ class Classifier:
     """
     Generic Classifier that performs recurring machine learning tasks
     """
-    def __init__(self, model, logger, fig_dir, name, n_eps=10, patience=3, printing=100, load_from_ep=None):
+    def __init__(self, model, logger, name, n_eps=10, patience=3, printing=100, load_from_ep=None):
         self.wrapper = model
         self.n_epochs = n_eps
         self.logger = logger
         self.patience = patience
-        self.fig_dir = fig_dir
         self.model_name = name
         self.print_every = printing
 
