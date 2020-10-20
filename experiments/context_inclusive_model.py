@@ -283,7 +283,7 @@ data = pd.read_json(DATA_FP)
 data.index = data.sentence_ids.values
 
 spl = Split(data, subset=SUBSET, recreate=False, sv=99)
-folds = spl.apply_split(features=['story', 'source', 'id_num', 'token_ids', 'token_mask', 'position',
+folds = spl.apply_split(features=['story', 'source', 'id_num', 'token_ids', 'token_mask', 'position', 'quartiles',
                                   'art_context_doc_num', 'ev1_context_doc_num', 'ev2_context_doc_num', 'src_num'])
 if DEBUG:
     folds = [folds[0]]
