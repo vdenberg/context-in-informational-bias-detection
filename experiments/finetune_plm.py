@@ -343,7 +343,8 @@ if __name__ == '__main__':
                                         embs = inferencer.predict(best_model, all_batches, return_embeddings=True, emb_type=EMB_TYPE)
                                         assert len(embs) == len(all_ids)
                                         print(embs)
-                                        logger.info(f'{EMB_TYPE} embeddings in {emb_fp}.csv')
+                                        print(len(embs))
+                                        print(all_ids[0])
                                         exit(0)
                                         basil_w_BERT = pd.DataFrame(index=all_ids)
                                         basil_w_BERT[EMB_TYPE] = embs
