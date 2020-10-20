@@ -188,10 +188,14 @@ if __name__ == '__main__':
     ######
 
     # Load DataFrame with BASIL instances and - selected - annotations
-    basil = LoadBasil().load_basil_raw()
-    basil.to_csv('data/basil.csv')
+    if not os.path.exists('data/basil.csv'):
+        basil = LoadBasil().load_basil_raw()
+        basil.to_csv('data/basil.csv')
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
-    convert_basil_for_plm_inputs(basil, task=CLF_TASK, ofp=f'data/inputs/{CLF_TASK}/plm_basil.tsv')
+
+    plm_ofp = f'data/inputs/{CLF_TASK}/plm_basil.tsv'
+    if not os.path.exists(plm_ofp):
+        convert_basil_for_plm_inputs(basil, task=CLF_TASK, ofp=plm_ofp)
 
     #############
     ### BASELINES
@@ -275,17 +279,19 @@ if __name__ == '__main__':
         fold_name = fold['name']
         for set_type in ['train', 'dev', 'test']:
             infp = os.path.join(DATA_DIR, f"{fold_name}_{set_type}.tsv")
+
             FEAT_OFP = os.path.join(FEAT_DIR, f"{fold_name}_{set_type}_features.pkl")
 
-            examples = dataloader.get_examples(infp, set_type, sep='\t')
-            features = [features_dict[example.my_id] for example in examples if example.text_a]
-            if CLF_TASK == 'seq_sent_clf':
-                features = redistribute_feats(features, cls=0, pad=1, max_sent=MAX_EX_LEN, max_len=MAX_SEQ_LEN,
-                                          window=WINDOW)
-            # print(f"Processed fold {fold_name} {set_type} - {len(features)} items to {FEAT_OFP}")
+            if not os.path.exists(FEAT_OFP):
+                examples = dataloader.get_examples(infp, set_type, sep='\t')
+                features = [features_dict[example.my_id] for example in examples if example.text_a]
+                if CLF_TASK == 'seq_sent_clf':
+                    features = redistribute_feats(features, cls=0, pad=1, max_sent=MAX_EX_LEN, max_len=MAX_SEQ_LEN,
+                                              window=WINDOW)
+                # print(f"Processed fold {fold_name} {set_type} - {len(features)} items to {FEAT_OFP}")
 
-            with open(FEAT_OFP, "wb") as f:
-                pickle.dump(features, f)
+                with open(FEAT_OFP, "wb") as f:
+                    pickle.dump(features, f)
 
     tokenizer.save_vocabulary(FEAT_DIR)
-    print(f"Saved items and vocabulary to {FEAT_DIR}")
+    print(f"Items and vocabulary in {FEAT_DIR}")

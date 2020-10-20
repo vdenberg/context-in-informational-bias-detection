@@ -127,30 +127,31 @@ def preprocess_for_cim(basil, add_use=False, add_sbert=False, ofp="data/inputs/c
     if add_sbert:
         add_sbert(basil)
 
-    with open(ofp, 'w') as f:
+    if not os.path.exists(ofp):
+        with open(ofp, 'w') as f:
 
-        for n, ev_gr in basil.groupby(['story']):
-            for src, art_gr in ev_gr.groupby('source'):
+            for n, ev_gr in basil.groupby(['story']):
+                for src, art_gr in ev_gr.groupby('source'):
 
-                # collect unique ids of instances (target sentences)
-                art_ids = ev_gr[ev_gr.source == src]['uniq_idx.1'].to_list()
+                    # collect unique ids of instances (target sentences)
+                    art_ids = ev_gr[ev_gr.source == src]['uniq_idx.1'].to_list()
 
-                if src == 'hpo':
-                    ev1_ids = ev_gr[ev_gr.source == 'nyt']['uniq_idx.1'].to_list()
-                    ev2_ids = ev_gr[ev_gr.source == 'fox']['uniq_idx.1'].to_list()
+                    if src == 'hpo':
+                        ev1_ids = ev_gr[ev_gr.source == 'nyt']['uniq_idx.1'].to_list()
+                        ev2_ids = ev_gr[ev_gr.source == 'fox']['uniq_idx.1'].to_list()
 
-                elif src == 'nyt':
-                    ev1_ids = ev_gr[ev_gr.source == 'hpo']['uniq_idx.1'].to_list()
-                    ev2_ids = ev_gr[ev_gr.source == 'fox']['uniq_idx.1'].to_list()
-                elif src == 'fox':
-                    ev1_ids = ev_gr[ev_gr.source == 'hpo']['uniq_idx.1'].to_list()
-                    ev2_ids = ev_gr[ev_gr.source == 'nyt']['uniq_idx.1'].to_list()
+                    elif src == 'nyt':
+                        ev1_ids = ev_gr[ev_gr.source == 'hpo']['uniq_idx.1'].to_list()
+                        ev2_ids = ev_gr[ev_gr.source == 'fox']['uniq_idx.1'].to_list()
+                    elif src == 'fox':
+                        ev1_ids = ev_gr[ev_gr.source == 'hpo']['uniq_idx.1'].to_list()
+                        ev2_ids = ev_gr[ev_gr.source == 'nyt']['uniq_idx.1'].to_list()
 
-                group_lines = convert_to_cim_instance(art_gr, art_ids, [ev1_ids, ev2_ids])
+                    group_lines = convert_to_cim_instance(art_gr, art_ids, [ev1_ids, ev2_ids])
 
-                for line in group_lines:
-                    f.write(line)
-                    f.write('\n')
+                    for line in group_lines:
+                        f.write(line)
+                        f.write('\n')
 
 
 def preprocess_for_tapt(basil, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
@@ -192,6 +193,8 @@ if __name__ == '__main__':
         os.makedirs('data/inputs/tok_clf')
     if not os.path.exists('data/inputs/seq_sent_clf'):
         os.makedirs('data/inputs/seq_sent_clf')
+    if not os.path.exists('data/inputs/cim'):
+        os.makedirs('data/inputs/cim')
 
     basil = LoadBasil().load_basil_raw()
     basil.to_csv('data/basil.csv')
