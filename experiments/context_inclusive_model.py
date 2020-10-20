@@ -137,7 +137,7 @@ args = parser.parse_args()
 # CURRENTLY NOT IN USE
 SUBSET = args.subset_of_data # not in use
 N_VOTERS = args.n_voters # not in use
-LEX = args.lex # not in use
+#LEX = args.lex # not in use
 #GAMMA = args.gamma
 #WARMUP_PROPORTION = args.warmup_proportion # not in use
 #GRADIENT_ACCUMULATION_STEPS = 1 # not in use
