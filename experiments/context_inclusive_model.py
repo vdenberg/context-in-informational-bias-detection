@@ -106,7 +106,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-mode', '--mode', type=str, help='Options: train|eval|debug', default='train')
 parser.add_argument('-force_pred', '--force_pred', action='store_true', default=False)
 parser.add_argument('-force_train', '--force_train', action='store_true', default=False)
-parser.add_argument('-pp', '--preprocess', action='store_true', default=False, help='Whether to proprocess again')
 parser.add_argument('-sv', '--seed_val', type=int, default=None)
 parser.add_argument('-inf', '--step_info_every', type=int, default=250)
 
@@ -148,7 +147,6 @@ EVAL = True if args.mode == 'eval' else False
 DEBUG = True if args.mode == 'debug' else False
 FORCE_TRAIN = args.force_train
 FORCE_PRED = args.force_pred if not FORCE_TRAIN else True
-PREPROCESS = args.preprocess
 SEED_VAL = args.seed_val
 PRINT_STEP_EVERY = args.step_info_every
 
@@ -209,7 +207,8 @@ logger.info(args)
 #                    PREPROCESS DATA
 # =====================================================================================
 
-if PREPROCESS:
+
+if not os.path.exists(DATA_FP):
     logger.info("============ PREPROCESS DATA =============")
     logger.info(f" Writing to: {DATA_FP}")
     logger.info(f" Max doc len: {MAX_DOC_LEN}")
@@ -237,9 +236,9 @@ if PREPROCESS:
     raw_data['story'] = sentences['story']
     raw_data['sentence'] = sentences['sentence']
 
-    if LEX:
-        raw_data['label'] = sentences['lex_bias']
-        print('label is lex bias')
+    #if LEX:
+    #    raw_data['label'] = sentences['lex_bias']
+    #    print('label is lex bias')
 
     raw_data['doc_len'] = raw_data.art_context_document.apply(lambda x: len(x.split(' ')))
 
@@ -267,11 +266,7 @@ if PREPROCESS:
     raw_data['ev2_context_doc_num'] = processor.to_numeric_documents(raw_data.ev2_context_document.values)
     token_ids, token_mask = processor.to_numeric_sentences(raw_data.sentence_ids)
     raw_data['token_ids'], raw_data['token_mask'] = token_ids, token_mask
-
-    #print(raw_data.columns)
-    #print(raw_data.head())
     raw_data.to_json(DATA_FP)
-    #exit(0)
 
     logger.info(f" Max sent len: {processor.max_sent_length}")
 
