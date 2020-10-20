@@ -335,7 +335,7 @@ if __name__ == '__main__':
                             # get embeddings
                             if STORE_EMBEDS:
                                 for EMB_TYPE in ['cross4bert']:
-                                    emb_fp = os.path.join(EMBEDDING_DIR, f'{name}_{EMB_TYPE}')
+                                    emb_fp = os.path.join(EMBEDDING_DIR, f'{name}_{EMB_TYPE}.csv')
 
                                     PREFERRED_EMB_SV = 49
                                     if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
@@ -344,7 +344,7 @@ if __name__ == '__main__':
                                         basil_w_BERT = pd.DataFrame(index=all_ids)
                                         basil_w_BERT[EMB_TYPE] = embs
                                         basil_w_BERT.to_csv(emb_fp)
-                                        logger.info(f'{EMB_TYPE} embeddings in {emb_fp}.csv')
+                                        logger.info(f'{EMB_TYPE} embeddings in {emb_fp}')
 
                             # store performance on just the fold in the table
                             fold_results_table = fold_results_table.append(best_val_res, ignore_index=True)
