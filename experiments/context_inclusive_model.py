@@ -177,7 +177,7 @@ if not USE_CUDA:
 
 # DIRECTORIES
 DATA_DIR = f'data/inputs/cim/'
-DATA_FP = os.path.join(DATA_DIR, 'cim_basil.tsv')
+DATA_FP = os.path.join(DATA_DIR, f'{TASK_NAME}_basil.tsv')
 CHECKPOINT_DIR = f'models/checkpoints/cim/{TASK_NAME}'
 PREDICTION_DIR = f'data/predictions/{TASK_NAME}/'
 REPORTS_DIR = f'reports/cim/{TASK_NAME}'
