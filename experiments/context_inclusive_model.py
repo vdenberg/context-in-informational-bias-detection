@@ -291,6 +291,8 @@ logger.info(f" --> Read {len(data)} data points")
 logger.info(f" --> Fold sizes: {[f['sizes'] for f in folds]}")
 logger.info(f" --> Columns: {list(data.columns)}")
 
+exit(0)
+
 # =====================================================================================
 #                    BATCH DATA
 # =====================================================================================
