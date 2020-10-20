@@ -68,7 +68,7 @@ def to_tensors(split=None, device=None):
     srcs = torch.tensor(split.src_num.to_numpy(), dtype=torch.long, device=device)
     labels = torch.tensor(split.label.to_numpy(), dtype=torch.long, device=device)
     # return TensorDataset(token_ids, token_mask, contexts, positions, labels)
-    return TensorDataset(token_ids, token_mask, art_contexts, ev1_contexts, ev2_contexts, positions, srcs, labels)
+    return TensorDataset(token_ids, token_mask, art_contexts, ev1_contexts, ev2_contexts, positions, quartiles, srcs, labels)
 
 
 def to_batches(tensors, batch_size, sampler):
