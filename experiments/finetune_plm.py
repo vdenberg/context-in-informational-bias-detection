@@ -335,14 +335,16 @@ if __name__ == '__main__':
                             # get embeddings
                             if STORE_EMBEDS:
                                 for EMB_TYPE in ['cross4bert']:
-                                    emb_fp = os.path.join(EMBEDDING_DIR, f'{name}_basil_w_{EMB_TYPE}')
+                                    emb_fp = os.path.join(EMBEDDING_DIR, f'{name}_{EMB_TYPE}')
 
                                     PREFERRED_EMB_SV = 49
                                     if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
                                         logging.info(f'Generating {EMB_TYPE} ({emb_fp})')
                                         embs = inferencer.predict(best_model, all_batches, return_embeddings=True, emb_type=EMB_TYPE)
                                         assert len(embs) == len(all_ids)
-
+                                        print(embs)
+                                        logger.info(f'{EMB_TYPE} embeddings in {emb_fp}.csv')
+                                        exit(0)
                                         basil_w_BERT = pd.DataFrame(index=all_ids)
                                         basil_w_BERT[EMB_TYPE] = embs
                                         basil_w_BERT.to_csv(emb_fp)
@@ -355,7 +357,8 @@ if __name__ == '__main__':
                     logger.info(f"  Details: {best_val_res}")
                     logger.info(f"  Logging to {LOG_FP}")
 
-                    if not os.path.exists(pred_fp) or FORCE_PRED:
+                    #if not os.path.exists(pred_fp) or FORCE_PRED:
+                    if not os.path.exists(pred_fp):
                         # compute performance on setting
                         assert len(test_predictions) == len(test_ids)
                         assert len(test_predictions) == len(test_labels)
