@@ -8,7 +8,7 @@ import pickle
 
 from lib.ContextAwareClassifier import Classifier, CIMClassifier
 from lib.handle_data.SplitData import Split
-from lib.utils import get_torch_device, to_batches, to_tensors, clean_mean
+from lib.utils import get_torch_device, to_batches, to_tensors, clean_mean, standardise_id
 from lib.Eval import my_eval
 
 
@@ -87,6 +87,7 @@ def make_weight_matrix(embed_df, EMB_DIM):
 
 def get_weights_matrix(data, emb_fp, emb_dim=None):
     data_w_emb = pd.read_csv(emb_fp, index_col=0).fillna('')
+    data_w_emb.index = [standardise_id(el) for el in data_w_emb.index]
     data_w_emb = data_w_emb.rename(
         columns={'USE': 'embeddings', 'sbert_pre': 'embeddings', 'avbert': 'embeddings', 'poolbert': 'embeddings',
                  'unpoolbert': 'embeddings', 'crossbert': 'embeddings', 'cross4bert': 'embeddings'})
@@ -305,7 +306,7 @@ for fold in folds:
 # =====================================================================================
 #                    LOAD EMBEDDINGS
 # =====================================================================================
-exit(0)
+
 logger.info("============ LOAD EMBEDDINGS =============")
 logger.info(f" Embeddin"
             f"g type: {EMB_TYPE}")
