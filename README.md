@@ -23,7 +23,6 @@
    conda activate ciib
    pip install -r requirements.txt
    python -m spacy download en_core_web_sm
-   conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
    ```
 
 2. Download and unzip BASIL Corpus from: https://github.com/marshallwhiteorg/emnlp19-media-bias/blob/master/emnlp19-BASIL.zip
