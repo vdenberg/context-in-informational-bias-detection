@@ -63,13 +63,12 @@ def to_tensors(split=None, device=None):
     ev2_contexts = torch.tensor(ev2_contexts, dtype=torch.long, device=device)
     token_ids = torch.tensor(token_ids, dtype=torch.long, device=device)
     token_mask = torch.tensor(token_mask, dtype=torch.long, device=device)
-    print(split.columns)
     positions = torch.tensor(split.position.to_numpy(), dtype=torch.long, device=device)
-    quartiles = torch.tensor(split.quartile.to_numpy(), dtype=torch.long, device=device)
+    #quartiles = torch.tensor(split.quartile.to_numpy(), dtype=torch.long, device=device)
     srcs = torch.tensor(split.src_num.to_numpy(), dtype=torch.long, device=device)
     labels = torch.tensor(split.label.to_numpy(), dtype=torch.long, device=device)
     # return TensorDataset(token_ids, token_mask, contexts, positions, labels)
-    return TensorDataset(token_ids, token_mask, art_contexts, ev1_contexts, ev2_contexts, positions, quartiles, srcs, labels)
+    return TensorDataset(token_ids, token_mask, art_contexts, ev1_contexts, ev2_contexts, positions, srcs, labels)
 
 
 def to_batches(tensors, batch_size, sampler):
