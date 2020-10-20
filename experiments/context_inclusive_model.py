@@ -153,7 +153,7 @@ SEED_VAL = args.seed_val
 PRINT_STEP_EVERY = args.step_info_every
 
 CONTEXT_TYPE = args.context_type
-CIM_TYPE = args.cam_type
+CIM_TYPE = args.cim_type
 BASE = args.base
 EMB_TYPE = args.embedding_type
 EMB_DIM = 512 if EMB_TYPE == 'use' else 768
