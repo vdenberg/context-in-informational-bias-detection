@@ -244,7 +244,7 @@ class ContextAwareModel(nn.Module):
         self.context = context
 
         if self.context == 'art':
-            self.context_rep_dim = self.hidden_size * 2
+            self.context_rep_dim = self.emb_size + self.hidden_size * 2
         else:
             self.context_rep_dim = self.emb_size + self.hidden_size * 6
 
@@ -341,7 +341,7 @@ class ContextAwareModel(nn.Module):
                 context_reps = torch.cat((final_article_reps, final_ev1_reps, final_ev2_reps), dim=-1)
             else:
                 context_reps = final_article_reps
-                
+
             # target_sent_reps = self.rob_squeezer(target_sent_reps)
             # query = target_sent_reps.unsqueeze(1)
             # proj_key = self.attention.key_layer(sentence_representations) #in tutorial: encoder_hidden
