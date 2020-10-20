@@ -339,10 +339,8 @@ if __name__ == '__main__':
 
                                     PREFERRED_EMB_SV = 49
                                     if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
-                                        logging.info(f'Generating {EMB_TYPE} ({emb_fp})')
+                                        logging.info(f'Generating {EMB_TYPE} embeddings ({emb_fp})')
                                         embs = inferencer.predict(best_model, all_batches, return_embeddings=True, emb_type=EMB_TYPE)
-                                        assert len(embs) == len(all_ids)
-                                        print(embs)
                                         print(len(embs))
                                         print(all_ids[0])
                                         exit(0)
