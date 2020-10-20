@@ -53,14 +53,14 @@ def to_tensors(split=None, device=None):
     Converts CIM features to tensors for batching
     """
     art_contexts = np.array([list(el) for el in split.art_context_doc_num.values])
-    cov1_contexts = np.array([list(el) for el in split.cov1_context_doc_num.values])
-    cov2_contexts = np.array([list(el) for el in split.cov2_context_doc_num.values])
+    ev1_contexts = np.array([list(el) for el in split.ev1_context_doc_num.values])
+    ev2_contexts = np.array([list(el) for el in split.ev2_context_doc_num.values])
     token_ids = [list(el) for el in split.token_ids.values]
     token_mask = [list(el) for el in split.token_mask.values]
 
     art_contexts = torch.tensor(art_contexts, dtype=torch.long, device=device)
-    cov1_contexts = torch.tensor(cov1_contexts, dtype=torch.long, device=device)
-    cov2_contexts = torch.tensor(cov2_contexts, dtype=torch.long, device=device)
+    ev1_contexts = torch.tensor(ev1_contexts, dtype=torch.long, device=device)
+    ev2_contexts = torch.tensor(ev2_contexts, dtype=torch.long, device=device)
     token_ids = torch.tensor(token_ids, dtype=torch.long, device=device)
     token_mask = torch.tensor(token_mask, dtype=torch.long, device=device)
     positions = torch.tensor(split.position.to_numpy(), dtype=torch.long, device=device)
@@ -68,7 +68,7 @@ def to_tensors(split=None, device=None):
     srcs = torch.tensor(split.src_num.to_numpy(), dtype=torch.long, device=device)
     labels = torch.tensor(split.label.to_numpy(), dtype=torch.long, device=device)
     # return TensorDataset(token_ids, token_mask, contexts, positions, labels)
-    return TensorDataset(token_ids, token_mask, art_contexts, cov1_contexts, cov2_contexts, positions, quartiles, srcs, labels)
+    return TensorDataset(token_ids, token_mask, art_contexts, ev1_contexts, ev2_contexts, positions, quartiles, srcs, labels)
 
 
 def to_batches(tensors, batch_size, sampler):
