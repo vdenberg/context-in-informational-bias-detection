@@ -321,24 +321,27 @@ class ContextAwareModel(nn.Module):
                 art_representations[:, seq_idx] = encoded
             final_article_reps = art_representations[:, -1, :]
 
-            # embedding first event piece
+            if self.cam_type == 'cnm':
+                # embedding first event piece
 
-            hidden = self.init_hidden(batch_size)
-            for seq_idx in range(article.shape[0]):
-                embedded_sentence = self.embedding(ev1[:, seq_idx]).view(1, batch_size, -1)
-                encoded, hidden = self.lstm_ev1(embedded_sentence, hidden)
-                ev1_representations[:, seq_idx] = encoded
-            final_ev1_reps = ev1_representations[:, -1, :]
+                hidden = self.init_hidden(batch_size)
+                for seq_idx in range(article.shape[0]):
+                    embedded_sentence = self.embedding(ev1[:, seq_idx]).view(1, batch_size, -1)
+                    encoded, hidden = self.lstm_ev1(embedded_sentence, hidden)
+                    ev1_representations[:, seq_idx] = encoded
+                final_ev1_reps = ev1_representations[:, -1, :]
 
-            hidden = self.init_hidden(batch_size)
-            for seq_idx in range(article.shape[0]):
-                embedded_sentence = self.embedding(ev2[:, seq_idx]).view(1, batch_size, -1)
-                encoded, hidden = self.lstm_ev2(embedded_sentence, hidden)
-                ev2_representations[:, seq_idx] = encoded
-            final_ev2_reps = ev2_representations[:, -1, :]
+                hidden = self.init_hidden(batch_size)
+                for seq_idx in range(article.shape[0]):
+                    embedded_sentence = self.embedding(ev2[:, seq_idx]).view(1, batch_size, -1)
+                    encoded, hidden = self.lstm_ev2(embedded_sentence, hidden)
+                    ev2_representations[:, seq_idx] = encoded
+                final_ev2_reps = ev2_representations[:, -1, :]
 
-            context_reps = torch.cat((final_article_reps, final_ev1_reps, final_ev2_reps), dim=-1)
-
+                context_reps = torch.cat((final_article_reps, final_ev1_reps, final_ev2_reps), dim=-1)
+            else:
+                context_reps = final_article_reps
+                
             # target_sent_reps = self.rob_squeezer(target_sent_reps)
             # query = target_sent_reps.unsqueeze(1)
             # proj_key = self.attention.key_layer(sentence_representations) #in tutorial: encoder_hidden
