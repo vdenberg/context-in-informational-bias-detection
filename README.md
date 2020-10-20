@@ -14,7 +14,7 @@
 
 ### Installing
 
-1. Clone this repository, ensure you are in an environment with Python 3.7, and install dependencies:
+1. Clone this repository, ensure you are in an environment with Python 3.7, and install dependencies, including the appropriate cudaversion for PyTorch (original experiments used 10.1):
 
    ```shell script
    git clone https://github.com/vdenberg/context-in-informational-bias-detection.git
@@ -22,7 +22,8 @@
    conda create -n ciib python=3.7
    conda activate ciib
    pip install -r requirements.txt
-   python -m spacy download en_core_web_sm
+   python -m spacy download en_core_web_sm   
+   conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
    ```
 
 2. Download and unzip BASIL Corpus from: https://github.com/marshallwhiteorg/emnlp19-media-bias/blob/master/emnlp19-BASIL.zip
