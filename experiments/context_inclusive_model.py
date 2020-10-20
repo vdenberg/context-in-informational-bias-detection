@@ -348,7 +348,7 @@ base_name = TASK_NAME
 hiddens = [HIDDEN]
 batch_sizes = [BATCH_SIZE]
 learning_rates = [LR]
-seeds = [args.seed_val] if args.sv else [11, 22, 33, 44, 55] #sometimes: 34 68 102 136 170
+seeds = [args.seed_val] if args.seed_val else [11, 22, 33, 44, 55] #sometimes: 34 68 102 136 170
 
 for HIDDEN in hiddens:
     h_name = f"_h{HIDDEN}"
