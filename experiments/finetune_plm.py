@@ -341,9 +341,6 @@ if __name__ == '__main__':
                                     if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
                                         logging.info(f'Generating {EMB_TYPE} embeddings ({emb_fp})')
                                         embs = inferencer.predict(best_model, all_batches, return_embeddings=True, emb_type=EMB_TYPE)
-                                        print(len(embs))
-                                        print(all_ids[0])
-                                        exit(0)
                                         basil_w_BERT = pd.DataFrame(index=all_ids)
                                         basil_w_BERT[EMB_TYPE] = embs
                                         basil_w_BERT.to_csv(emb_fp)
@@ -356,8 +353,8 @@ if __name__ == '__main__':
                     logger.info(f"  Details: {best_val_res}")
                     logger.info(f"  Logging to {LOG_FP}")
 
-                    #if not os.path.exists(pred_fp) or FORCE_PRED:
-                    if not os.path.exists(pred_fp):
+                    #if not os.path.exists(pred_fp):
+                    if not os.path.exists(pred_fp) or FORCE_PRED:
                         # compute performance on setting
                         assert len(test_predictions) == len(test_ids)
                         assert len(test_predictions) == len(test_labels)

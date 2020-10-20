@@ -320,7 +320,8 @@ for fold in folds:
     for v in range(len(fold['train'])):
         # read embeddings file
         if EMB_TYPE not in ['use', 'sbert']:
-            embed_fp = f"data/embeddings/sent_clf_story_split_rob_{BASE}/rob_{BASE}_sequential_49_bs16_lr1e-05_f{fold['name']}_{EMB_TYPE}.csv"
+            #embed_fp = f"data/embeddings/sent_clf_story_split_rob_{BASE}/rob_{BASE}_sequential_49_bs16_lr1e-05_f{fold['name']}_{EMB_TYPE}.csv"
+            embed_fp = f"data/embeddings/sent_clf_story_split_rob_{BASE}/rob_{BASE}_sequential_49_bs16_lr1e-05_f{fold['name']}_basil_w_{EMB_TYPE}.csv"
             weights_matrix = get_weights_matrix(data, embed_fp, emb_dim=EMB_DIM)
             logger.info(f" --> Loaded from {embed_fp}, shape: {weights_matrix.shape}")
             weights_matrices.append(weights_matrix)
