@@ -63,6 +63,7 @@ def to_tensors(split=None, device=None):
     ev2_contexts = torch.tensor(ev2_contexts, dtype=torch.long, device=device)
     token_ids = torch.tensor(token_ids, dtype=torch.long, device=device)
     token_mask = torch.tensor(token_mask, dtype=torch.long, device=device)
+    print(split.columns)
     positions = torch.tensor(split.position.to_numpy(), dtype=torch.long, device=device)
     quartiles = torch.tensor(split.quartile.to_numpy(), dtype=torch.long, device=device)
     srcs = torch.tensor(split.src_num.to_numpy(), dtype=torch.long, device=device)
