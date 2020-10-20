@@ -172,8 +172,6 @@ MAX_DOC_LEN = 76
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 device, USE_CUDA = get_torch_device()
-if not USE_CUDA:
-    exit(0)
 
 # DIRECTORIES
 DATA_DIR = f'data/inputs/cim/'

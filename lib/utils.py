@@ -93,7 +93,7 @@ def get_torch_device():
 
     # If not...
     else:
-        #print('No GPU available, using the CPU instead.')
+        print('No GPU available, using the CPU instead.')
         device = torch.device("cpu")
     return device, use_cuda
 
