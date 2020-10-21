@@ -244,6 +244,8 @@ class ErrorAnalysis:
                 sign = students_t_test(baseline_f1[subset], competitor_f1[subset], verbose=False)
                 if sign:
                     signs.append('*')
+                else:
+                    signs.append('')
         new_df['sign'] = signs
 
         return new_df
