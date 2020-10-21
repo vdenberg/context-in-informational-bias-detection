@@ -240,13 +240,16 @@ class ErrorAnalysis:
             competitor_f1 = comparison[-1][1]
             nr_subsets = baseline_f1.shape[0]
             for subset in range(nr_subsets):
+                bs = baseline_f1[subset]
+                comp = competitor_f1[subset]
                 sign = students_t_test(baseline_f1[subset], competitor_f1[subset], verbose=False)
+                print(bs.mean(), comp.mean(), sign)
                 if sign:
                     signs.append('*')
                 else:
                     signs.append('')
         new_df['sign'] = signs
-
+        exit(0)
         return new_df
 
     def clean_for_pol_analysis(self):
