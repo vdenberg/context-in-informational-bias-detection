@@ -169,9 +169,9 @@ class ErrorAnalysis:
         f1s = []
         for i in range(5):
             mets, _ = my_eval(gr.bias, gr[f'{model}{i}'])
+            f1s.append(mets['f1'])
             mets = [v for k, v in mets.items() if k in metrics]
             mets_for_mean.append(np.asarray(mets))
-            f1s.append(mets['f1'])
         mets_for_mean = np.asarray(mets_for_mean)
         mets = np.mean(mets_for_mean, axis=0)
         mets = [round(el*100, 2) for el in mets]
