@@ -221,7 +221,7 @@ class ErrorAnalysis:
         # create comparison df
         info_col_n = 3
         basic_info = comparison[0][0].iloc[:, :info_col_n]
-        new_df = pd.DataFrame(basic_info, columns=comparison[0].columns[:info_col_n])
+        new_df = pd.DataFrame(basic_info, columns=comparison[0][0].columns[:info_col_n])
         for df, _ in comparison:
             # move relevant info to concatened df
             model = df.iloc[-1,0]
