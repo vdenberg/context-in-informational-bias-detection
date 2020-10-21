@@ -240,7 +240,7 @@ class ErrorAnalysis:
             competitor_f1 = comparison[-1][1]
             nr_subsets = baseline_f1.shape[0]
             for subset in range(nr_subsets):
-                sign = students_t_test(baseline_f1[subset], competitor_f1[subset], verbose=True)
+                sign = students_t_test(baseline_f1[subset], competitor_f1[subset], verbose=False)
                 if sign:
                     signs.append('*')
                 else:
