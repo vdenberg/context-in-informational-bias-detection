@@ -2,6 +2,21 @@ from sklearn.metrics import matthews_corrcoef, confusion_matrix, f1_score, accur
 from sklearn.metrics import precision_recall_fscore_support
 import pandas as pd
 import numpy as np
+from scipy.stats import ttest_ind
+
+
+def students_t_test(results1, results2, verbose=True):
+    stat, p = ttest_ind(results1, results2)
+    if verbose:
+        print('stat=%.3f, p=%.3f' % (stat, p))
+    if p > 0.05:
+        if verbose:
+            print('Probably SAME distribution')
+        return True
+    else:
+        if verbose:
+            print('Probably DIFFERENT distributions')
+        return False
 
 
 def convert_bio_to_binary(labels):

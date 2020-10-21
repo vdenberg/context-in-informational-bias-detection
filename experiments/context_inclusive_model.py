@@ -122,7 +122,7 @@ parser.add_argument('-ep', '--epochs', type=int, default=150)  # 75
 parser.add_argument('-pat', '--patience', type=int, default=5)  # 15
 parser.add_argument('-bs', '--batch_size', type=int, default=32)
 parser.add_argument('-lr', '--learning_rate', type=float, default=0.001)
-parser.add_argument('-hid', '--hidden_size', type=int, default=1000)
+parser.add_argument('-hid', '--hidden_size', type=int, default=1200)
 parser.add_argument('-lay', '--bilstm_layers', type=int, default=2)
 
 # CURRENTLY NOT IN USE

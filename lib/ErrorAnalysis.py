@@ -1,6 +1,6 @@
 import pandas as pd
 from lib.utils import standardise_id
-from lib.Eval import my_eval
+from lib.Eval import my_eval, students_t_test
 import re, os
 from collections import Counter
 import numpy as np
@@ -165,16 +165,21 @@ class ErrorAnalysis:
         Nbias = sum(gr.bias == 1)
         Percbias = str(round(Nbias / N * 100,2)) + '%'
 
-        cross_mets = []
+        mets_for_mean = []
+        f1s = []
         for i in range(5):
             mets, _ = my_eval(gr.bias, gr[f'{model}{i}'])
             mets = [v for k, v in mets.items() if k in metrics]
-            cross_mets.append(np.asarray(mets))
-        cross_mets = np.asarray(cross_mets)
-        mets = np.mean(cross_mets, axis=0)
+            mets_for_mean.append(np.asarray(mets))
+            f1s.append(mets['f1'])
+        mets_for_mean = np.asarray(mets_for_mean)
+        mets = np.mean(mets_for_mean, axis=0)
         mets = [round(el*100, 2) for el in mets]
 
-        return [n] + lat([N, Percbias] + mets)
+        row = [n] + lat([N, Percbias] + mets)
+        f1s = np.asarray(f1s)
+
+        return row, f1s
 
     def compare_subsets(self, df, grby, model, metrics=['prec', 'rec', 'f1']):
         #basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
@@ -182,17 +187,20 @@ class ErrorAnalysis:
 
         out = pd.DataFrame(columns=basic_columns)
 
+        subset_f1 = []
         if grby is not None:
             for n, gr in df.groupby(grby):
-                r = self.row4compare(n, gr, model, metrics)
+                r, seed_f1 = self.row4compare(n, gr, model, metrics)
                 rows = pd.DataFrame([r], columns=basic_columns)
                 out = out.append(rows, ignore_index=True)
+                subset_f1.append(seed_f1)
 
-        r = self.row4compare(f'{model}', df, model, metrics)
+        r, seed_f1 = self.row4compare(f'{model}', df, model, metrics)
+        subset_f1.append(seed_f1)
 
         row = pd.DataFrame([r], columns=basic_columns)
         out = out.append(row, ignore_index=True)
-        return out
+        return out, np.asarray(subset_f1)
 
     def conf_mat(self, df, model):
         predn = f'{model}'
@@ -209,21 +217,35 @@ class ErrorAnalysis:
         df['fn'] = (df.bias == 1) & (df[predn] == 0)
         return df
 
-    def concat_comparisons(self, dfs, only_rec=False, incl_lex=False):
+    def concat_comparisons(self, comparison, only_rec=False, incl_lex=False):
+        # create comparison df
         info_col_n = 3
-        basic_info = dfs[0].iloc[:,:info_col_n]
-        new_df = pd.DataFrame(basic_info, columns=dfs[0].columns[:info_col_n])
-
-        for df in dfs:
+        basic_info = comparison[0].iloc[:, :info_col_n]
+        new_df = pd.DataFrame(basic_info, columns=comparison[0].columns[:info_col_n])
+        for df, _ in comparison:
+            # move relevant info to concatened df
             model = df.iloc[-1,0]
             df = df.iloc[:,info_col_n:]
             df.columns = [el + '_' + model for el in df.columns]
             if only_rec:
                 df = df.iloc[:,1:-1]
             new_df[df.columns] = df
-
-        new_df.iloc[-1,0] = 'All'
+        new_df.iloc[-1, 0] = 'All'
         new_df = new_df.set_index(new_df.columns[0])
+
+        # compute significance if possible
+        signs = []
+        if len(comparison) > 1:
+            baseline_f1 = comparison[-2][1]
+            competitor_f1 = comparison[-1][1]
+            print(baseline_f1.shape)
+            print(baseline_f1)
+            for subset in range(baseline_f1.shape[0]):
+                sign = students_t_test(baseline_f1[subset], competitor_f1[subset], verbose=False)
+                if sign:
+                    signs.append('*')
+        new_df['sign'] = signs
+
         return new_df
 
     def clean_for_pol_analysis(self):
@@ -292,11 +314,11 @@ class ErrorAnalysis:
 
             gr = df[(df.main_entities.apply(lambda x: e in x))]
 
-            r = self.row4compare(e, gr, model, context)
+            r, f1s = self.row4compare(e, gr, model, context)
             row = pd.DataFrame([r], columns=basic_columns)
             out = out.append(row, ignore_index=True)
 
-        r = self.row4compare(f'{model}_{context}', df, model, context)
+        r, f1s = self.row4compare(f'{model}_{context}', df, model, context)
         row = pd.DataFrame([r], columns=basic_columns)
         out = out.append(row, ignore_index=True)
 
