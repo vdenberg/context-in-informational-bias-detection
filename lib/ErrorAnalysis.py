@@ -248,6 +248,7 @@ class ErrorAnalysis:
                 else:
                     signs.append('')
         new_df['sign'] = signs
+        print(signs)
         exit(0)
         return new_df
 
