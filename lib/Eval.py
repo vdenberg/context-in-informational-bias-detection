@@ -15,11 +15,11 @@ def students_t_test(results1, results2, verbose=True):
     if p > 0.05:
         if verbose:
             print('Probably SAME distribution')
-        return True
+        return False
     else:
         if verbose:
             print('Probably DIFFERENT distributions')
-        return False
+        return True
 
 
 def convert_bio_to_binary(labels):
