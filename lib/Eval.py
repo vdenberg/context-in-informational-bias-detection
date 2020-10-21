@@ -3,11 +3,14 @@ from sklearn.metrics import precision_recall_fscore_support
 import pandas as pd
 import numpy as np
 from scipy.stats import ttest_ind
+import numpy as np
 
 
 def students_t_test(results1, results2, verbose=True):
+    means = round(np.mean(results1), 2), round(np.mean(results2), 2)
     stat, p = ttest_ind(results1, results2)
     if verbose:
+        print('Means:', means)
         print('stat=%.3f, p=%.3f' % (stat, p))
     if p > 0.05:
         if verbose:

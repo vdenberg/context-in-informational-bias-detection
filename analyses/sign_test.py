@@ -1,7 +1,7 @@
 from lib.Eval import students_t_test
 
 
-rob_base = [42.93, 42.93, 42.93, 42.93, 42.93]
+rob_base = [42.38, 42.08, 42.14, 41.71, 42.49]
 
 # Compare baseline to best domain context model
 rob_basil_tapt = [44.16, 44.14, 42.96, 42.73, 41.61]

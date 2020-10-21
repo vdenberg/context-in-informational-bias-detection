@@ -242,8 +242,7 @@ class ErrorAnalysis:
             for subset in range(nr_subsets):
                 bs = baseline_f1[subset]
                 comp = competitor_f1[subset]
-                sign = students_t_test(baseline_f1[subset], competitor_f1[subset], verbose=False)
-                print(bs.mean(), comp.mean(), sign)
+                sign = students_t_test(baseline_f1[subset], competitor_f1[subset], verbose=True)
                 if sign:
                     signs.append('*')
                 else:
