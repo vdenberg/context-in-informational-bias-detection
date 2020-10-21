@@ -238,9 +238,8 @@ class ErrorAnalysis:
         if len(comparison) > 1:
             baseline_f1 = comparison[-2][1]
             competitor_f1 = comparison[-1][1]
-            print(baseline_f1.shape)
-            print(baseline_f1)
-            for subset in range(baseline_f1.shape[0]):
+            nr_subsets = baseline_f1.shape[0]
+            for subset in range(nr_subsets):
                 sign = students_t_test(baseline_f1[subset], competitor_f1[subset], verbose=False)
                 if sign:
                     signs.append('*')
