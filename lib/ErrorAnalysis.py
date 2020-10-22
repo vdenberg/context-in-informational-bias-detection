@@ -50,6 +50,8 @@ def clean_inf_quote(x):
         out = ['Mixed']
     elif x == []:
         out = ['Not bias']
+    else:
+        out = x
     return out[0]
 
 def got_quote(x):
