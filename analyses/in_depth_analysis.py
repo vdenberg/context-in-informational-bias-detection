@@ -27,13 +27,13 @@ print('Difference in performance depending on sentence length:')
 print(sentlen_df.to_latex())
 
 # IN QUOTE OR NOT + PRESENCE OF QUOTATION MARKS
-quote_comparison = [ea.compare_subsets(ea.w_preds, 'inf_quote', model, metrics=['rec'], inf_bias_only=True) for model, _ in ea.models]
+quote_comparison = [ea.compare_subsets(ea.w_preds, 'inf_quote', model, metrics=['rec']) for model, _ in ea.models]
 quote_df = ea.concat_comparisons(quote_comparison)
 
 print('Difference in performance depending on annotated as in a quote:')
 print(quote_df.to_latex())
 
-quote_comparison = [ea.compare_subsets(ea.w_preds, 'auto_quote', model, metrics=['f1'], inf_bias_only=False) for model, _ in ea.models]
+quote_comparison = [ea.compare_subsets(ea.w_preds, 'auto_quote', model, metrics=['f1']) for model, _ in ea.models]
 quote_df = ea.concat_comparisons(quote_comparison)
 
 print('Difference in performance depending on whether contains quotation marks:')
