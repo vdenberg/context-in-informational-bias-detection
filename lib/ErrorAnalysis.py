@@ -129,7 +129,7 @@ class ErrorAnalysis:
         out.main_entities = out.main_entities.apply(lambda x: re.sub('Lawmakers', 'lawmakers', x))
         out['source'] = [el.lower() for el in out.source]
         out['article'] = out.source + out.sent_idx.astype(str)
-        out['quote'] = out.sentence.apply(got_quote)
+        out['auto_quote'] = out.sentence.apply(got_quote)
         out['len'] = out.sentence.apply(len)
         len_quantiles = out.len.quantile([0.25, 0.5, 0.75, 1.0]).values
         out['len'] = out.len.apply(lambda x: bin_length(x, len_quantiles))
