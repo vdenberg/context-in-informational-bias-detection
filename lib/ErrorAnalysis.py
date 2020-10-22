@@ -45,9 +45,9 @@ def clean_inf_quote(x):
     elif x == "['Yes', 'Yes']":
         out = 'No'
     elif x == "['No', 'Yes']":
-        out = 'Mixed'
+        out = 'No'
     elif x == "['Yes', 'No']":
-        out = 'Mixed'
+        out = 'Yes'
     elif x == "[]":
         out = 'Not bias'
     elif x == "['Yes']":
