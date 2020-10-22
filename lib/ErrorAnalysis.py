@@ -183,9 +183,9 @@ class ErrorAnalysis:
         return row, f1s
 
     def compare_subsets(self, df, grby, model, metrics=['prec', 'rec', 'f1'], inf_bias_only=False):
-        df = self.inf_bias_only(df)
+        if inf_bias_only:
+            df = self.inf_bias_only(df)
 
-        #basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
         basic_columns = [grby, 'N', '%Bias'] + metrics
 
         out = pd.DataFrame(columns=basic_columns)
