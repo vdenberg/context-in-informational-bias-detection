@@ -40,18 +40,23 @@ def lat(x):
 
 
 def clean_inf_quote(x):
-    if x == ['No', 'No']:
-        out = ['No']
-    elif x == ['Yes', 'Yes']:
-        out = ['No']
-    elif x == ['No', 'Yes']:
-        out = ['Mixed']
-    elif x == ['Yes', 'No']:
-        out = ['Mixed']
+    if x == "['No', 'No']":
+        out = 'No'
+    elif x == "['Yes', 'Yes']":
+        out = 'No'
+    elif x == "['No', 'Yes']":
+        out = 'Mixed'
+    elif x == "['Yes', 'No']":
+        out = 'Mixed'
     elif x == []:
-        out = ['Not bias']
+        out = 'Not bias'
+    elif x == "['Yes']":
+        out = 'Yes'
+    elif x == "['No']":
+        out = 'No'
     else:
-        out = x
+        print(x)
+        exit(0)
     return out[0]
 
 def got_quote(x):
