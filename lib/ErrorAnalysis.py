@@ -39,6 +39,19 @@ def lat(x):
     return out
 
 
+def clean_inf_quote(x):
+    if x == ['No', 'No']:
+        out = ['No']
+    elif x == ['Yes', 'Yes']:
+        out = ['No']
+    elif x == ['No', 'Yes']:
+        out = ['Mixed']
+    elif x == ['Yes', 'No']:
+        out = ['Mixed']
+    elif x == []:
+        out = ['Not bias']
+    return out[0]
+
 def got_quote(x):
     double_q = '"' in str(x)
     return double_q
@@ -129,6 +142,7 @@ class ErrorAnalysis:
         out.main_entities = out.main_entities.apply(lambda x: re.sub('Lawmakers', 'lawmakers', x))
         out['source'] = [el.lower() for el in out.source]
         out['article'] = out.source + out.sent_idx.astype(str)
+        out['inf_quote'] = out.inf_quote.apply(clean_inf_quote)
         out['auto_quote'] = out.sentence.apply(got_quote)
         out['len'] = out.sentence.apply(len)
         len_quantiles = out.len.quantile([0.25, 0.5, 0.75, 1.0]).values
