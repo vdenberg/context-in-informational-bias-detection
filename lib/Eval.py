@@ -50,9 +50,9 @@ def get_metrics(labels, preds, opmode):
 
     f1 = f1_score(labels, preds, average='binary')
 
-    if f1 > 0:
+    try:
         tn, fp, fn, tp = confusion_matrix(labels, preds).ravel()
-    else:
+    except ValueError:
         tn, fp, fn, tp = 0, 0, 0, 0
 
     return {
