@@ -154,8 +154,9 @@ class ErrorAnalysis:
                 out['label'] = subdf.label
         return out
 
-    def inf_bias_only(self):
-        self.w_preds = self.w_preds[self.w_preds.bias == 1]
+    def inf_bias_only(self, df):
+        #self.w_preds = self.w_preds[self.w_preds.bias == 1]
+        return df[df == 1]
 
     def no_bias_only(self):
         self.w_preds = self.w_preds[(self.w_preds.bias == 0) & (self.w_preds.lex_bias == 0)]
@@ -170,7 +171,7 @@ class ErrorAnalysis:
         for i in range(5):
             mets, _ = my_eval(gr.bias, gr[f'{model}{i}'])
             f1s.append(mets['f1'])
-            mets = [v for k, v in mets.items() if k in metrics]
+            mets = [mets[k] for k in metrics]
             mets_for_mean.append(np.asarray(mets))
         mets_for_mean = np.asarray(mets_for_mean)
         mets = np.mean(mets_for_mean, axis=0)
@@ -181,7 +182,9 @@ class ErrorAnalysis:
 
         return row, f1s
 
-    def compare_subsets(self, df, grby, model, metrics=['prec', 'rec', 'f1']):
+    def compare_subsets(self, df, grby, model, metrics=['prec', 'rec', 'f1'], inf_bias_only=False):
+        df = self.inf_bias_only(df)
+
         #basic_columns = [grby, 'N', '%Bias', 'Prec', 'Rec', 'F1']
         basic_columns = [grby, 'N', '%Bias'] + metrics
 
@@ -245,7 +248,7 @@ class ErrorAnalysis:
                     signs.append('*')
                 else:
                     signs.append('')
-        new_df['sign'] = signs
+        # new_df['sign'] = signs
         return new_df
 
     def clean_for_pol_analysis(self):
