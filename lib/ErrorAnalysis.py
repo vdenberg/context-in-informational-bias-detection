@@ -156,7 +156,7 @@ class ErrorAnalysis:
 
     def inf_bias_only(self, df):
         #self.w_preds = self.w_preds[self.w_preds.bias == 1]
-        return df[df == 1]
+        return df[df.bias == 1]
 
     def no_bias_only(self):
         self.w_preds = self.w_preds[(self.w_preds.bias == 0) & (self.w_preds.lex_bias == 0)]
