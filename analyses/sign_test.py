@@ -9,12 +9,12 @@ students_t_test(rob_base, rob_basil_tapt)
 
 # Compare baseline to ArtCIM
 # 34, 68, 102, 170 (43.54), 204
-artcim = [44.16, 44.14, 42.96, 43.54, 41.61]
+artcim = [42.24, 43.27, 42.70, 42.32, 43.47]
 students_t_test(rob_base, artcim)
 
 # Compare baseline to ArtCIM*
-artcimstar = [44.16, 44.14, 42.96, 42.73, 41.61]
-students_t_test(rob_base, artcimstar)
+#artcimstar = [44.16, 44.14, 42.96, 42.73, 41.61]
+#students_t_test(rob_base, artcimstar)
 
 # Compare baseline to EvCIM
 evcim = [44.28, 43.92, 44.17, 44.15, 43.97]

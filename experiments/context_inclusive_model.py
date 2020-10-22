@@ -331,7 +331,7 @@ for fold in folds:
 #                    CONTEXT AWARE MODEL
 # =====================================================================================
 
-logger.info("============ TRAINING CAM =============")
+logger.info("============ CAM =============")
 logger.info(f" Num epochs: {N_EPOCHS}")
 logger.info(f" Patience: {PATIENCE}")
 logger.info(f" Mode: {'train' if not EVAL else 'eval'}")
@@ -347,7 +347,7 @@ base_name = TASK_NAME
 hiddens = [HIDDEN]
 batch_sizes = [BATCH_SIZE]
 learning_rates = [LR]
-seeds = [args.seed_val] if args.seed_val else [11, 22, 33, 44, 55]
+seeds = [args.seed_val] if args.seed_val else [11, 22, 33, 44]
 
 for HIDDEN in hiddens:
     h_name = f"_h{HIDDEN}"
