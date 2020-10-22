@@ -57,7 +57,7 @@ def clean_inf_quote(x):
     else:
         print(x)
         exit(0)
-    return out[0]
+    return out
 
 def got_quote(x):
     double_q = '"' in str(x)
