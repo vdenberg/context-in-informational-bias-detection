@@ -91,11 +91,9 @@ class Classifier:
             self.wrapper.save_model(self.model_name)
             best_log = '(HIGH SCORE)'
 
-        test_mets, test_perf = self.test_model(fold, '')
-
         self.logger.info(f" Ep {ep} ({self.model_name.replace('_', '')}): "
                          f"{tr_perf} | {val_perf} {best_log}")
-        self.logger.info(f" {test_perf}")
+
         return tr_mets, tr_perf, val_mets, val_perf
 
     def train_all_epochs(self, fold, voter_i):
@@ -224,42 +222,44 @@ class ContextAwareModel(nn.Module):
         self.hidden_size = hidden_size # + pos_dim + src_dim
         self.bilstm_layers = bilstm_layers
         self.device = device
+        self.cam_type = cam_type
+        self.context = context
 
+        # Store pretrained embeddings to use as representations of sentences
         self.weights_matrix = torch.tensor(weights_matrix, dtype=torch.float, device=self.device)
         self.embedding = Embedding.from_pretrained(self.weights_matrix)
-        self.embedding_pos = Embedding(pos_quartiles, pos_dim) # 4=nr of quart
+        self.embedding_pos = Embedding(pos_quartiles, pos_dim)  # option to embed position of target sentence in article
         self.embedding_src = Embedding(nr_srcs, src_dim)
-
         self.emb_size = weights_matrix.shape[1]
 
+        # Initialise LSTMS for article and event context
         self.lstm_art = LSTM(self.input_size, self.hidden_size, num_layers=self.bilstm_layers, bidirectional=True, dropout=0.2)
         self.lstm_ev1 = LSTM(self.input_size, self.hidden_size, num_layers=self.bilstm_layers, bidirectional=True, dropout=0.2)
         self.lstm_ev2 = LSTM(self.input_size, self.hidden_size, num_layers=self.bilstm_layers, bidirectional=True, dropout=0.2)
-        self.attention = BahdanauAttention(self.hidden_size, key_size=self.hidden_size * 2, query_size=self.emb_size)
+
+        # Attention-related attributes
+        # self.attention = BahdanauAttention(self.hidden_size, key_size=self.hidden_size * 2, query_size=self.emb_size)
+        # self.rob_squeezer = nn.Linear(self.emb_size, self.hidden_size)
+
         self.dropout = Dropout(0.6)
         self.num_labels = 2
         self.pad_index = 0
 
-        self.cam_type = cam_type
-        self.context = context
-
         if self.context == 'art':
-            self.context_rep_dim = self.emb_size + self.hidden_size * 2
+            self.context_rep_dim = self.emb_size + self.hidden_size * 2  # size of target sentences + 1 article
         else:
-            self.context_rep_dim = self.emb_size + self.hidden_size * 6
+            self.context_rep_dim = self.emb_size + self.hidden_size * 6  # size of target sentences + 3 articles
 
         if self.cam_type == 'cim*':
-            self.context_rep_dim += src_dim
+            self.context_rep_dim += src_dim  #  add representation of source
 
         self.half_context_rep_dim = int(self.context_rep_dim*0.5)
         self.dense = nn.Linear(self.context_rep_dim, self.half_context_rep_dim)
 
-        # self.rob_squeezer = nn.Linear(self.emb_size, self.hidden_size)
-
         if self.cam_type == 'cnm':
+            # optional Context Naive setting
             self.classifier = Linear(self.emb_size, self.num_labels)
         else:
-            #self.classifier = Linear(self.hidden_size * 2, 2)
             self.classifier = Linear(self.half_context_rep_dim, self.num_labels) # + self.emb_size + src_dim, 2) #
 
         self.sigm = Sigmoid()
@@ -293,6 +293,7 @@ class ContextAwareModel(nn.Module):
         target_sent_reps = torch.zeros(batch_size, self.emb_size, device=self.device)
 
         if self.cam_type == 'cnm':
+            # optional Context Naive setting
             target_sent_reps = torch.zeros(batch_size, rep_dimension, device=self.device)
             for item, position in enumerate(positions):
                 target_sent_reps[item] = self.embedding(article[item, position]).view(1, -1)
@@ -302,13 +303,10 @@ class ContextAwareModel(nn.Module):
                 # target_hid = sentence_representations[item, position].view(1, -1)
                 target_roberta = self.embedding(article[item, position]).view(1, -1)
                 # target_sent_reps[item] = torch.cat((target_hid, target_roberta), dim=1)
-                # if self.cam_type == 'cim':
-                #    target_sent_reps[item] = target_hid
-                #else:
-                target_sent_reps[item] = target_roberta
                 # target_sent_reps[item] = target_hid
+                target_sent_reps[item] = target_roberta
 
-            embedded_pos = self.embedding_pos(quartiles)
+            embedded_pos = self.embedding_pos(quartiles)  # old line for experimenting with embedding position
             embedded_src = self.embedding_src(srcs)
 
             # embedding article
@@ -322,8 +320,7 @@ class ContextAwareModel(nn.Module):
             final_article_reps = art_representations[:, -1, :]
 
             if self.cam_type == 'cnm':
-                # embedding first event piece
-
+                # embedding first event context piece
                 hidden = self.init_hidden(batch_size)
                 for seq_idx in range(article.shape[0]):
                     embedded_sentence = self.embedding(ev1[:, seq_idx]).view(1, batch_size, -1)
@@ -331,6 +328,7 @@ class ContextAwareModel(nn.Module):
                     ev1_representations[:, seq_idx] = encoded
                 final_ev1_reps = ev1_representations[:, -1, :]
 
+                # embedding second event context piece
                 hidden = self.init_hidden(batch_size)
                 for seq_idx in range(article.shape[0]):
                     embedded_sentence = self.embedding(ev2[:, seq_idx]).view(1, batch_size, -1)
@@ -342,25 +340,28 @@ class ContextAwareModel(nn.Module):
             else:
                 context_reps = final_article_reps
 
+            # Attention-related processing
             # target_sent_reps = self.rob_squeezer(target_sent_reps)
             # query = target_sent_reps.unsqueeze(1)
-            # proj_key = self.attention.key_layer(sentence_representations) #in tutorial: encoder_hidden
-            # mask = (contexts != self.pad_index).unsqueeze(-2) #in tutorial: src
+            # proj_key = self.attention.key_layer(sentence_representations)
+            # mask = (contexts != self.pad_index).unsqueeze(-2)
+
             if self.cam_type == 'cim':
                 context_and_target_rep = torch.cat((target_sent_reps, context_reps), dim=-1)
                 # context_and_target_rep, attn_probs = self.attention(query=target_sent_reps, proj_key=proj_key,
                 #                                         value=sentence_representations, mask=mask)
-                # context_and_target_rep = torch.cat((context_and_target_rep, target_sent_reps), dim=-1)
+                # context_and_target_rep = torch.cat((target_sent_reps, context_and_target_rep), dim=-1)
             elif self.cam_type == 'cim*':
-                # heavy_context_rep = torch.cat((target_sent_reps, sent_reps, embedded_pos, embedded_src), dim=-1)
                 context_and_target_rep = torch.cat((target_sent_reps, context_reps, embedded_src), dim=-1)
 
+        # Linear classification
         features = self.dropout(context_and_target_rep)
         features = self.dense(features)
         features = torch.tanh(features)
         features = self.dropout(features)
         logits = self.classifier(features)
         probs = self.sigm(logits)
+
         return logits, probs, target_sent_reps
 
     def init_hidden(self, batch_size):
@@ -410,20 +411,18 @@ class CIMClassifier():
         self.test_perf = []
         self.test_perf_string = ''
 
-        # set optim and scheduler
+        # set optimizer
         nr_train_instances = len(tr_labs)
         nr_train_batches = int(nr_train_instances / b_size)
         half_tr_bs = int(nr_train_instances/2)
         self.optimizer = AdamW(self.model.parameters(), lr=lr, eps=1e-8)
 
+        # set scheduler if desired
         # self.scheduler = lr_scheduler.CyclicLR(self.optimizer, base_lr=lr, step_size_up=half_tr_bs,
         #                                       cycle_momentum=False, max_lr=lr * 30)
-
-        num_train_optimization_steps = nr_train_batches * n_eps
-        num_train_warmup_steps = int(0.1 * num_train_optimization_steps) #warmup_proportion
-
+        num_train_warmup_steps = int(0.1 * (nr_train_batches * n_eps)) # warmup_proportion
         # self.scheduler = get_linear_schedule_with_warmup(self.optimizer, num_warmup_steps=num_train_warmup_steps,
-        #                                                 num_training_steps=num_train_optimization_steps)  # PyTorch scheduler
+        # num_training_steps=num_train_optimization_steps)
 
     def load_model(self, name):
         cpfp = os.path.join(self.cp_dir, name)
@@ -442,7 +441,6 @@ class CIMClassifier():
         self.model.zero_grad()
         logits, probs, _ = self.model(inputs)
         loss = self.criterion(logits.view(-1, 2), labels.view(-1))
-        # loss = self.criterion(logits.squeeze(), labels)
         loss.backward()
 
         torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
@@ -475,12 +473,9 @@ class CIMClassifier():
 
                 embedding = list(sentence_representation.detach().cpu().numpy())
                 embeddings.append(embedding)
-                #sigm_output  = self.model(ids, documents, positions)
-                #sigm_output = sigm_output.detach().cpu().numpy()
-                #loss = self.criterion(sigm_output, labels)
 
-            loss = loss.detach().cpu().numpy() #probs.shape: batchsize * num_classes
-            probs = probs.detach().cpu().numpy() #probs.shape: batchsize * num_classes
+            loss = loss.detach().cpu().numpy()  # probs.shape: batchsize * num_classes
+            probs = probs.detach().cpu().numpy()  # probs.shape: batchsize * num_classes
 
             losses.append(loss)
 
@@ -501,7 +496,3 @@ class CIMClassifier():
         # y_pred = [0 if el < 0.5 else 1 for el in y_pred]
         self.model.train()
         return y_pred, sum_loss / len(batches), embeddings, losses
-
-# _, USE_CUDA = get_torch_device()
-# LongTensor = torch.cuda.LongTensor if USE_CUDA else torch.LongTensor
-# FloatTensor = torch.cuda.FLoatTensor if USE_CUDA else torch.FloatTensor

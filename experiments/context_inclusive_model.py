@@ -415,7 +415,7 @@ for HIDDEN in hiddens:
                                 preds, losses = cam_cl.produce_preds(fold, voter_name)
                                 test_mets, test_perf = my_eval(fold['test'].label, preds, set_type='test')
                                 logger.info(
-                                    f"--------------- RESULT {setting_name} ON FOLD {fold['name']} V{i} ---------------")
+                                    f"--------------- RESULT OF {setting_name} ON FOLD {fold['name']} V{i} ---------------")
                                 print(test_perf)
                             voter_preds.append(preds)
 
