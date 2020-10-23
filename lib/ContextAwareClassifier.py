@@ -213,7 +213,7 @@ class ContextAwareModel(nn.Module):
     :param input_size: length of input sequences (= documents)
     :param hidden_size: size of hidden layer
     :param weights_matrix: matrix of embeddings of size vocab_size * embedding dimension
-    :param cim_type: cim or cim*
+    :param cam_type: cim or cim*
     :param context: art (article) or ev (event)
     :param pos_dim: not used in the paper: dimension of embedding for position of target sentence in document
     :param src_dim: dimension of embedding for news source (publisher)
@@ -221,15 +221,15 @@ class ContextAwareModel(nn.Module):
     :param nr_srcs: number of sources (publishers)
 
     """
-    def __init__(self, input_size, hidden_size, bilstm_layers, weights_matrix, cim_type, device, context='art',
-                 pos_dim=100, src_dim=100, nr_pos_bins=4, nr_srcs=3):
+    def __init__(self, input_size, hidden_size, bilstm_layers, weights_matrix, cam_type, device, context='art',
+                 pos_dim=100, src_dim=100, pos_quartiles=4, nr_srcs=3):
         super(ContextAwareModel, self).__init__()
 
         self.input_size = input_size
         self.hidden_size = hidden_size # + pos_dim + src_dim
         self.bilstm_layers = bilstm_layers
         self.device = device
-        self.cim_type = cim_type
+        self.cim_type = cam_type
         self.context = context
 
         # Store pretrained embeddings to use as representations of sentences
@@ -405,7 +405,7 @@ class CIMClassifier():
         else:
             self.model = ContextAwareModel(input_size=self.emb_dim, hidden_size=self.hidden_size,
                                            bilstm_layers=layers, weights_matrix=weights_mat,
-                                           device=self.device, cim_type=cim_type, context=context)
+                                           device=self.device, cam_type=cim_type, context=context)
         self.model = self.model.to(self.device)
         if self.use_cuda: self.model.cuda()
 
