@@ -229,7 +229,7 @@ class ContextAwareModel(nn.Module):
         self.hidden_size = hidden_size # + pos_dim + src_dim
         self.bilstm_layers = bilstm_layers
         self.device = device
-        self.cim_type = cam_type
+        self.cam_type = cam_type
         self.context = context
 
         # Store pretrained embeddings to use as representations of sentences
@@ -257,13 +257,13 @@ class ContextAwareModel(nn.Module):
         else:
             self.context_rep_dim = self.emb_size + self.hidden_size * 6  # size of target sentences + 3 articles
 
-        if self.cim_type == 'cim*':
+        if self.cam_type == 'cim*':
             self.context_rep_dim += src_dim  #  add representation of source
 
         self.half_context_rep_dim = int(self.context_rep_dim*0.5)
         self.dense = nn.Linear(self.context_rep_dim, self.half_context_rep_dim)
 
-        if self.cim_type == 'cnm':
+        if self.cam_type == 'cnm':
             # optional Context Naive setting
             self.classifier = Linear(self.emb_size, self.num_labels)
         else:
@@ -290,7 +290,7 @@ class ContextAwareModel(nn.Module):
         seq_len = doc_len
 
         # init containers for outputs
-        rep_dimension = self.emb_size if self.cim_type == 'cnm' else self.hidden_size * 2
+        rep_dimension = self.emb_size if self.cam_type == 'cnm' else self.hidden_size * 2
         art_representations = torch.zeros(batch_size, seq_len, rep_dimension, device=self.device)
 
         if self.context != 'art':
@@ -299,7 +299,7 @@ class ContextAwareModel(nn.Module):
 
         target_sent_reps = torch.zeros(batch_size, self.emb_size, device=self.device)
 
-        if self.cim_type == 'cnm':
+        if self.cam_type == 'cnm':
             # optional Context Naive setting
             target_sent_reps = torch.zeros(batch_size, rep_dimension, device=self.device)
             for item, position in enumerate(positions):
@@ -326,7 +326,7 @@ class ContextAwareModel(nn.Module):
                 art_representations[:, seq_idx] = encoded
             final_article_reps = art_representations[:, -1, :]
 
-            if self.cim_type == 'cnm':
+            if self.cam_type == 'cnm':
                 # embedding first event context piece
                 hidden = self.init_hidden(batch_size)
                 for seq_idx in range(article.shape[0]):
@@ -353,12 +353,12 @@ class ContextAwareModel(nn.Module):
             # proj_key = self.attention.key_layer(sentence_representations)
             # mask = (contexts != self.pad_index).unsqueeze(-2)
 
-            if self.cim_type == 'cim':
+            if self.cam_type == 'cim':
                 context_and_target_rep = torch.cat((target_sent_reps, context_reps), dim=-1)
                 # context_and_target_rep, attn_probs = self.attention(query=target_sent_reps, proj_key=proj_key,
                 #                                         value=sentence_representations, mask=mask)
                 # context_and_target_rep = torch.cat((target_sent_reps, context_and_target_rep), dim=-1)
-            elif self.cim_type == 'cim*':
+            elif self.cam_type == 'cim*':
                 context_and_target_rep = torch.cat((target_sent_reps, context_reps, embedded_src), dim=-1)
 
         # Linear classification
