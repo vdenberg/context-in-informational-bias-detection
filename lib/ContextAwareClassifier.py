@@ -235,7 +235,7 @@ class ContextAwareModel(nn.Module):
         # Store pretrained embeddings to use as representations of sentences
         self.weights_matrix = torch.tensor(weights_matrix, dtype=torch.float, device=self.device)
         self.embedding = Embedding.from_pretrained(self.weights_matrix)
-        self.embedding_pos = Embedding(nr_pos_bins, pos_dim)  # option to embed position of target sentence in article
+        self.embedding_pos = Embedding(pos_quartiles, pos_dim)  # option to embed position of target sentence in article
         self.embedding_src = Embedding(nr_srcs, src_dim)
         self.emb_size = weights_matrix.shape[1]
 
