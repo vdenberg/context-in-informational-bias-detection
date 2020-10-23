@@ -122,7 +122,7 @@ parser.add_argument('-ep', '--epochs', type=int, default=150)  # 75
 parser.add_argument('-pat', '--patience', type=int, default=5)  # 15
 parser.add_argument('-bs', '--batch_size', type=int, default=32)
 parser.add_argument('-lr', '--learning_rate', type=float, default=0.001)
-parser.add_argument('-hid', '--hidden_size', type=int, default=1200)
+parser.add_argument('-hid', '--hidden_size', type=int, default=1000)
 parser.add_argument('-lay', '--bilstm_layers', type=int, default=2)
 
 # CURRENTLY NOT IN USE
@@ -331,7 +331,7 @@ for fold in folds:
 #                    CONTEXT AWARE MODEL
 # =====================================================================================
 
-logger.info("============ CAM =============")
+logger.info("============ SET THE MODEL UP =============")
 logger.info(f" Num epochs: {N_EPOCHS}")
 logger.info(f" Patience: {PATIENCE}")
 logger.info(f" Mode: {'train' if not EVAL else 'eval'}")
@@ -414,7 +414,9 @@ for HIDDEN in hiddens:
                             else:
                                 preds, losses = cam_cl.produce_preds(fold, voter_name)
                                 test_mets, test_perf = my_eval(fold['test'].label, preds, set_type='test')
-
+                                logger.info(
+                                    f"--------------- RESULT {setting_name} ON FOLD {fold['name']} V{i} ---------------")
+                                print(test_perf)
                             voter_preds.append(preds)
 
                         fold_test_predictions = voter_preds[0]
