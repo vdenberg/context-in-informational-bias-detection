@@ -209,26 +209,33 @@ class BahdanauAttention(nn.Module):
 
 class ContextAwareModel(nn.Module):
     """
-    Model that applies BiLSTM and classification of hidden representation of token at target index.
+    Model that uses BiLSTMs and classification of hidden representation of token at target index to do context-aware prediction.
     :param input_size: length of input sequences (= documents)
     :param hidden_size: size of hidden layer
     :param weights_matrix: matrix of embeddings of size vocab_size * embedding dimension
+    :param cim_type: cim or cim*
+    :param context: art (article) or ev (event)
+    :param pos_dim: not used in the paper: dimension of embedding for position of target sentence in document
+    :param src_dim: dimension of embedding for news source (publisher)
+    :param nr_pos_bins: number of categories for position in article (e.g. quartiles)
+    :param nr_srcs: number of sources (publishers)
+
     """
-    def __init__(self, input_size, hidden_size, bilstm_layers, weights_matrix, cam_type, device, context='art',
-                 pos_dim=100, src_dim=100, pos_quartiles=4, nr_srcs=3):
+    def __init__(self, input_size, hidden_size, bilstm_layers, weights_matrix, cim_type, device, context='art',
+                 pos_dim=100, src_dim=100, nr_pos_bins=4, nr_srcs=3):
         super(ContextAwareModel, self).__init__()
 
         self.input_size = input_size
         self.hidden_size = hidden_size # + pos_dim + src_dim
         self.bilstm_layers = bilstm_layers
         self.device = device
-        self.cam_type = cam_type
+        self.cim_type = cim_type
         self.context = context
 
         # Store pretrained embeddings to use as representations of sentences
         self.weights_matrix = torch.tensor(weights_matrix, dtype=torch.float, device=self.device)
         self.embedding = Embedding.from_pretrained(self.weights_matrix)
-        self.embedding_pos = Embedding(pos_quartiles, pos_dim)  # option to embed position of target sentence in article
+        self.embedding_pos = Embedding(nr_pos_bins, pos_dim)  # option to embed position of target sentence in article
         self.embedding_src = Embedding(nr_srcs, src_dim)
         self.emb_size = weights_matrix.shape[1]
 
@@ -250,13 +257,13 @@ class ContextAwareModel(nn.Module):
         else:
             self.context_rep_dim = self.emb_size + self.hidden_size * 6  # size of target sentences + 3 articles
 
-        if self.cam_type == 'cim*':
+        if self.cim_type == 'cim*':
             self.context_rep_dim += src_dim  #  add representation of source
 
         self.half_context_rep_dim = int(self.context_rep_dim*0.5)
         self.dense = nn.Linear(self.context_rep_dim, self.half_context_rep_dim)
 
-        if self.cam_type == 'cnm':
+        if self.cim_type == 'cnm':
             # optional Context Naive setting
             self.classifier = Linear(self.emb_size, self.num_labels)
         else:
@@ -283,7 +290,7 @@ class ContextAwareModel(nn.Module):
         seq_len = doc_len
 
         # init containers for outputs
-        rep_dimension = self.emb_size if self.cam_type == 'cnm' else self.hidden_size * 2
+        rep_dimension = self.emb_size if self.cim_type == 'cnm' else self.hidden_size * 2
         art_representations = torch.zeros(batch_size, seq_len, rep_dimension, device=self.device)
 
         if self.context != 'art':
@@ -292,7 +299,7 @@ class ContextAwareModel(nn.Module):
 
         target_sent_reps = torch.zeros(batch_size, self.emb_size, device=self.device)
 
-        if self.cam_type == 'cnm':
+        if self.cim_type == 'cnm':
             # optional Context Naive setting
             target_sent_reps = torch.zeros(batch_size, rep_dimension, device=self.device)
             for item, position in enumerate(positions):
@@ -319,7 +326,7 @@ class ContextAwareModel(nn.Module):
                 art_representations[:, seq_idx] = encoded
             final_article_reps = art_representations[:, -1, :]
 
-            if self.cam_type == 'cnm':
+            if self.cim_type == 'cnm':
                 # embedding first event context piece
                 hidden = self.init_hidden(batch_size)
                 for seq_idx in range(article.shape[0]):
@@ -346,12 +353,12 @@ class ContextAwareModel(nn.Module):
             # proj_key = self.attention.key_layer(sentence_representations)
             # mask = (contexts != self.pad_index).unsqueeze(-2)
 
-            if self.cam_type == 'cim':
+            if self.cim_type == 'cim':
                 context_and_target_rep = torch.cat((target_sent_reps, context_reps), dim=-1)
                 # context_and_target_rep, attn_probs = self.attention(query=target_sent_reps, proj_key=proj_key,
                 #                                         value=sentence_representations, mask=mask)
                 # context_and_target_rep = torch.cat((target_sent_reps, context_and_target_rep), dim=-1)
-            elif self.cam_type == 'cim*':
+            elif self.cim_type == 'cim*':
                 context_and_target_rep = torch.cat((target_sent_reps, context_reps, embedded_src), dim=-1)
 
         # Linear classification
@@ -373,7 +380,7 @@ class ContextAwareModel(nn.Module):
 class CIMClassifier():
     def __init__(self, emb_dim=768, hid_size=32, layers=1, weights_mat=None, tr_labs=None,
                  b_size=24, cp_dir='models/checkpoints/cim', lr=0.001, start_epoch=0, patience=3,
-                 step=1, gamma=0.75, n_eps=10, cam_type='cim', context='art'):
+                 step=1, gamma=0.75, n_eps=10, cim_type='cim', context='art'):
         self.start_epoch = start_epoch
         self.cp_dir = cp_dir
         self.device, self.use_cuda = get_torch_device()
@@ -381,7 +388,7 @@ class CIMClassifier():
         self.emb_dim = emb_dim
         self.hidden_size = hid_size
         self.batch_size = b_size
-        if cam_type == 'cim':
+        if cim_type == 'cim':
             self.criterion = CrossEntropyLoss(weight=torch.tensor([.20, .80], device=self.device), reduction='sum')  # could be made to depend on classweight which should be set on input
         else:
             self.criterion = CrossEntropyLoss(weight=torch.tensor([.25, .75], device=self.device), reduction='sum')  # could be made to depend on classweight which should be set on input
@@ -398,7 +405,7 @@ class CIMClassifier():
         else:
             self.model = ContextAwareModel(input_size=self.emb_dim, hidden_size=self.hidden_size,
                                            bilstm_layers=layers, weights_matrix=weights_mat,
-                                           device=self.device, cam_type=cam_type, context=context)
+                                           device=self.device, cim_type=cim_type, context=context)
         self.model = self.model.to(self.device)
         if self.use_cuda: self.model.cuda()
 

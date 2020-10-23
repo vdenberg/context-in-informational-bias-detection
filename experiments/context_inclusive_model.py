@@ -402,10 +402,10 @@ for HIDDEN in hiddens:
                             best_model_loc = os.path.join(CHECKPOINT_DIR, voter_name)
                             cam = CIMClassifier(cp_dir=CHECKPOINT_DIR, tr_labs=fold['train'][i].label,
                                                 weights_mat=fold['weights_matrices'][i], emb_dim=EMB_DIM, hid_size=HIDDEN, layers=BILSTM_LAYERS,
-                                                b_size=BATCH_SIZE, lr=LR, step=1, cam_type=CIM_TYPE, context=CONTEXT_TYPE)
+                                                b_size=BATCH_SIZE, lr=LR, step=1, cim_type=CIM_TYPE, context=CONTEXT_TYPE)
 
                             cam_cl = Classifier(model=cam, logger=logger, name=voter_name, patience=PATIENCE, n_eps=N_EPOCHS,
-                                            printing=PRINT_STEP_EVERY, load_from_ep=None)
+                                                printing=PRINT_STEP_EVERY, load_from_ep=None)
 
                             if not os.path.exists(best_model_loc) or FORCE_TRAIN:
                                 logger.info(f"--------------- TRAIN {setting_name} ON FOLD {fold['name']} V{i} ---------------")
