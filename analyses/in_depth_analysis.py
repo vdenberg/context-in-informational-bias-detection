@@ -26,36 +26,12 @@ sentlen_df.index = ["0-90", "91-137", "138-192", "193-647", "All"]
 print('Difference in performance depending on sentence length:')
 print(sentlen_df.to_latex())
 
-# IN QUOTE OR NOT + PRESENCE OF QUOTATION MARKS
+# IN QUOTE OR NOT
 quote_comparison = [ea.compare_subsets(ea.w_preds, 'inf_quote', model, metrics=['rec'], inf_bias_only=True) for model, _ in ea.models]
 quote_df = ea.concat_comparisons(quote_comparison)
 
 print('Difference in performance depending on annotated as in a quote:')
 print(quote_df.to_latex())
-
-quote_comparison = [ea.compare_subsets(ea.w_preds, 'auto_quote', model, metrics=['f1']) for model, _ in ea.models]
-quote_df = ea.concat_comparisons(quote_comparison)
-
-print('Difference in performance depending on whether contains quotation marks:')
-print(quote_df.to_latex())
-
-"""
-df_for_quote_marks = ea.w_preds
-for model, _ in ea.models:
-    print()
-    print(model)
-
-    rate_of_quotes = sum(df_for_quote_marks.quote) / len(df_for_quote_marks)
-    print(ea.N, rate_of_quotes)
-
-    df_w_conf_mat = ea.conf_mat(df_for_quote_marks, model)
-
-    for el in ['tp', 'fp', 'tn', 'fn']:
-        subdf = df_for_quote_marks[df_for_quote_marks[el]]
-        print(el)
-        prop = sum(subdf.quote) / len(subdf)
-        print(el, len(subdf), '\%' + str(round(prop*100,2)))
-"""
 
 # SOURCE AND STANCE
 source_comparison = [ea.compare_subsets(ea.w_preds, 'source', model, metrics=['f1']) for model, _ in ea.models]

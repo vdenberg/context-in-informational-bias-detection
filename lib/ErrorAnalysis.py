@@ -269,7 +269,7 @@ class ErrorAnalysis:
                     signs.append('*')
                 else:
                     signs.append('')
-        # new_df['sign'] = signs
+        new_df['sign'] = signs
         return new_df
 
     def clean_for_pol_analysis(self):
