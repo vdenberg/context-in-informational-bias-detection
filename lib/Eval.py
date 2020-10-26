@@ -6,13 +6,13 @@ from scipy.stats import ttest_ind
 import numpy as np
 
 
-def students_t_test(results1, results2, verbose=True):
+def students_t_test(results1, results2, verbose=True, p_value=0.05):
     means = round(np.mean(results1), 2), round(np.mean(results2), 2)
     stat, p = ttest_ind(results1, results2)
     if verbose:
         print('Means:', means)
         print('stat=%.3f, p=%.3f' % (stat, p))
-    if p > 0.05:
+    if p > p_value:
         if verbose:
             print('Probably SAME distribution')
         return False
