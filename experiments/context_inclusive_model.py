@@ -199,9 +199,7 @@ if not os.path.exists(TABLE_DIR):
 if not os.path.exists(PREDICTION_DIR):
     os.makedirs(PREDICTION_DIR)
 
-# set logger
-logger.info("============ START LOG =============")
-logger.info(args)
+# LOGGER
 now = datetime.now()
 now_string = now.strftime(format='%b-%d-%Hh-%-M')
 LOG_NAME = f"{REPORTS_DIR}/{now_string}.log"
@@ -209,6 +207,8 @@ console_hdlr = logging.StreamHandler(sys.stdout)
 file_hdlr = logging.FileHandler(filename=LOG_NAME)
 logging.basicConfig(level=logging.INFO, handlers=[console_hdlr, file_hdlr])
 logger = logging.getLogger()
+logger.info("============ START =============")
+logger.info(args)
 
 # =====================================================================================
 #                    PREPROCESS DATA
