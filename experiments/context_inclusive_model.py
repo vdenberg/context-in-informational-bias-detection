@@ -29,7 +29,8 @@ class Processor():
 
     def to_numeric_documents(self, documents):
         """
-        Creates numerical representations (sentence ids) for documents
+        Creates numerical representations (sentence ids) for
+        documents (= articles from which to generate context representations)
         """
         numeric_context_docs = []
         for doc in documents:
@@ -57,12 +58,12 @@ class Processor():
         return token_ids, token_mask
 
 
-def make_weight_matrix(embed_df, EMB_DIM):
+def make_weight_matrix(embed_df, embedding_dim):
     """
     Puts embeddings from dataframe into a matrix
     :param embed_df: dataframe with embeddings of each sentence in corpus
-    :param EMB_DIM: length of embedding vectors, 768 for BERT/RoBERTa
-    :return: numpy matrix
+    :param embedding_dim: length of embedding vectors, 768 for BERT/RoBERTa
+    :return: numpy matrix with the shape (nr of unique sentences x embedding_dim)
     """
     # clean embedding string
     embed_df = embed_df.fillna(0).replace({'\n', ' '})
@@ -75,7 +76,7 @@ def make_weight_matrix(embed_df, EMB_DIM):
         sentence_embeddings[index.lower()] = emb
 
     matrix_len = len(embed_df) + 2  # 1 for EOD token and 1 for padding token
-    weights_matrix = np.zeros((matrix_len, EMB_DIM))
+    weights_matrix = np.zeros((matrix_len, embedding_dim))
 
     sent_id_map = {sent_id.lower(): sent_num_id+1 for sent_num_id, sent_id in enumerate(embed_df.index.values)}
     for sent_id, index in sent_id_map.items():  # word here is a sentence id like 91fox27
@@ -86,6 +87,12 @@ def make_weight_matrix(embed_df, EMB_DIM):
 
 
 def get_weights_matrix(data, emb_fp, emb_dim=None):
+    """
+    Reads embedding dataframe and syncs it with regular dataframe of instnaces
+    :param data: dataframe of instances
+    :param emb_fp: where to read the embeddings from
+    :return: numpy matrix with the shape (nr of unique sentences x embedding_dim)
+    """
     data_w_emb = pd.read_csv(emb_fp, index_col=0).fillna('')
     data_w_emb.index = [standardise_id(el) for el in data_w_emb.index]
     data_w_emb = data_w_emb.rename(
@@ -193,6 +200,8 @@ if not os.path.exists(PREDICTION_DIR):
     os.makedirs(PREDICTION_DIR)
 
 # set logger
+logger.info("============ START LOG =============")
+logger.info(args)
 now = datetime.now()
 now_string = now.strftime(format='%b-%d-%Hh-%-M')
 LOG_NAME = f"{REPORTS_DIR}/{now_string}.log"
@@ -200,9 +209,6 @@ console_hdlr = logging.StreamHandler(sys.stdout)
 file_hdlr = logging.FileHandler(filename=LOG_NAME)
 logging.basicConfig(level=logging.INFO, handlers=[console_hdlr, file_hdlr])
 logger = logging.getLogger()
-
-logger.info("============ START =============")
-logger.info(args)
 
 # =====================================================================================
 #                    PREPROCESS DATA
@@ -224,13 +230,6 @@ if not os.path.exists(DATA_FP):
                                   'ev2_context_document', 'label', 'position'],
                            dtype={'sentence_ids': str, 'tokens': str, 'label': int, 'position': int})
     raw_data = raw_data.set_index('sentence_ids', drop=False)
-
-    try:
-        raw_data.to_json(DATA_FP)
-        print("Managed to save")
-    except:
-        print("Failure")
-        exit(0)
 
     raw_data['source'] = sentences['source']
     raw_data['src_num'] = raw_data.source.apply(lambda x: {'fox': 0, 'nyt': 1, 'hpo': 2}[x])
@@ -434,8 +433,7 @@ for HIDDEN in hiddens:
                     basil_w_pred.to_csv(pred_fp)
 
                 # load predictions
-                basil_w_pred = pd.read_csv(pred_fp)  # , dtype={'pred': np.int64})
-                logger.info(f'Preds from {pred_fp}')
+                basil_w_pred = pd.read_csv(pred_fp)
 
                 logger.info(f"***** Eval {setting_name} *****")
 
