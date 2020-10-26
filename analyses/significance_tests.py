@@ -21,7 +21,7 @@ students_t_test(rob_base, artcim)
 
 # Compare baseline to ArtCIM*
 print("\n- Base RoBERTa VS ArtCIM* -")
-artcimstar = [42.25, 42.8, 41.26]
+artcimstar = [42.25, 42.8, 41.26, 42.51]
 students_t_test(rob_base, artcimstar)
 
 # Compare baseline to EvCIM

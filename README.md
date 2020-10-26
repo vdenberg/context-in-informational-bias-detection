@@ -1,7 +1,18 @@
 # Context In Informational Bias Detection
 
+This repository contains code and instructions for
+- finetuning the PLM's BERT and RoBERTa
+- performing Sequential Sentence Classification
+- obtaining embeddings from a PLM for further experimentation
+- training a Context-Inclusive Model
+- further pre-training of RoBERTa on the BASIL corpus of lexical and informational bias towards entities.
+
+For any questions, please contact esthervdenberg [at] gmail.com.
+
 ### Citing
 
+This repository documents the experiments in a paper on the automatic detection of informational bias towards entities 
+with neural approaches that take into account context beyond the sentence. 
 
 ```bibtex
 @inproceedings{berg2020context,

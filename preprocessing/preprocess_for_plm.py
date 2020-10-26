@@ -186,7 +186,7 @@ if __name__ == '__main__':
 
     if CLF_TASK == 'seq_sent_clf':
         if WINDOW:
-            max_lens = {5: 398, 10: 543}  
+            max_lens = {5: 398, 10: 543}
         else:
             max_lens = {5: 305, 10: 499}
         MAX_SEQ_LEN = max_lens[args.sequence_length]
