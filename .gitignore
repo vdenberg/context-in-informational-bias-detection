@@ -7,6 +7,7 @@ __pycache__/
 *.ipynb
 *.pkl
 *.DS_Store
+.idea/
 data/embeddings/*
 data/emnlp19-BASIL/
 data/inputs/cim/*
