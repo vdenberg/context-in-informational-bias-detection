@@ -6,19 +6,9 @@ pd.set_option('display.max_colwidth', 1000)
 pd.set_option('display.width', 2000)
 
 
-def students_t_test(results1, results2):
-    stat, p = ttest_ind(results1, results2)
-    print('stat=%.3f, p=%.3f' % (stat, p))
-    if p > 0.05:
-        print('Probably the same distribution')
-    else:
-        print('Probably different distributions')
-
-
 ea = ErrorAnalysis('base_best')
 
 # SENTENCE LENGTH ANALYSIS
-
 sentlen_comparison = [ea.compare_subsets(ea.w_preds, 'len', model,  metrics=['f1']) for model, _ in ea.models]
 sentlen_df = ea.concat_comparisons(sentlen_comparison)
 sentlen_df.index = ["0-90", "91-137", "138-192", "193-647", "All"]
@@ -49,7 +39,6 @@ print('Difference in performance depending on stance of article:')
 print(stance_df.to_latex())
 
 # LEXICAL BIAS
-
 lex_comparison = [ea.compare_subsets(ea.w_preds, 'lex_bias', model, metrics=['prec', 'rec', 'f1']) for model, _ in ea.models]
 lex_df = ea.concat_comparisons(lex_comparison)
 
