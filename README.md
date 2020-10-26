@@ -39,8 +39,8 @@
 run the following:
 
  ```shell script
-    python analyses/sign_test.py
-    python analyses/in_depth_analysis.py
+    python analyses/significance_tests.py
+    python analyses/performance_analysis.py
    ```
 
 ### BERT and RoBERTa baselines

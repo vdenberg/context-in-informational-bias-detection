@@ -491,7 +491,6 @@ class CIMClassifier():
             else:
                 y_pred = np.append(y_pred, probs, axis=0)
 
-
                 # convert to predictions
                 # #preds = [1 if output > 0.5 else 0 for output in sigm_output]
                 #y_pred.extend(preds)
