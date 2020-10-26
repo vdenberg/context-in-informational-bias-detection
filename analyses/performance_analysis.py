@@ -32,7 +32,11 @@ print(source_df.to_latex())
 
 print('Overlap between publisher and leaning:')
 ct = pd.crosstab(ea.w_preds.source, ea.w_preds.stance)
-print(ct.loc[['fox', 'nyt', 'hpo'],['Right', 'Left', 'Center']])
+print(ct.loc[['fox', 'nyt', 'hpo'],['Right', 'Center', 'Left']])
+publisher = ea.w_preds.source.replace({'fox': -1, 'nyt': 0, 'hpo': 1})
+leaning = ea.w_preds.stance.replace({'Right': -1, 'Center': 0, 'Left': 1})
+r = publisher.corr(leaning)
+print('Correlation:', r)
 
 stance_comparison = [ea.compare_subsets(ea.w_preds, 'stance', model, metrics=['f1']) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_comparison)
