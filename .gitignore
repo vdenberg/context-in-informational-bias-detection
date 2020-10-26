@@ -16,6 +16,4 @@ data/inputs/seq_sent_clf/*
 data/inputs/tok_clf/*
 data/splits/*
 experiments/adapt_dapt_tapt/*
-Private/preprocessing_debug.sh
 Private/
-Private/Reports/reports/
