@@ -31,7 +31,7 @@ print('Difference in performance depending on publisher:')
 print(source_df.to_latex())
 
 print('Overlap between publisher and leaning:')
-ct = pd.crosstab(ea.w_preds.source, ea.w_preds.stance)
+ct = pd.crosstab(ea.w_preds.source, ea.w_preds.stance, margins=True)
 print(ct.loc[['fox', 'nyt', 'hpo'],['Right', 'Center', 'Left']])
 publisher = ea.w_preds.source.replace({'fox': -1, 'nyt': 0, 'hpo': 1})
 leaning = ea.w_preds.stance.replace({'Right': -1, 'Center': 0, 'Left': 1})
