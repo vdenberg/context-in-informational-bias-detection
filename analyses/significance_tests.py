@@ -5,6 +5,7 @@ Performs independent t-test at p-value=0.05 to compare model performance across 
 from lib.Eval import students_t_test
 import numpy as np
 
+# Baseline performance
 rob_base = [42.38, 42.08, 42.14, 41.71, 42.49]
 
 # Compare baseline to best domain context model
