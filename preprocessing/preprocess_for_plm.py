@@ -12,8 +12,13 @@ import pandas as pd
 
 
 def preprocess_for_plm(rows, model):
+    """
+    Loops over instances and chooses correct conversion to numeric PLM features
+    :param rows: rows of instances with tokenizer and other objects needed for preprocessing
+    :param model: string that specifies which model to preprocess for
+    :return:
+    """
     count = 0
-    total = len(rows)
     features = []
     for row in rows:
         if model == 'bert':
@@ -50,13 +55,23 @@ def enforce_max_sent_per_example(sentences, max_sent_per_example, labels=None):
 
 
 def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex, window):
+    """
+    Creates a flat sequences of preprocessed sentences.
+    :param seq_rows: list of sentences
+    :param cls: value of CLS-token
+    :param pad: value of PAD-token
+    :param max_ex_len: max nr of token ids in flat sequence
+    :param max_sent_in_ex: max nr of sentences in sequence
+    :param window: size of window
+    :return: sequence as an InputFeatures object
+    """
     flat_input_ids = []
     flat_labels = []
     flat_ids = []
     #segment_ids = []
 
     for i, sent in enumerate(seq_rows):
-        input_ids = remove_special(sent.input_ids, cls, pad)
+        input_ids = rm_special_tokens(sent.input_ids, cls, pad)
         flat_input_ids.extend(input_ids)
         flat_ids.append(sent.my_id)
         flat_labels.append(sent.label_id)
@@ -83,13 +98,8 @@ def flatten_sequence(seq_rows, cls, pad, max_ex_len, max_sent_in_ex, window):
                          label_id=flat_labels)
 
 
-def remove_special(x, cls=0, pad=1):
+def rm_special_tokens(x, cls=0, pad=1):
     return [el for el in x if el not in [cls, pad]]
-
-
-def seps(x):
-    #mask = x == 2
-    return [el for el in x if el == 2]#x[mask]
 
 
 def redistribute_feats(features, cls=0, pad=1, max_sent=10, max_len=None, window=True):
@@ -98,10 +108,10 @@ def redistribute_feats(features, cls=0, pad=1, max_sent=10, max_len=None, window
     """
 
     empty_feature = InputFeatures(my_id=pad,
-                                     input_ids=[],
-                                     input_mask=[],
-                                     segment_ids=[],
-                                     label_id=-1)
+                                  input_ids=[],
+                                  input_mask=[],
+                                  segment_ids=[],
+                                  label_id=-1)
     window_size = 1
 
     article_rows = {}
@@ -139,7 +149,7 @@ def redistribute_feats(features, cls=0, pad=1, max_sent=10, max_len=None, window
 
     # help measure what the maxlen should be
     for row in sequence_rows:
-        toks = [remove_special(f.input_ids, cls, pad) for f in row]
+        toks = [rm_special_tokens(f.input_ids, cls, pad) for f in row]
         exlen = sum([len(t) for t in toks])
         if exlen > max_len:
             max_len = exlen
@@ -176,7 +186,7 @@ if __name__ == '__main__':
 
     if CLF_TASK == 'seq_sent_clf':
         if WINDOW:
-            max_lens = {5: 398, 10: 543}
+            max_lens = {5: 398, 10: 543}  
         else:
             max_lens = {5: 305, 10: 499}
         MAX_SEQ_LEN = max_lens[args.sequence_length]

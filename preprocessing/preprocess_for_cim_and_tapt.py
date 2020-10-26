@@ -1,7 +1,5 @@
 import pandas as pd
 import argparse, os
-# import tensorflow_hub as hub
-# from sentence_transformers import SentenceTransformer
 from lib.handle_data.BasilLoader import LoadBasil
 import spacy
 
