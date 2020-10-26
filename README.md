@@ -48,10 +48,13 @@ run the following:
  ```shell script
     # sentence classification with bert
     python experiments/finetune_plm.py -clf_task sent_clf -model bert
+
     # sentence classification with roberta
     python experiments/finetune_plm.py -clf_task sent_clf -model rob_base
+
     # token classification with bert
     python experiments/finetune_plm.py -clf_task tok_clf -model bert
+
     # token classification with roberta
     python experiments/finetune_plm.py -clf_task tok_clf -model rob_base
    ```
@@ -59,16 +62,27 @@ run the following:
 ### Sequential Sentence Classification
 
 ```shell script
-# SSC without window (sequence length of 5 or 10)
-python experiments/finetune_plm.py -clf_task seq_sent_clf -seq_len [5|10] 
-# Window SSC (sequence length of 5 or 10)
-python experiments/finetune_plm.py -clf_task seq_sent_clf -seq_len [5|10] -win
+# SSC without window with sequence length of 5 
+python experiments/finetune_plm.py -clf_task seq_sent_clf -seq_len 5 
+
+# Window SSC with sequence length of 10
+python experiments/finetune_plm.py -clf_task seq_sent_clf -seq_len 10 -win
 ```
 
 ### Article and Event Context
 
 ```shell script
-python experiments/context_inclusive.py -context [art|ev] -cim_type [cim|cim*]
+# ArtCIM
+python experiments/context_inclusive.py -context art -cim_type cim
+
+# ArtCIM*
+python experiments/context_inclusive.py -context art -cim_type cim*
+
+# EvCIM
+python experiments/context_inclusive.py -context ev -cim_type cim
+
+# EvCIM*
+python experiments/context_inclusive.py -context ev -cim_type cim*
 ```
 
 ### Domain Context
