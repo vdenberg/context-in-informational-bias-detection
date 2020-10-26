@@ -31,8 +31,9 @@ source_df.index = ['FOX', 'NYT', 'HPO', 'All']
 print('Difference in performance depending on publisher:')
 print(source_df.to_latex())
 
-print('Overlap between publisher and stance:')
-ea.w_preds.crosstab(columns=['source', 'stance'])
+print('Overlap between publisher and leaning:')
+ct = pd.crosstab(ea.w_preds.source, ea.w_preds.stance)
+print(ct)
 
 stance_comparison = [ea.compare_subsets(ea.w_preds, 'stance', model, metrics=['f1']) for model, _ in ea.models]
 stance_df = ea.concat_comparisons(stance_comparison)
