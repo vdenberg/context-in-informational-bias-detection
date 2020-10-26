@@ -88,7 +88,7 @@ parser.add_argument('-bs', '--bs', type=int, default=None)
 parser.add_argument('-sv', '--sv', type=int, default=None)
 parser.add_argument('-embeds', '--embeds', action='store_true', default=False)
 parser.add_argument('-win', '--window', action='store_true', default=False)
-parser.add_argument('-exlen', '--example_length', help='5|10',type=int, default=5)
+parser.add_argument('-seq_len', '--sequence_length', help='5|10',type=int, default=5)
 parser.add_argument('-force_pred', '--force_pred', action='store_true', default=False)
 parser.add_argument('-force_train', '--force_train', action='store_true', default=False)
 args = parser.parse_args()
@@ -99,7 +99,7 @@ CLF_TASK = args.clf_task
 SPLIT = args.split
 MODEL = args.model
 WINDOW = args.window
-EX_LEN = args.example_length
+SEQ_LEN = args.sequence_length
 
 task_name_elements = []
 if CLF_TASK == 'seq_sent_len':
@@ -107,7 +107,7 @@ if CLF_TASK == 'seq_sent_len':
         task_name_elements.append('w')
 task_name_elements.append(CLF_TASK)
 if CLF_TASK == 'seq_sent_len':
-    task_name_elements.append(str(EX_LEN))
+    task_name_elements.append(str(SEQ_LEN))
 task_name_elements.extend([SPLIT, MODEL])
 TASK_NAME = '_'.join(task_name_elements)
 
@@ -147,9 +147,9 @@ if DEBUG:
 
 if CLF_TASK == 'seq_sent_clf':
     if WINDOW:
-        FEAT_DIR = f'data/inputs/{CLF_TASK}/windowed/ssc{EX_LEN}/'
+        FEAT_DIR = f'data/inputs/{CLF_TASK}/windowed/ssc{SEQ_LEN}/'
     else:
-        FEAT_DIR = f'data/inputs/{CLF_TASK}/non_windowed/ssc{EX_LEN}/'
+        FEAT_DIR = f'data/inputs/{CLF_TASK}/non_windowed/ssc{SEQ_LEN}/'
 
 elif CLF_TASK == 'sent_clf':
     if MODEL == 'bert':

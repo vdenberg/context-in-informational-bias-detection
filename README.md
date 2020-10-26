@@ -46,13 +46,23 @@ run the following:
 ### BERT and RoBERTa baselines
 
  ```shell script
-    python experiments/finetune_plm.py -clf_task [sent_clf|tok_clf] -model [bert|rob_base]
+    # sentence classification with bert
+    python experiments/finetune_plm.py -clf_task sent_clf -model bert
+    # sentence classification with roberta
+    python experiments/finetune_plm.py -clf_task sent_clf -model rob_base
+    # token classification with bert
+    python experiments/finetune_plm.py -clf_task tok_clf -model bert
+    # token classification with roberta
+    python experiments/finetune_plm.py -clf_task tok_clf -model rob_base
    ```
 
 ### Sequential Sentence Classification
 
 ```shell script
-python experiments/finetune_plm.py -clf_task seq_sent_clf -exlen [5|10]] -win
+# SSC without window (sequence length of 5 or 10)
+python experiments/finetune_plm.py -clf_task seq_sent_clf -seq_len [5|10] 
+# Window SSC (sequence length of 5 or 10)
+python experiments/finetune_plm.py -clf_task seq_sent_clf -seq_len [5|10] -win
 ```
 
 ### Article and Event Context
