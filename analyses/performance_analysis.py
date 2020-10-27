@@ -11,6 +11,7 @@ ea = ErrorAnalysis('base_best')
 # SENTENCE LENGTH ANALYSIS
 sentlen_comparison = [ea.compare_subsets(ea.w_preds, 'len', model,  metrics=['f1']) for model, _ in ea.models]
 sentlen_df = ea.concat_comparisons(sentlen_comparison)
+sentlen_df = sentlen_df[["0-90", "91-137", "138-192", "193-647", "All"]]
 #sentlen_df.index = ["0-90", "91-137", "138-192", "193-647", "All"]
 
 print('Difference in performance depending on sentence length:')
