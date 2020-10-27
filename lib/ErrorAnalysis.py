@@ -72,7 +72,6 @@ def get_len(x):
 
 
 def bin_length(len, quantiles):
-    print(quantiles)
     if len <= quantiles[0]:
         return "0-90"
     elif len <= quantiles[1]:
@@ -161,6 +160,7 @@ class ErrorAnalysis:
         out['auto_quote'] = out.sentence.apply(got_quote)
         out['len'] = out.sentence.apply(get_len)
         len_quantiles = out.len.quantile([0.25, 0.5, 0.75, 1.0]).values
+        print(len_quantiles)
         out['len'] = out.len.apply(lambda x: bin_length(x, len_quantiles))
         out['subj'] = out.sentence.apply(lambda x: give_subj_score(x, self.sent_lex, self.subj_words))
         subj_pos_quantiles = out.subj.quantile([0.5, 0.75, 1.0]).values
