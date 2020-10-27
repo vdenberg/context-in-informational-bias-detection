@@ -33,10 +33,10 @@ print(source_df.to_latex())
 
 print('Overlap between publisher and leaning:')
 stories = ea.w_preds[['story', 'source', 'stance']].drop_duplicates()
-ct = pd.crosstab(ea.w_preds.source, ea.w_preds.stance, margins=True)
+ct = pd.crosstab(stories.source, stories.stance, margins=True)
 print(ct.loc[['fox', 'nyt', 'hpo'],['Right', 'Center', 'Left']])
-publisher = ea.w_preds.source.replace({'fox': -1, 'nyt': 0, 'hpo': 1})
-leaning = ea.w_preds.stance.replace({'Right': -1, 'Center': 0, 'Left': 1})
+publisher = stories.source.replace({'fox': -1, 'nyt': 0, 'hpo': 1})
+leaning = stories.stance.replace({'Right': -1, 'Center': 0, 'Left': 1})
 r = publisher.corr(leaning, method='spearman')
 print('Correlation:', r)
 
