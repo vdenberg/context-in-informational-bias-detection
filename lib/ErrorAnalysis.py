@@ -70,7 +70,9 @@ def get_len(x):
     tok_len = len(x.split(' '))
     return tok_len
 
+
 def bin_length(len, quantiles):
+    print(quantiles)
     if len <= quantiles[0]:
         return "0-90"
     elif len <= quantiles[1]:
