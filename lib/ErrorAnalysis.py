@@ -4,6 +4,12 @@ from lib.Eval import my_eval, students_t_test
 import re, os
 from collections import Counter
 import numpy as np
+import spacy
+
+
+def tokenize(x):
+    global nlp
+    return [token.text for token in nlp(x)]
 
 
 def extract_e(string):
@@ -66,20 +72,19 @@ def got_quote(x):
 
 
 def get_len(x):
-    char_len = len(x)
-    tok_len = len(x.split(' '))
+    tok_len = len(tokenize(x))
     return tok_len
 
 
 def bin_length(len, quantiles):
     if len <= quantiles[0]:
-        return "0-90"
+        return f"0-{quantiles[0]}"
     elif len <= quantiles[1]:
-        return "91-137"
+        return f"{quantiles[0]+1}-{quantiles[1]}"
     elif len <= quantiles[2]:
-        return "138-192"
+        return f"{quantiles[1]+1}-{quantiles[2]}"
     elif len <= quantiles[3]:
-        return "193-647"
+        return f"{quantiles[2]+1}-{quantiles[3]}"
 
 
 def load_subj_lex():
