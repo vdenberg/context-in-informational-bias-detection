@@ -128,7 +128,7 @@ def bin_subj_score(subj_score, quantiles):
     #elif subj_score <= quantiles[3]:
     #    return "13.52-66.67"
 
-
+nlp = spacy.load("en_core_web_sm")
 models2compare = {'base_only':
                   [('Rob', 'sent_clf_story_split_rob_base')],
                   'best_only':
