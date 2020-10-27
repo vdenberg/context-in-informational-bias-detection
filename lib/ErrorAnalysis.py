@@ -66,9 +66,9 @@ def got_quote(x):
 
 
 def get_len(x):
-    print(x)
-    print(len(x), type(x))
-    return len(x)
+    char_len = len(x)
+    tok_len = len(x.split(' '))
+    return tok_len
 
 def bin_length(len, quantiles):
     if len <= quantiles[0]:
