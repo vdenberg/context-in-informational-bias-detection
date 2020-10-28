@@ -9,7 +9,7 @@ pd.set_option('display.width', 2000)
 ea = ErrorAnalysis('base_best')
 
 # GENERAL ANALYSIS
-by_source = ea.w_preds.groupby('source').describe()
+by_source = ea.w_preds.groupby('source')[['bias', 'lex_bias']].describe()
 print('Statistics on the BASIL corpus:')
 print(by_source)
 
