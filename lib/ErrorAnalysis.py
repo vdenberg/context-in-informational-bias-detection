@@ -73,6 +73,7 @@ def got_quote(x):
 
 def get_len(x):
     tok_len = len(tokenize(x))
+    tok_len = len(x)
     return tok_len
 
 
@@ -116,17 +117,11 @@ def give_subj_score(x, sent_lex, subj_words):
     return round(norm * 100, 2)
 
 
-def bin_subj_score(subj_score, quantiles):
+def bin_subj_score(subj_score):
     if subj_score == 0:
         return "No"
-    elif subj_score > 0: #and subj_score <= quantiles[0]:
-        return "Yes" #"0-3.7" #"1-5.26"
-    #else: # subj_score <= quantiles[1]:
-    #    return "Yes" #"5.37-8.57"
-    #elif subj_score <= quantiles[2]:
-    #    return "9.53-66.67" #"8.58-13.51"
-    #elif subj_score <= quantiles[3]:
-    #    return "13.52-66.67"
+    elif subj_score > 0:
+        return "Yes"
 
 nlp = spacy.load("en_core_web_sm")
 models2compare = {'base_only':
