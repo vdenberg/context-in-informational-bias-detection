@@ -11,7 +11,8 @@ ea = ErrorAnalysis('base_best')
 # GENERAL ANALYSIS
 by_source = ea.w_preds.groupby('source')[['bias', 'lex_bias']].describe()
 print('Statistics on the BASIL corpus:')
-print(by_source)
+for n, gr in by_source:
+    print(n, sum(gr.bias))
 
 # SENTENCE LENGTH ANALYSIS
 sentlen_comparison = [ea.compare_subsets(ea.w_preds, 'len', model,  metrics=['f1']) for model, _ in ea.models]
