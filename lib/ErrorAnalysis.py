@@ -117,12 +117,13 @@ def give_subj_score(x, sent_lex, subj_words):
     return round(norm * 100, 2)
 
 
-def bin_subj_score(subj_score):
+def bin_subj_score(subj_score, subj_pos_quantiles):
     if subj_score == 0:
         return "No"
     elif subj_score > 0:
         return "Yes"
 
+    
 nlp = spacy.load("en_core_web_sm")
 models2compare = {'base_only':
                   [('Rob', 'sent_clf_story_split_rob_base')],
