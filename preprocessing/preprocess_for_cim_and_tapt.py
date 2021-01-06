@@ -184,7 +184,7 @@ def preprocess_cc_for_tapt(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/
     """
 
     files = os.listdir(train_ifp)
-    files = [fn for fn in files if not fn == 'stats.json']
+    files = [fn for fn in files if not fn == 'stat.json']
 
     for fn in files:
         ifp = os.path.join(train_ifp, fn)
