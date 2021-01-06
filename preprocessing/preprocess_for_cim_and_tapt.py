@@ -189,6 +189,8 @@ def preprocess_cc_for_tapt(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/
     for fn in files:
         ifp = os.path.join(train_ifp, fn)
         content = json.load(open(ifp))
+        print(ifp)
+        print(content)
         text = content['maintext']
         sentences = [s.text for s in nlp(text).sents]
 
