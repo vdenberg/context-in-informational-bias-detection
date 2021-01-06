@@ -2,6 +2,7 @@ import pandas as pd
 import argparse, os
 from lib.handle_data.BasilLoader import LoadBasil
 import spacy
+import json
 
 
 def tokenize(x):
@@ -152,12 +153,11 @@ def preprocess_for_cim(basil, add_use=False, add_sbert=False, ofp="data/inputs/c
                         f.write('\n')
 
 
-def preprocess_for_tapt(basil, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
+def preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
     """
     Split for tapt
     """
 
-    test_size = 250
     article_counter = 0
 
     for n, gr in basil.groupby('article'):
@@ -167,14 +167,36 @@ def preprocess_for_tapt(basil, train_ofp="data/tapt/basil_train.txt", test_ofp="
         else:
             file_path = test_ofp
 
-        with open(file_path, 'a') as f:
-            sentences = gr.sentence.values
+        if file_path:
+            with open(file_path, 'a') as f:
+                sentences = gr.sentence.values
+                for s in sentences:
+                    f.write(s)
+                    f.write(' ')
+                f.write('\n')
+
+        article_counter += 1
+
+
+def preprocess_cc_for_tapt(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/tapt/basil_train.txt"):
+    """
+    Preprocess commoncrawl data for tapt
+    """
+
+    files = os.listdir(train_ifp)
+    files = [fn for fn in files if not fn == 'stats.json']
+
+    for fn in files:
+        ifp = os.path.join(train_ifp, fn)
+        content = json.load(open(ifp))
+        text = content['article']
+        sentences = [s.text for s in nlp(text).sents]
+
+        with open(train_ofp, 'a') as f:
             for s in sentences:
                 f.write(s)
                 f.write(' ')
             f.write('\n')
-
-        article_counter += 1
 
 
 if __name__ == '__main__':
@@ -209,4 +231,9 @@ if __name__ == '__main__':
 
     # DOMAIN CONTEXT
     # Split for tapt
-    preprocess_for_tapt(basil, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
+    preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
+
+    # Split for source-specific tapt
+    for source in ['fox', 'nyt', 'hpo']:
+        preprocess_basil_for_tapt(basil[basil['source'] == source], test_size=int(250 / 3), train_ofp="", test_ofp="data/inputs/tapt/basil_fox_test.txt")
+        preprocess_cc_for_tapt(train_ifp=os.path.join("data/inputs/tapt/cc/", source), train_ofp=os.path.join("data/inputs/tapt/", source + '_train.txt'))
