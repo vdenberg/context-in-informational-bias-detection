@@ -84,6 +84,7 @@ parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-clf_task', '--clf_task', help='tok_clf|sent_clf', type=str, default='sent_clf')
 parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
 parser.add_argument('-model', '--model', help='bert|rob_base',type=str, default='rob_base')
+parser.add_argument('-source', '--source', type=str, default='all', help='all|fox|nyt|hpo')
 parser.add_argument('-lr', '--lr', type=float, default=None)
 parser.add_argument('-bs', '--bs', type=int, default=None)
 parser.add_argument('-sv', '--sv', type=int, default=None)
@@ -101,6 +102,7 @@ SPLIT = args.split
 MODEL = args.model
 WINDOW = args.window
 SEQ_LEN = args.sequence_length
+SOURCE = args.source
 
 task_name_elements = []
 if CLF_TASK == 'seq_sent_len':
@@ -156,7 +158,7 @@ elif CLF_TASK == 'sent_clf':
     if MODEL == 'bert':
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
     else:
-        FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta'
+        FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta_{SOURCE}'
 
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
