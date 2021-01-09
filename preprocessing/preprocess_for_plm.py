@@ -217,7 +217,7 @@ if __name__ == '__main__':
         else:
             FEAT_DIR = os.path.join(DATA_DIR, f'non_windowed/ssc{MAX_EX_LEN}/')
     else:
-        FEAT_DIR = os.path.join(DATA_DIR, f'features_for_{PLM}/')
+        FEAT_DIR = os.path.join(DATA_DIR, f'features_for_{PLM}_{SOURCE}/')
 
     if not os.path.exists(FEAT_DIR):
         os.makedirs(FEAT_DIR)
