@@ -166,9 +166,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-task', '--clf_task', type=str, default='sent_clf',
-                        help='Choose classification task between: sent_clf|tok_clf|seq_sent_clf', )
+                        help='Choose classification task between: sent_clf|tok_clf|seq_sent_clf')
     parser.add_argument('-plm', '--pretrained_lm', type=str, default='roberta',
-                        help='BERT|RoBERTa')
+                        help='bert|roberta')
+    parser.add_argument('-source', '--source', type=str, default='all',
+                        help='all|fox|nyt|hpo')
 
     parser.add_argument('-seqlen', '--sequence_length', type=int, default=1,
                         help='If task is seq_sent_clf: Number of sentences per example')
@@ -181,6 +183,7 @@ if __name__ == '__main__':
     PLM = args.pretrained_lm
     WINDOW = args.windowed
     MAX_EX_LEN = args.sequence_length
+    SOURCE = args.source
     MAX_DOC_LEN = 76
     MAX_SENT_LEN = 486
 
@@ -194,43 +197,50 @@ if __name__ == '__main__':
         MAX_SEQ_LEN = 124
 
     ######
-    # structure of project
+    # structure of project / fp and dirs
+    ######
+
+    basil_fp = 'data/basil.csv'
+    DATA_DIR = f'data/inputs/{CLF_TASK}'
+
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
+
+    if SOURCE == 'all':
+        DATA_TSV_IFP = os.path.join(DATA_DIR, 'plm_basil.tsv')
+    else:
+        DATA_TSV_IFP = os.path.join(DATA_DIR, f'plm_basil_{SOURCE}.tsv')
+
+    if CLF_TASK == 'seq_sent_clf':
+        if WINDOW:
+            FEAT_DIR = os.path.join(DATA_DIR, f'windowed/ssc{MAX_EX_LEN}/')
+        else:
+            FEAT_DIR = os.path.join(DATA_DIR, f'non_windowed/ssc{MAX_EX_LEN}/')
+    else:
+        FEAT_DIR = os.path.join(DATA_DIR, f'features_for_{PLM}/')
+
+    if not os.path.exists(FEAT_DIR):
+        os.makedirs(FEAT_DIR)
+
+    FEAT_OFP = os.path.join(FEAT_DIR, f"all_features.pkl")
+
+    ######
+    # load data
     ######
 
     # Load DataFrame with BASIL instances and - selected - annotations
     if not os.path.exists('data/basil.csv'):
         basil = LoadBasil().load_basil_raw()
         basil.to_csv('data/basil.csv')
+
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
+    if SOURCE != 'all':
+        basil = basil[basil.source == SOURCE]
 
-    plm_ofp = f'data/inputs/{CLF_TASK}/plm_basil.tsv'
-    if not os.path.exists(plm_ofp):
-        convert_basil_for_plm_inputs(basil, task=CLF_TASK, ofp=plm_ofp)
-
-    #############
-    ### BASELINES
-    #############
-
-    if CLF_TASK == 'seq_sent_clf':
-        if WINDOW:
-            FEAT_DIR = f'data/inputs/{CLF_TASK}/windowed/ssc{MAX_EX_LEN}/'
-        else:
-            FEAT_DIR = f'data/inputs/{CLF_TASK}/non_windowed/ssc{MAX_EX_LEN}/'
-    else:
-        FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_{PLM}/'
-    DATA_DIR = f'data/inputs/{CLF_TASK}'
-
-    if not os.path.exists(FEAT_DIR):
-        os.makedirs(FEAT_DIR)
-
-    if not os.path.exists(DATA_DIR):
-        os.makedirs(DATA_DIR)
-
-    DATA_TSV_IFP = os.path.join(DATA_DIR, f"plm_basil.tsv")
-    FEAT_OFP = os.path.join(FEAT_DIR, f"all_features.pkl")
+    if not os.path.exists(DATA_TSV_IFP):
+        convert_basil_for_plm_inputs(basil, task=CLF_TASK, ofp=DATA_TSV_IFP)
 
     ###
-    # load data
     # The maximum total input sequence length after WordPiece tokenization.
     # Sequences longer than this will be truncated, and sequences shorter than this will be padded.
     ###
@@ -244,6 +254,10 @@ if __name__ == '__main__':
 
     dataloader = BinaryClassificationProcessor()
     label_list = dataloader.get_labels(output_mode=CLF_TASK)  # [0, 1] for binary classification
+
+    #############
+    ### BASELINES
+    #############
 
     if CLF_TASK == 'tok_clf':
         spacy_tokenizer = spacy.load("en_core_web_sm")
