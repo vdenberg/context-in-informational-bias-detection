@@ -222,7 +222,7 @@ if __name__ == '__main__':
     if not os.path.exists(FEAT_DIR):
         os.makedirs(FEAT_DIR)
 
-    FEAT_OFP = os.path.join(FEAT_DIR, f"all_features.pkl")
+    FEAT_OFP = os.path.join(FEAT_DIR, f"{SOURCE}_features.pkl")
 
     ######
     # load data
