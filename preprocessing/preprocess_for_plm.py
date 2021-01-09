@@ -308,7 +308,10 @@ if __name__ == '__main__':
 
             if not os.path.exists(FEAT_OFP):
                 examples = dataloader.get_examples(infp, set_type, sep='\t')
-                features = [features_dict[example.my_id] for example in examples if example.text_a]
+
+                features = [features_dict[example.my_id] for example in examples
+                            if example.text_a and (example.my_id in features_dict)]
+
                 if CLF_TASK == 'seq_sent_clf':
                     features = redistribute_feats(features, cls=0, pad=1, max_sent=MAX_EX_LEN, max_len=MAX_SEQ_LEN,
                                               window=WINDOW)
