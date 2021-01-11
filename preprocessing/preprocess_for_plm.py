@@ -235,6 +235,8 @@ if __name__ == '__main__':
 
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
     if SOURCE != 'all':
+        print(basil.source.value_counts())
+        exit(0)
         basil = basil[basil.source == SOURCE]
 
     if not os.path.exists(DATA_TSV_IFP):
