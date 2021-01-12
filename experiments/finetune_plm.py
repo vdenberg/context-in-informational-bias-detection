@@ -111,7 +111,7 @@ if CLF_TASK == 'seq_sent_len':
 task_name_elements.append(CLF_TASK)
 if CLF_TASK == 'seq_sent_len':
     task_name_elements.append(str(SEQ_LEN))
-task_name_elements.extend([SPLIT, MODEL])
+task_name_elements.extend([SPLIT, MODEL, SOURCE])
 TASK_NAME = '_'.join(task_name_elements)
 
 NUM_LABELS = 4 if CLF_TASK == 'tok_clf' else 2
