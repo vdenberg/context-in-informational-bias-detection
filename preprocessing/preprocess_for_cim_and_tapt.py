@@ -2,7 +2,7 @@ import pandas as pd
 import argparse, os
 from lib.handle_data.BasilLoader import LoadBasil
 import spacy
-import json
+import json, re
 
 
 def tokenize(x):
@@ -190,6 +190,7 @@ def preprocess_cc_for_tapt(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/
         ifp = os.path.join(train_ifp, fn)
         content = json.load(open(ifp))
         text = content['maintext']
+        text = re.sub("\n", ' ', text)
         sentences = [s.text for s in nlp(text).sents]
 
         with open(train_ofp, 'a') as f:
@@ -222,17 +223,17 @@ if __name__ == '__main__':
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
 
     # tokenize
-    nlp = spacy.load("en_core_web_sm")
-    basil['tokens'] = basil.sentence.apply(tokenize)
-    basil.to_csv('data/inputs/basil_w_tokens.csv')
+    #nlp = spacy.load("en_core_web_sm")
+    #basil['tokens'] = basil.sentence.apply(tokenize)
+    #basil.to_csv('data/inputs/basil_w_tokens.csv')
 
     # ARTICLE & CONTEXT
     # Groups basil instances by story and source, and write .tsv lines
-    preprocess_for_cim(basil, add_use=False, add_sbert=False, ofp="data/inputs/cim/cim_basil.tsv")
+    #preprocess_for_cim(basil, add_use=False, add_sbert=False, ofp="data/inputs/cim/cim_basil.tsv")
 
     # DOMAIN CONTEXT
     # Split for tapt
-    preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
+    #preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
 
     # Split for source-specific tapt
     for source in ['fox', 'nyt', 'hpo']:
