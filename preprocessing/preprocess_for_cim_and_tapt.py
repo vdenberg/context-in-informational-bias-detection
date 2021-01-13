@@ -235,7 +235,7 @@ if __name__ == '__main__':
 
     # DOMAIN CONTEXT
     # Split for tapt
-    #preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
+    preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
 
     # Split for source-specific tapt
     for source in ['fox', 'nyt', 'hpo']:
