@@ -190,13 +190,12 @@ def preprocess_cc_for_tapt(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/
         ifp = os.path.join(train_ifp, fn)
         content = json.load(open(ifp))
         text = content['maintext']
-        text = re.sub("\n", ' ', text)
-        #sentences = [s.text for s in nlp(text).sents]
+        sentences = [s.text for s in nlp(text).sents]
 
         with open(train_ofp, 'a') as f:
-            #for s in sentences:
-            #    f.write(s)
-            #    f.write(' ')
+            for s in sentences:
+                f.write(s)
+                f.write(' ')
             f.write(text)
             f.write('\n')
 
