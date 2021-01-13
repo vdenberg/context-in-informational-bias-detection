@@ -55,7 +55,8 @@ model_mapping = {'bert': 'bert-base-cased',
                  'rob_dapt': 'experiments/adapt_dapt_tapt/pretrained_models/news_roberta_base',
                  'rob_basil_tapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-basil-tapt',
                  'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-basil-dapttapt',
-                 'rob_fox_tapt': 'experiments/dont-stop-pretraining/roberta-fox-tapt'
+                 'rob_fox_tapt': 'experiments/dont-stop-pretraining/roberta-fox-tapt',
+                 'rob_fox_tapt_no20': 'experiments/dont-stop-pretraining/roberta-fox-tapt/checkpoint-153500/'
                 }
 
 # hyperparameters for reproduction of COLING 'Context in Informational Bias' paper
@@ -65,7 +66,8 @@ model_hyperparams = {'sent_clf': {
                         'rob_dapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 22, 33, 34, 49]},
                         'rob_basil_tapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]},
                         'rob_basil_dapttapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]},
-                        'rob_fox_tapt': {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]}},
+                        'rob_fox_tapt': {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]},
+                        'rob_fox_tapt_no20': {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34]}},
                      'tok_clf': {
                         'bert': {'lr': 2e-5, 'bs': 16, 'seeds': [6, 23, 49, 132, 281],},
                         'rob_base': {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 132, 281]}
