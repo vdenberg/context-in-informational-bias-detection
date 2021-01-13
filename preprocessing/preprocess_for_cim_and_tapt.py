@@ -222,7 +222,7 @@ if __name__ == '__main__':
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
 
     # tokenize
-    #nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
     #basil['tokens'] = basil.sentence.apply(tokenize)
     #basil.to_csv('data/inputs/basil_w_tokens.csv')
 
