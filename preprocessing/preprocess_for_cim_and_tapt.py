@@ -197,6 +197,7 @@ def preprocess_cc_for_tapt(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/
             #for s in sentences:
             #    f.write(s)
             #    f.write(' ')
+            print(text)
             f.write(text)
             f.write('\n')
 
