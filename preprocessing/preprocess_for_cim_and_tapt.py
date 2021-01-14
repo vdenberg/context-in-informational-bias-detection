@@ -172,7 +172,7 @@ def preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/tapt/basil_t
                 sentences = gr.sentence.values
                 for s in sentences:
                     f.write(s)
-                    f.write(' ')
+                    f.write('\n')
                 f.write('\n')
 
         article_counter += 1
@@ -195,7 +195,6 @@ def preprocess_cc_for_tapt(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/
         with open(train_ofp, 'a') as f:
             for s in sentences:
                 f.write(s)
-            f.write(text)
             f.write('\n')
 
 
