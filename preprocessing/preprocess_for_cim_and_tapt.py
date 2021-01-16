@@ -153,7 +153,7 @@ def preprocess_for_cim(basil, add_use=False, add_sbert=False, ofp="data/inputs/c
                         f.write('\n')
 
 
-def preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
+def preprocess_basil_for_tapt(basil, test_size=50, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
     """
     Split for tapt
     """
@@ -163,9 +163,9 @@ def preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/tapt/basil_t
     for n, gr in basil.groupby('article'):
 
         if article_counter <= test_size:
-            file_path = train_ofp
-        else:
             file_path = test_ofp
+        else:
+            file_path = train_ofp
 
         if file_path:
             with open(file_path, 'a') as f:
@@ -173,7 +173,32 @@ def preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/tapt/basil_t
                 for s in sentences:
                     f.write(s)
                     f.write('\n')
-                f.write('\n')
+
+        article_counter += 1
+
+
+def preprocess_basil_for_dsp(basil, test_size=50, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
+    """
+    Split for tapt
+    """
+
+    article_counter = 0
+
+    for n, gr in basil.groupby('article'):
+
+        if article_counter <= test_size:
+            file_path = test_ofp
+        else:
+            file_path = train_ofp
+
+        if file_path:
+            with open(file_path, 'a') as f:
+                sentences = gr.sentence.values
+                labels = gr.bias.values
+                for s, l in zip(sentences, labels):
+                    instance = {'text': s, 'label': l, 'metadata': []}
+                    json.dump(instance, file_path)
+                    f.write('\n')
 
         article_counter += 1
 
@@ -220,7 +245,7 @@ if __name__ == '__main__':
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
 
     # tokenize
-    nlp = spacy.load("en_core_web_sm")
+    #nlp = spacy.load("en_core_web_sm")
     #basil['tokens'] = basil.sentence.apply(tokenize)
     #basil.to_csv('data/inputs/basil_w_tokens.csv')
 
@@ -230,7 +255,8 @@ if __name__ == '__main__':
 
     # DOMAIN CONTEXT
     # Split for tapt
-    preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
+    #preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
+    preprocess_basil_for_dsp(basil, test_size=250, train_ofp="experiments/dont-stop-pretraining/basil_train.json", test_ofp="experiments/dont-stop-pretraining/basil_test.json")
 
     # Split for source-specific tapt
     for source in ['fox', 'nyt', 'hpo']:
