@@ -197,6 +197,7 @@ def preprocess_basil_for_dsp(basil, test_size=50, train_ofp="data/tapt/basil_tra
                 labels = gr.bias.values
                 for s, l in zip(sentences, labels):
                     instance = {'text': s, 'label': str(l), 'metadata': []}
+                    print(instance)
                     json.dump(instance, f)
                     f.write('\n')
 
