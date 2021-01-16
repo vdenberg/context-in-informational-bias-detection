@@ -184,11 +184,11 @@ def preprocess_basil_for_dsp(basil, test_size, dev_size, train_ofp,dev_ofp, test
 
     article_counter = 0
 
-    with open(train_ofp, 'a') as f:
+    with open(train_ofp, 'w') as f:
         f.write('')
-    with open(dev_ofp, 'a') as f:
+    with open(dev_ofp, 'w') as f:
         f.write('')
-    with open(test_ofp, 'a') as f:
+    with open(test_ofp, 'w') as f:
         f.write('')
 
     for n, gr in basil.groupby('article'):
