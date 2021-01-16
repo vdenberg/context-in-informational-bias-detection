@@ -177,17 +177,26 @@ def preprocess_basil_for_tapt(basil, test_size=50, train_ofp="data/tapt/basil_tr
         article_counter += 1
 
 
-def preprocess_basil_for_dsp(basil, test_size=250, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
+def preprocess_basil_for_dsp(basil, test_size, dev_size, train_ofp,dev_ofp, test_ofp):
     """
     Split for tapt
     """
 
     article_counter = 0
 
+    with open(train_ofp, 'a') as f:
+        f.write('')
+    with open(dev_ofp, 'a') as f:
+        f.write('')
+    with open(test_ofp, 'a') as f:
+        f.write('')
+
     for n, gr in basil.groupby('article'):
 
-        if article_counter <= test_size:
+        if article_counter <= (100 - (test_size + dev_size)):
             file_path = train_ofp
+        elif article_counter <= (100 - dev_size):
+            file_path = dev_ofp
         else:
             file_path = test_ofp
 
@@ -197,7 +206,6 @@ def preprocess_basil_for_dsp(basil, test_size=250, train_ofp="data/tapt/basil_tr
                 labels = gr.bias.values
                 for s, l in zip(sentences, labels):
                     instance = {'text': s, 'label': str(l), 'metadata': []}
-                    print(instance)
                     json.dump(instance, f)
                     f.write('\n')
 
@@ -257,7 +265,10 @@ if __name__ == '__main__':
     # DOMAIN CONTEXT
     # Split for tapt
     #preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
-    preprocess_basil_for_dsp(basil, test_size=250, train_ofp="experiments/dont-stop-pretraining/basil_train.json", test_ofp="experiments/dont-stop-pretraining/basil_test.json")
+    preprocess_basil_for_dsp(basil, test_size=25, dev_size=25,
+                             train_ofp="experiments/dont-stop-pretraining/basil_data/train.json",
+                             dev_ofp="experiments/dont-stop-pretraining/basil_data/dev.json",
+                             test_ofp="experiments/dont-stop-pretraining/basil_data/test.json")
 
     # Split for source-specific tapt
     for source in ['fox', 'nyt', 'hpo']:
