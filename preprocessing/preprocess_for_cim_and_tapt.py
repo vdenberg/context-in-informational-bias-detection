@@ -177,7 +177,7 @@ def preprocess_basil_for_tapt(basil, test_size=50, train_ofp="data/tapt/basil_tr
         article_counter += 1
 
 
-def preprocess_basil_for_dsp(basil, test_size=50, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
+def preprocess_basil_for_dsp(basil, test_size=250, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
     """
     Split for tapt
     """
@@ -187,9 +187,9 @@ def preprocess_basil_for_dsp(basil, test_size=50, train_ofp="data/tapt/basil_tra
     for n, gr in basil.groupby('article'):
 
         if article_counter <= test_size:
-            file_path = test_ofp
-        else:
             file_path = train_ofp
+        else:
+            file_path = test_ofp
 
         if file_path:
             with open(file_path, 'a') as f:
