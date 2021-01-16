@@ -193,9 +193,9 @@ def preprocess_basil_for_dsp(basil, test_size, dev_size, train_ofp,dev_ofp, test
 
     for n, gr in basil.groupby('article'):
 
-        if article_counter <= (100 - (test_size + dev_size)):
+        if article_counter <= (300 - (test_size + dev_size)):
             file_path = train_ofp
-        elif article_counter <= (100 - dev_size):
+        elif article_counter <= (300 - dev_size):
             file_path = dev_ofp
         else:
             file_path = test_ofp
