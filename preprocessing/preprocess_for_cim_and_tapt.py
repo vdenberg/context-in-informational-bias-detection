@@ -201,6 +201,9 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
     spl = Split(data, which='both', recreate=False, sv=99)
     folds = spl.apply_split(features=['id', 'label', 'sentence'], source=source)
 
+    if not os.path.exists(data_dir):
+        os.mkdir(data_dir)
+
     # write data for each fold
     for i, fold in enumerate(folds):
         fold_dir = os.path.join(data_dir, str(fold['name']))
