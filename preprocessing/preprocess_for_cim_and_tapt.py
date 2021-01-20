@@ -193,6 +193,8 @@ def preprocess_basil_for_dsp(basil, test_size, dev_size, train_ofp,dev_ofp, test
 
     nr_articles = len(basil.article.unique())
 
+    print()
+
     for n, gr in basil.groupby('article'):
 
         if article_counter <= (nr_articles - (test_size + dev_size)):
