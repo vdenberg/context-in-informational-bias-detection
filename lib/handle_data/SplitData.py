@@ -344,8 +344,8 @@ class Split:
             if 'label' not in features:
                 features += ['label']
 
-            print(list(set(train_sent_ids))[:10])
-            print(list(set(self.input_dataframe.id.unique()))[:10])
+            tmp = self.input_dataframe.loc[train_sent_ids]
+            exit(0)
             difference = set(train_sent_ids) -set(self.input_dataframe.id.unique())
             train_df = self.input_dataframe.loc[train_sent_ids, features] #+ ['label']
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
