@@ -346,7 +346,8 @@ class Split:
 
 
             difference = set(self.input_dataframe.id.unique()) - set(train_sent_ids)
-            print(difference)
+            print(list(difference)[:10])
+            print(self.input_dataframe.head())
             exit(0)
             train_df = self.input_dataframe.loc[train_sent_ids, features] #+ ['label']
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
