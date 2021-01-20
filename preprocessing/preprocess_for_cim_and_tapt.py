@@ -265,7 +265,7 @@ if __name__ == '__main__':
     # DOMAIN CONTEXT
     # Split for tapt
     #preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
-    preprocess_basil_for_dsp(basil, test_size=25, dev_size=25,
+    #preprocess_basil_for_dsp(basil, test_size=25, dev_size=25,
                              train_ofp="experiments/dont-stop-pretraining/basil_data/train.jsonl",
                              dev_ofp="experiments/dont-stop-pretraining/basil_data/dev.jsonl",
                              test_ofp="experiments/dont-stop-pretraining/basil_data/test.jsonl")
