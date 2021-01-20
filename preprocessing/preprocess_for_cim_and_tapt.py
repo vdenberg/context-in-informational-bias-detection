@@ -275,7 +275,7 @@ if __name__ == '__main__':
         #preprocess_basil_for_tapt(basil[basil['source'] == source], test_size=int(250 / 3), train_ofp="", test_ofp="data/inputs/tapt/basil_fox_test.txt")
         #preprocess_cc_for_tapt(train_ifp=os.path.join("data/inputs/tapt/cc/", source), train_ofp=os.path.join("data/inputs/tapt/", source + '_train.txt'))
         preprocess_basil_for_dsp(basil[basil['source'] == source], test_size=25, dev_size=25,
-                                 train_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/.jsonl",
+                                 train_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/train.jsonl",
                                  dev_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/dev.jsonl",
                                  test_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/test.jsonl")
 
