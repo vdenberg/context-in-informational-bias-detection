@@ -313,7 +313,7 @@ class Split:
             story_spl = story_splitter.return_split(recreate, sv=sv)
             self.spl = sentence_spl + story_spl
 
-    def apply_split(self, features):
+    def apply_split(self, features, source=None):
         """
         Applies nr of folds and order of fold content to the input dataframe.
 
@@ -343,6 +343,12 @@ class Split:
 
             if 'label' not in features:
                 features += ['label']
+
+            if source:
+                source_ids = set(self.input_dataframe.id.unique())
+                train_sent_ids = [i for i in train_sent_ids if i in source_ids]
+                dev_sent_ids = [i for i in dev_sent_ids if i in source_ids]
+                test_sent_ids = [i for i in test_sent_ids if i in source_ids]
 
             train_df = self.input_dataframe.loc[train_sent_ids, features] #+ ['label']
             dev_df = self.input_dataframe.loc[dev_sent_ids, features] #+ ['label']
