@@ -191,11 +191,13 @@ def preprocess_basil_for_dsp(basil, test_size, dev_size, train_ofp,dev_ofp, test
     with open(test_ofp, 'w') as f:
         f.write('')
 
+    nr_articles = len(basil.article.unique())
+
     for n, gr in basil.groupby('article'):
 
-        if article_counter <= (300 - (test_size + dev_size)):
+        if article_counter <= (nr_articles - (test_size + dev_size)):
             file_path = train_ofp
-        elif article_counter <= (300 - dev_size):
+        elif article_counter <= (nr_articles - dev_size):
             file_path = dev_ofp
         else:
             file_path = test_ofp
@@ -274,7 +276,7 @@ if __name__ == '__main__':
     for source in ['fox', 'nyt', 'hpo']:
         #preprocess_basil_for_tapt(basil[basil['source'] == source], test_size=int(250 / 3), train_ofp="", test_ofp="data/inputs/tapt/basil_fox_test.txt")
         #preprocess_cc_for_tapt(train_ifp=os.path.join("data/inputs/tapt/cc/", source), train_ofp=os.path.join("data/inputs/tapt/", source + '_train.txt'))
-        preprocess_basil_for_dsp(basil[basil['source'] == source], test_size=25, dev_size=25,
+        preprocess_basil_for_dsp(basil[basil['source'] == source], test_size=15, dev_size=15,
                                  train_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/train.jsonl",
                                  dev_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/dev.jsonl",
                                  test_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/test.jsonl")
