@@ -345,7 +345,7 @@ class Split:
                 features += ['label']
 
 
-            difference = set(self.input_dataframe.id.unique()) - set(train_sent_ids)
+            difference = set(train_sent_ids) -set(self.input_dataframe.id.unique())
             print(list(difference)[:10])
             print(self.input_dataframe.head())
             exit(0)
