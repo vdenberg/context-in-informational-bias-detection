@@ -114,7 +114,7 @@ class LoadBasil:
         df['uniq_idx'] = df['uniq_idx'].apply(standardise_id)
         df = df.set_index(df['uniq_idx'])
         empty_sentences = ['46fox24', '48fox19', '11fox23', '47nyt19', '47fox22', '58fox62', '52fox18']
-        df['label'] = df.bias
+        df = df.rename({'bias': 'label'})
         df = df.drop(empty_sentences)
         return df
 
