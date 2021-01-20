@@ -198,7 +198,7 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False):
 
     # split data into folds
     spl = Split(data, which='both', recreate=False, sv=99)
-    folds = spl.apply_split(features=['id', 'label', 'sentence'])
+    folds = spl.apply_split(features=['id', 'bias', 'sentence'])
 
     # write data for each fold
     for i, fold in enumerate(folds):
