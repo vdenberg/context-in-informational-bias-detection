@@ -184,7 +184,7 @@ def write_for_dsp(data, fp):
 
     with open(fp, 'a') as f:
         sentences = data.sentence.values
-        labels = data.bias.values
+        labels = data.label.values
         for s, l in zip(sentences, labels):
             instance = {'text': s, 'label': str(l), 'metadata': []}
             json.dump(instance, f)
