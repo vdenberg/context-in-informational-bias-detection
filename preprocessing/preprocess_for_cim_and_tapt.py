@@ -1,6 +1,7 @@
 import pandas as pd
 import argparse, os
 from lib.handle_data.BasilLoader import LoadBasil
+from lib.handle_data.SplitData import Split
 import spacy
 import json, re
 
@@ -177,43 +178,48 @@ def preprocess_basil_for_tapt(basil, test_size=50, train_ofp="data/tapt/basil_tr
         article_counter += 1
 
 
-def preprocess_basil_for_dsp(basil, test_size, dev_size, train_ofp,dev_ofp, test_ofp):
-    """
-    Split for tapt
-    """
-
-    article_counter = 0
-
-    with open(train_ofp, 'w') as f:
-        f.write('')
-    with open(dev_ofp, 'w') as f:
-        f.write('')
-    with open(test_ofp, 'w') as f:
+def write_for_dsp(data, fp):
+    with open(fp, 'w') as f:
         f.write('')
 
-    nr_articles = len(basil.article.unique())
+    with open(fp, 'a') as f:
+        sentences = data.sentence.values
+        labels = data.bias.values
+        for s, l in zip(sentences, labels):
+            instance = {'text': s, 'label': str(l), 'metadata': []}
+            json.dump(instance, f)
+            f.write('\n')
 
-    print()
 
-    for n, gr in basil.groupby('article'):
+def preprocess_basil_for_dsp(data, data_dir, recreate=False):
+    ''' This function selects those columns which are relevant for creating input for finetuning with DSP
+    code our data, and saves them for each fold seperately. '''
+    data['id'] = data.index
 
-        if article_counter <= (nr_articles - (test_size + dev_size)):
-            file_path = train_ofp
-        elif article_counter <= (nr_articles - dev_size):
-            file_path = dev_ofp
-        else:
-            file_path = test_ofp
+    # split data into folds
+    spl = Split(data, which='both', recreate=False, sv=99)
+    folds = spl.apply_split(features=['id', 'label', 'sentence'])
 
-        if file_path:
-            with open(file_path, 'a') as f:
-                sentences = gr.sentence.values
-                labels = gr.bias.values
-                for s, l in zip(sentences, labels):
-                    instance = {'text': s, 'label': str(l), 'metadata': []}
-                    json.dump(instance, f)
-                    f.write('\n')
+    # write data for each fold
+    for i, fold in enumerate(folds):
+        fold_dir = os.path.join(data_dir, str(fold['name']))
+        if not os.path.exists(fold_dir):
+            os.mkdir(fold_dir)
 
-        article_counter += 1
+        test_ofp = os.path.join(fold_dir, f"test.jsonl")
+        train_ofp = os.path.join(fold_dir, f"train.jsonl")
+        dev_ofp = os.path.join(fold_dir, f"dev.jsonl")
+
+        if not os.path.exists(train_ofp) or recreate:
+            write_for_dsp(fold, train_ofp)
+
+        if not os.path.exists(dev_ofp) or recreate:
+            write_for_dsp(fold, dev_ofp)
+
+        if not os.path.exists(test_ofp) or recreate:
+            write_for_dsp(fold, test_ofp)
+
+    return folds
 
 
 def preprocess_cc_for_tapt(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/tapt/basil_train.txt"):
@@ -269,17 +275,13 @@ if __name__ == '__main__':
     # DOMAIN CONTEXT
     # Split for tapt
     #preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
-    #preprocess_basil_for_dsp(basil, test_size=25, dev_size=25,
-    #                         train_ofp="experiments/dont-stop-pretraining/basil_data/train.jsonl",
-    #                         dev_ofp="experiments/dont-stop-pretraining/basil_data/dev.jsonl",
-    #                         test_ofp="experiments/dont-stop-pretraining/basil_data/test.jsonl")
+    preprocess_basil_for_dsp(basil, data_dir="experiments/dont-stop-pretraining/basil_data/")
 
     # Split for source-specific tapt
     for source in ['fox', 'nyt', 'hpo']:
         #preprocess_basil_for_tapt(basil[basil['source'] == source], test_size=int(250 / 3), train_ofp="", test_ofp="data/inputs/tapt/basil_fox_test.txt")
         #preprocess_cc_for_tapt(train_ifp=os.path.join("data/inputs/tapt/cc/", source), train_ofp=os.path.join("data/inputs/tapt/", source + '_train.txt'))
-        preprocess_basil_for_dsp(basil[basil['source'] == source], test_size=15, dev_size=15,
-                                 train_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/train.jsonl",
-                                 dev_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/dev.jsonl",
-                                 test_ofp=f"experiments/dont-stop-pretraining/basil_data/{source}/test.jsonl")
+        preprocess_basil_for_dsp(basil[basil['source'] == source],
+                                 data_dir=f"experiments/dont-stop-pretraining/basil_data/{source}",
+                                 recreate=True)
 
