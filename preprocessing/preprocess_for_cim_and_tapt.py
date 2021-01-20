@@ -262,6 +262,7 @@ if __name__ == '__main__':
     basil = LoadBasil().load_basil_raw()
     basil.to_csv('data/basil.csv')
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
+    print(basil.head())
 
     # tokenize
     #nlp = spacy.load("en_core_web_sm")

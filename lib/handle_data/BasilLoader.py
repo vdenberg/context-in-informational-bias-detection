@@ -116,6 +116,7 @@ class LoadBasil:
         empty_sentences = ['46fox24', '48fox19', '11fox23', '47nyt19', '47fox22', '58fox62', '52fox18']
         df.rename({'bias': 'label'})
         df = df.drop(empty_sentences)
+        print(df.head())
         return df
 
 
