@@ -260,7 +260,6 @@ if __name__ == '__main__':
         os.makedirs('data/inputs/cim')
 
     basil = LoadBasil().load_basil_raw()
-    print(basil.head())
     basil.to_csv('data/basil.csv')
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
 
