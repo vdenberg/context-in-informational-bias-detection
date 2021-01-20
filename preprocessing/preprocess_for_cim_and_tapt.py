@@ -186,7 +186,7 @@ def write_for_dsp(data, fp):
         ids = data.id.values
         sentences = data.sentence.values
         labels = data.label.values
-        for s, l, i in zip(sentences, labels):
+        for s, l, i in zip(sentences, labels, ids):
             instance = {'text': s, 'label': str(l), 'metadata': [i]}
             json.dump(instance, f)
             f.write('\n')
