@@ -192,14 +192,14 @@ def write_for_dsp(data, fp):
             f.write('\n')
 
 
-def preprocess_basil_for_dsp(data, data_dir, recreate=False):
+def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
     ''' This function selects those columns which are relevant for creating input for finetuning with DSP
     code our data, and saves them for each fold seperately. '''
     data['id'] = data.index
 
     # split data into folds
     spl = Split(data, which='both', recreate=False, sv=99)
-    folds = spl.apply_split(features=['id', 'label', 'sentence'])
+    folds = spl.apply_split(features=['id', 'label', 'sentence'], source=source)
 
     # write data for each fold
     for i, fold in enumerate(folds):
@@ -284,5 +284,5 @@ if __name__ == '__main__':
         #preprocess_cc_for_tapt(train_ifp=os.path.join("data/inputs/tapt/cc/", source), train_ofp=os.path.join("data/inputs/tapt/", source + '_train.txt'))
         preprocess_basil_for_dsp(basil[basil['source'] == source],
                                  data_dir=f"experiments/dont-stop-pretraining/basil_data/{source}",
-                                 recreate=True)
+                                 recreate=True, source=source)
 
