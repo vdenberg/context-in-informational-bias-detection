@@ -232,7 +232,8 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
         size = sum(fold['sizes'])
         tmp = {"data_dir": stats_dir + "/", "dataset_size": size}
         data_strs[name] = tmp
-    json.dump(data_strs[name], data_str_fp)
+    with open(data_str_fp, 'a') as f:
+        json.dump(data_strs[name], f)
     return folds
 
 
