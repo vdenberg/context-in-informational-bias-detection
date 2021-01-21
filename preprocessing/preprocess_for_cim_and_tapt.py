@@ -223,6 +223,18 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
         if not os.path.exists(test_ofp) or recreate:
             write_for_dsp(fold['test'], test_ofp)
 
+        if source:
+            name = f"basil_{source}_{fold['name']}"
+        else:
+            name = f"basil_{fold['name']}"
+
+        stats_dir = os.path.dirname(data_dir)
+        size = sum(fold['sizes'])
+        datasets_string= f'{name}]: {' \
+                                '"data_dir": {stats_dir},' \
+                                '"dataset_size": {size}' \
+                                '}'
+        print(datasets_string)
     return folds
 
 
@@ -287,5 +299,5 @@ if __name__ == '__main__':
         #preprocess_cc_for_tapt(train_ifp=os.path.join("data/inputs/tapt/cc/", source), train_ofp=os.path.join("data/inputs/tapt/", source + '_train.txt'))
         preprocess_basil_for_dsp(basil[basil['source'] == source],
                                  data_dir=f"experiments/dont-stop-pretraining/basil_data/{source}",
-                                 recreate=True, source=source)
+                                 recreate=False, source=source)
 
