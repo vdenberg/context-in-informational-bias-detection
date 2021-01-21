@@ -289,13 +289,13 @@ if __name__ == '__main__':
     # DOMAIN CONTEXT
     # Split for tapt
     #preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
-    preprocess_basil_for_dsp(basil, data_dir="experiments/dont-stop-pretraining/basil_data/")
+    preprocess_basil_for_dsp(basil, data_dir="basil_data/")
     exit(0)
     # Split for source-specific tapt
     for source in ['fox', 'nyt', 'hpo']:
         #preprocess_basil_for_tapt(basil[basil['source'] == source], test_size=int(250 / 3), train_ofp="", test_ofp="data/inputs/tapt/basil_fox_test.txt")
         #preprocess_cc_for_tapt(train_ifp=os.path.join("data/inputs/tapt/cc/", source), train_ofp=os.path.join("data/inputs/tapt/", source + '_train.txt'))
         preprocess_basil_for_dsp(basil[basil['source'] == source],
-                                 data_dir=f"experiments/dont-stop-pretraining/basil_data/{source}",
+                                 data_dir=f"basil_data/{source}",
                                  recreate=False, source=source)
 
