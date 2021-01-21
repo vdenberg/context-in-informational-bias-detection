@@ -180,9 +180,6 @@ def preprocess_basil_for_tapt(basil, test_size=50, train_ofp="data/tapt/basil_tr
 
 def write_for_dsp(data, fp):
     with open(fp, 'w') as f:
-        f.write('')
-
-    with open(fp, 'a') as f:
         ids = data.id.values
         sentences = data.sentence.values
         labels = data.label.values
