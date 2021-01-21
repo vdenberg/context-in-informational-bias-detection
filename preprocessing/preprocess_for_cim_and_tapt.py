@@ -213,7 +213,7 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
         test_ofp = os.path.join(fold_dir, f"test.jsonl")
         train_ofp = os.path.join(fold_dir, f"train.jsonl")
         dev_ofp = os.path.join(fold_dir, f"dev.jsonl")
-
+        print(fold['train'].head)
         if not os.path.exists(train_ofp) or recreate:
             write_for_dsp(fold['train'], train_ofp)
 
