@@ -213,7 +213,7 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
         test_ofp = os.path.join(fold_dir, f"test.jsonl")
         train_ofp = os.path.join(fold_dir, f"train.jsonl")
         dev_ofp = os.path.join(fold_dir, f"dev.jsonl")
-        print(fold['train'].head)
+
         if not os.path.exists(train_ofp) or recreate:
             write_for_dsp(fold['train'], train_ofp)
 
@@ -289,7 +289,7 @@ if __name__ == '__main__':
     # DOMAIN CONTEXT
     # Split for tapt
     #preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
-    preprocess_basil_for_dsp(basil, data_dir="basil_data/")
+    preprocess_basil_for_dsp(basil, data_dir="basil_data/", recreate=True)
     exit(0)
     # Split for source-specific tapt
     for source in ['fox', 'nyt', 'hpo']:
@@ -297,5 +297,5 @@ if __name__ == '__main__':
         #preprocess_cc_for_tapt(train_ifp=os.path.join("data/inputs/tapt/cc/", source), train_ofp=os.path.join("data/inputs/tapt/", source + '_train.txt'))
         preprocess_basil_for_dsp(basil[basil['source'] == source],
                                  data_dir=f"basil_data/{source}",
-                                 recreate=False, source=source)
+                                 recreate=True, source=source)
 
