@@ -231,7 +231,7 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
         stats_dir = os.path.dirname(data_dir)
         size = sum(fold['sizes'])
         tmp = {"data_dir": stats_dir, "dataset_size": size}
-        datasets_string = f'{name}]: {tmp}'
+        datasets_string = f'{name}: {tmp}'
         print(datasets_string)
     return folds
 
