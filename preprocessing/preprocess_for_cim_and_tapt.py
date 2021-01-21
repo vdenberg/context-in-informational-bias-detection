@@ -201,6 +201,9 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
     if not os.path.exists(data_dir):
         os.mkdir(data_dir)
 
+    data_str_fp = os.path.join(data_dir, 'stats.json')
+    data_strs = {}
+
     # write data for each fold
     for i, fold in enumerate(folds):
         fold_dir = os.path.join(data_dir, str(fold['name']))
@@ -228,9 +231,8 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
         stats_dir = '/'.join(fold_dir.split('/')[-2:])
         size = sum(fold['sizes'])
         tmp = {"data_dir": stats_dir + "/", "dataset_size": size}
-        datasets_string = f'"{name}": {tmp},'
-        datasets_string = datasets_string.replace("'", '"')
-        print(datasets_string)
+        data_strs[name] = tmp
+    json.dump(data_strs[name], data_str_fp)
     return folds
 
 
