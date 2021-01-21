@@ -225,7 +225,7 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
         else:
             name = f"basil_{fold['name']}"
 
-        stats_dir = '/'.join(fold_dir.split('/')[-1])
+        stats_dir = '/'.join(fold_dir.split('/')[-2:])
         size = sum(fold['sizes'])
         tmp = {"data_dir": stats_dir + "/", "dataset_size": size}
         datasets_string = f'"{name}": {tmp},'
