@@ -179,12 +179,15 @@ def preprocess_basil_for_tapt(basil, test_size=50, train_ofp="data/tapt/basil_tr
 
 
 def write_for_dsp(data, fp):
+    print(fp)
+    print(data.head())
     with open(fp, 'w') as f:
         ids = data.id.values
         sentences = data.sentence.values
         labels = data.label.values
         for i, s, l in zip(ids, sentences, labels):
             instance = {'text': s, 'label': str(l), 'metadata': [i]}
+            print(instance)
             json.dump(instance, f)
             f.write('\n')
 
@@ -207,9 +210,9 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
         if not os.path.exists(fold_dir):
             os.mkdir(fold_dir)
 
-        test_ofp = os.path.join(fold_dir, f"test.jsonl")
         train_ofp = os.path.join(fold_dir, f"train.jsonl")
         dev_ofp = os.path.join(fold_dir, f"dev.jsonl")
+        test_ofp = os.path.join(fold_dir, f"test.jsonl")
 
         if not os.path.exists(train_ofp) or recreate:
             write_for_dsp(fold['train'], train_ofp)
