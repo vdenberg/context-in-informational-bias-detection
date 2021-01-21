@@ -298,4 +298,4 @@ if __name__ == '__main__':
         preprocess_basil_for_dsp(basil[basil['source'] == source],
                                  data_dir=f"experiments/dont-stop-pretraining/basil_data/{source}",
                                  recreate=False, source=source)
-        exit(0)
+
