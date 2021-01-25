@@ -13,8 +13,9 @@ random.shuffle(tags_n_articles)
 
 count = 0
 sentences = []
-for tna in tags_n_articles:
-    while count <= 5000:
+
+while count <= 5000:
+    for tna in tags_n_articles:
         lines = tna.strip('\n').split('\n')
         try:
             tag, firstline = lines[0].split('<p>')
