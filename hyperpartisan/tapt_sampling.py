@@ -14,21 +14,19 @@ random.shuffle(tags_n_articles)
 count = 0
 sentences = []
 
-while count <= 5000:
-    for tna in tags_n_articles:
-        lines = tna.strip('\n').split('\n')
-        try:
-            tag, firstline = lines[0].split('<p>')
-        except ValueError:
-            print(lines[0])
-            exit(0)
-        firstline = '<p>' + firstline
-        for l in [firstline] + lines[1:]:
-            text = l[3:-5]
-            text = BeautifulSoup(text, "lxml").text
-            if len(text) > 5:
-                sentences.append(text)
-        count += 1
+for tna in tags_n_articles[:5500]:
+    lines = tna.strip('\n').split('\n')
+    try:
+        tag, firstline = lines[0].split('<p>')
+    except ValueError:
+        print(lines[0])
+        exit(0)
+    firstline = '<p>' + firstline
+    for l in [firstline] + lines[1:]:
+        text = l[3:-5]
+        text = BeautifulSoup(text, "lxml").text
+        if len(text) > 5 & count <= 5000:
+            sentences.append(text)
 
 with open(out_fp, 'w') as f:
     for t in sentences:
