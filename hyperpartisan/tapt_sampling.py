@@ -8,3 +8,4 @@ with open("../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/art
 
 result = bs_content.find_all("article")
 print(len(result))
+print(result)
