@@ -6,4 +6,4 @@ tree = ET.parse(in_fp)
 root = tree.getroot()
 
 for member in root.findall('article'):
-    print(member)
+    print(member.find('Name').text)
