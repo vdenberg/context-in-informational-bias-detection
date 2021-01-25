@@ -28,7 +28,7 @@ while count <= 5000:
             text = BeautifulSoup(text, "lxml").text
             if len(text) > 5:
                 sentences.append(text)
-            count += 1
+        count += 1
 
 with open(out_fp, 'w') as f:
     for t in sentences:
