@@ -8,7 +8,7 @@ with open(in_fp, 'r') as f:
     tags_n_articles = content.split('</article>')
 
 for tna in tags_n_articles[:10]:
-    print(tna)
+    print(tna[:10])
 
 #for tna in tags_n_articles:
 #    a = ''.join(tna.split('>')[2:])
