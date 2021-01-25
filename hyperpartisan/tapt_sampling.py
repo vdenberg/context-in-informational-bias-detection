@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import pandas as pd
 from bs4 import BeautifulSoup
+import random
 
 in_fp = '../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/articles-training-bypublisher-20181122.xml'
 out_fp = '../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/input.txt'
