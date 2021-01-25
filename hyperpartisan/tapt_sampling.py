@@ -9,7 +9,7 @@ with open(in_fp, 'r') as f:
 
 for tna in tags_n_articles[:10]:
     a = ''.join(tna.split('>')[2:])
-    print(a[:10])
+    print(a[:10], a[-10:])
     print('---')
 
 #for tna in tags_n_articles:
