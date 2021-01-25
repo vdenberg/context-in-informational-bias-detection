@@ -9,14 +9,15 @@ with open(in_fp, 'r') as f:
 
 for tna in tags_n_articles[:2]:
     lines = tna.split('\n')
+    print(lines[0])
     tag, firstline = lines[0].split('<p>')
     firstline = '<p>' + firstline
     text_lines = []
     for l in [firstline] + lines[1:]:
-        text_lines.append(l[3:-4])
+        text_lines.append(l[3:-5])
     print(tag)
     print(text_lines[:3])
-    print('-')
+    print('---')
 
 
 #for tna in tags_n_articles:
