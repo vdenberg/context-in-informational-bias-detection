@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup as bs
 import random
 import spacy
 
-nlp = spacy.load('en')
+nlp = spacy.load('en_core_web_sm')
 in_fp = '../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/articles-training-bypublisher-20181122.xml'
 out_fp = '../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/input_docs.txt'
 
