@@ -1,5 +1,3 @@
-import xml.etree.ElementTree as ET
-import pandas as pd
 from bs4 import BeautifulSoup
 import random
 
@@ -13,7 +11,7 @@ with open(in_fp, 'r') as f:
 
 random.shuffle(tags_n_articles)
 
-texts = []
+sentences = []
 for tna in tags_n_articles[:5000]:
     lines = tna.strip('\n').split('\n')
     try:
@@ -21,15 +19,13 @@ for tna in tags_n_articles[:5000]:
     except ValueError:
         print(lines[0])
     firstline = '<p>' + firstline
-    text_lines = []
     for l in [firstline] + lines[1:]:
-        text_lines.append(l[3:-5])
-    text = ' '.join(text_lines)
-    cleantext = BeautifulSoup(text, "lxml").text
-    texts.append(cleantext)
+        text = l[3:-5]
+        text = BeautifulSoup(text, "lxml").text
+        texts.append(text)
 
 with open(out_fp, 'w') as f:
-    for t in texts:
+    for t in sentences:
         f.write(t)
         f.write('\n')
 
