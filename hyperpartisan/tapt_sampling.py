@@ -12,7 +12,7 @@ for tna in tags_n_articles[:2]:
     tag, firstline = lines[0].split('<p>')
     firstline = '<p>' + firstline
     text_lines = []
-    for l in firstline + lines[1:]:
+    for l in [firstline] + lines[1:]:
         text_lines.append(l[3:-4])
     print(tag)
     print(text_lines[:3])
