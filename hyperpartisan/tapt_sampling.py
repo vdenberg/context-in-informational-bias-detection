@@ -8,7 +8,16 @@ with open(in_fp, 'r') as f:
     tags_n_articles = content.split('</article>')
 
 for tna in tags_n_articles[:2]:
-    print(tna)
+    lines = tna.split('\n')
+    tag, firstline = lines[0].split('<p>')
+    firstline = '<p>' + firstline
+    text_lines = []
+    for l in firstline + lines[1:]:
+        text_lines.append(l[3:-4])
+    print(tag)
+    print(text_lines[:3])
+    print('-')
+
 
 #for tna in tags_n_articles:
 #    a = ''.join(tna.split('>')[2:])
