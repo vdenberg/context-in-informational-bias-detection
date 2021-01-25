@@ -22,7 +22,7 @@ for tna in tags_n_articles[:5000]:
     for l in [firstline] + lines[1:]:
         text = l[3:-5]
         text = BeautifulSoup(text, "lxml").text
-        texts.append(text)
+        sentences.append(text)
 
 with open(out_fp, 'w') as f:
     for t in sentences:
