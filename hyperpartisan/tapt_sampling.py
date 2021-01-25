@@ -7,4 +7,4 @@ root = tree.getroot()
 
 for member in root.findall('article'):
     print(member)
-    print(member.find('article').text)
+    print(member.find('article'))
