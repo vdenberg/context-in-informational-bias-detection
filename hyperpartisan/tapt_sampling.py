@@ -1,8 +1,10 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup as bs
 import random
+import spacy
 
+nlp = spacy.load('en')
 in_fp = '../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/articles-training-bypublisher-20181122.xml'
-out_fp = '../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/input.txt'
+out_fp = '../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/input_docs.txt'
 
 with open(in_fp, 'r') as f:
     content = f.readlines()
@@ -12,27 +14,21 @@ with open(in_fp, 'r') as f:
 random.shuffle(tags_n_articles)
 
 count = 0
-sentences = []
+sents = []
 
 while count <= 5000:
     for tna in tags_n_articles:
-        lines = tna.strip('\n').split('\n')
-        try:
-            tag, firstline = lines[0].split('<p>')
-        except ValueError:
-            tag, firstline = lines[0].split('>')
-            tag += '>'
-            print(lines[0])
-        firstline = '<p>' + firstline
-        for l in [firstline] + lines[1:]:
-            text = l[3:-5]
-            text = BeautifulSoup(text, "lxml").text
-            if len(text) > 5:
-                sentences.append(text)
+        text = bs(tna, "lxml").text
+        if len(text) > 5:
+            sp_text = nlp(text)
+            for s in sp_text.sents:
+                sents.append(s.text)
         count += 1
 
+print(count)
+
 with open(out_fp, 'w') as f:
-    for t in sentences:
+    for t in sents:
         f.write(t)
         f.write('\n')
 
