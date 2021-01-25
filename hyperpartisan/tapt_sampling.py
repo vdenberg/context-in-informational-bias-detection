@@ -14,7 +14,10 @@ random.shuffle(tags_n_articles)
 texts = []
 for tna in tags_n_articles[:5000]:
     lines = tna.strip('\n').split('\n')
-    tag, firstline = lines[0].split('<p>')
+    try:
+        tag, firstline = lines[0].split('<p>')
+    except ValueError:
+        print(lines[0])
     firstline = '<p>' + firstline
     text_lines = []
     for l in [firstline] + lines[1:]:
@@ -27,9 +30,5 @@ with open(out_fp, 'w') as f:
         f.write(t)
         f.write('\n')
 
-
-
-
-#for tna in tags_n_articles:
-#    a = ''.join(tna.split('>')[2:])
-
+# test
+# cat ../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/input.txt | wc -l
