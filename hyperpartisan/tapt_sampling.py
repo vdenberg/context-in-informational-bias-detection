@@ -20,8 +20,9 @@ while count <= 5000:
         try:
             tag, firstline = lines[0].split('<p>')
         except ValueError:
+            tag, firstline = lines[0].split('>')
+            tag += '>'
             print(lines[0])
-            exit(0)
         firstline = '<p>' + firstline
         for l in [firstline] + lines[1:]:
             text = l[3:-5]
