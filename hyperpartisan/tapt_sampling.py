@@ -1,11 +1,9 @@
-from bs4 import BeautifulSoup as bs
-import lxml
+import xml.etree.ElementTree as ET
 
-with open("../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/articles-training-bypublisher-20181122.xml", "r") as f:
-    content = f.readlines()
-    content = "".join(content)
-    bs_content = bs(content, "lxml")
+in_fp = '../experiments/dont-stop-pretraining/data/hyperpartisan/unlabeled/articles-training-bypublisher-20181122.xml'
 
-result = bs_content.find_all("article")
-print(len(result))
-print(result)
+tree = ET.parse(in_fp)
+root = tree.getroot()
+
+for member in root.findall('articles'):
+    print(member)
