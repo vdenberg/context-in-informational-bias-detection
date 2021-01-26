@@ -74,7 +74,9 @@ if __name__ == "__main__":
             for t in eval_docs:
                 doc = nlp(text)
                 for sentence in doc.sents:
-                    f.write(sentence.text)
+                    t = sentence.text
+                    t = t.strip()
+                    f.write(t)
                     f.write('\n')
 
         print(f'Eval size: {len(eval_docs)}')
