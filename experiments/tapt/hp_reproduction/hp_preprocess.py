@@ -10,14 +10,14 @@ def remove_lhml(tagged):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-docs', '--docs', action='store_true', default=True, help='prep docs?')
-    parser.add_argument('-eval', '--eval', action='store_true', default=True, help='prep eval?')
+    parser.add_argument('-no_docs', '--no_docs', action='store_true', default=False, help='skip prep docs?')
+    parser.add_argument('-no_eval', '--v', action='store_true', default=False, help='skip prep eval?')
     parser.add_argument('-size', '--size', type=int, default=5000)
     args = parser.parse_args()
 
-    DOCS = args.docs
+    DOCS = not args.no_docs
     SIZE = args.size
-    EVAL = args.eval
+    EVAL = not args.no_eval
 
     if DOCS:
         # fps
@@ -38,12 +38,15 @@ if __name__ == "__main__":
         # parse sample
         count = 0
         docs = []
-        while count <= SIZE:
-            for tna in tags_n_articles:
+
+        for tna in tags_n_articles:
+            if count <= SIZE:
                 text = remove_lhml(tna)
                 if len(text) > 5:
                     docs.append(text)
-                count += 1
+                    count += 1
+            else:
+                break
 
         # write
         with open(doc_fp, 'w') as f:
