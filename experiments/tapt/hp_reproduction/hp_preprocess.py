@@ -11,7 +11,7 @@ def remove_lhml(tagged):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-no_docs', '--no_docs', action='store_true', default=False, help='skip prep docs?')
-    parser.add_argument('-no_eval', '--v', action='store_true', default=False, help='skip prep eval?')
+    parser.add_argument('-no_eval', '--no_eval', action='store_true', default=False, help='skip prep eval?')
     parser.add_argument('-size', '--size', type=int, default=5000)
     args = parser.parse_args()
 
