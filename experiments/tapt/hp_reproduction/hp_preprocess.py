@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as bs
 import random, argparse, os, json
+import spacy
 
 
 def remove_lhml(tagged):
@@ -43,7 +44,7 @@ if __name__ == "__main__":
             if count < SIZE:
                 text = remove_lhml(tna)
                 text = text.strip()
-                text = text.replace('\n', ' ')
+                #text = text.replace('\n', ' ')
                 if len(text) > 5:
                     docs.append(text)
                     count += 1
@@ -67,10 +68,13 @@ if __name__ == "__main__":
             content = [json.loads(el) for el in f.readlines()]
             eval_docs = [el['text'] for el in content]
 
+        nlp = spacy.load('en_core_web_sm')
         with open(out_eval_fp, 'w') as f:
             for t in eval_docs:
-                f.write(t)
-                f.write('\n')
+                doc = nlp(text)
+                for sentence in doc.sents:
+                    f.write(sentence.text)
+                    f.write('\n')
 
         print(f'Eval size: {len(eval_docs)}')
 
