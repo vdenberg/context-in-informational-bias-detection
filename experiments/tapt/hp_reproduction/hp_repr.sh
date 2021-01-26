@@ -1,3 +1,4 @@
+cd ../dont-stop-pretraining
 /opt/slurm/bin/srun --partition kama --gres=gpu:1 --mem 2GB python -m scripts.run_language_modeling \
                                         --train_data_file ../data/hyperpartisan/docs.txt \
                                         --line_by_line \
