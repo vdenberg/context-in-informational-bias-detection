@@ -54,6 +54,7 @@ if __name__ == "__main__":
         # write
         with open(doc_fp, 'w') as f:
             for t in docs:
+                t = t.strip()
                 f.write(t)
                 f.write('\n')
 
