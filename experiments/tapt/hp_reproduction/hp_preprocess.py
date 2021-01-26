@@ -52,8 +52,9 @@ if __name__ == "__main__":
         # write
         with open(doc_fp, 'w') as f:
             for t in docs:
-                f.write(t)
-                f.write('\n')
+                if len(t) > 0:
+                    f.write(t)
+                    f.write('\n')
 
         print(f'Size: {count}, sampled: {len(docs)}')
 
