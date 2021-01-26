@@ -62,7 +62,7 @@ if __name__ == "__main__":
         out_eval_fp = '../data/hyperpartisan/unlabeled/eval.txt'
 
         with open(eval_fp) as f:
-            content = json.load(f)
+            content = [json.loads(el) for el in f.readlines()]
             eval_docs = [el['text'] for el in content]
 
         with open(out_eval_fp, 'w') as f:
