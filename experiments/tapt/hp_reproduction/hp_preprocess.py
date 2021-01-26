@@ -16,7 +16,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     DOCS = args.docs
-    SIZE = args.siz
+    SIZE = args.size
     EVAL = args.eval
 
     if DOCS:
