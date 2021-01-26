@@ -7,8 +7,8 @@ rm model_logs/hp_reproduction && mkdir model_logs/hp_reproduction
                                         --model_type roberta-base \
                                         --tokenizer_name roberta-base \
                                         --mlm \
-                                        --per_gpu_train_batch_size 8 \
-                                        --gradient_accumulation_steps 8  \
+                                        --per_gpu_train_batch_size 16 \
+                                        --gradient_accumulation_steps 16  \
                                         --model_name_or_path roberta-base \
                                         --eval_data_file ../data/hyperpartisan/unlabeled/eval.txt \
                                         --do_eval \

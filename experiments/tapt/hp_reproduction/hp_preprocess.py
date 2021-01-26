@@ -43,6 +43,7 @@ if __name__ == "__main__":
             if count < SIZE:
                 text = remove_lhml(tna)
                 text = text.replace('\n', ' ')
+                print(text)
                 if len(text) > 5:
                     docs.append(text)
                     count += 1
