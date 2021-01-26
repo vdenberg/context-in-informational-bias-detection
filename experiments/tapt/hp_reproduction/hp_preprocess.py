@@ -42,10 +42,9 @@ if __name__ == "__main__":
         for tna in tags_n_articles:
             if count < SIZE:
                 text = remove_lhml(tna)
-                text = text.replace('\n', ' ')
-                print(text)
+                #text = text.replace('\n', ' ')
                 if len(text) > 5:
-                    docs.append(text)
+                    docs.extend(text)
                     count += 1
             else:
                 break
