@@ -40,7 +40,7 @@ if __name__ == "__main__":
         docs = []
 
         for tna in tags_n_articles:
-            if count <= SIZE:
+            if count < SIZE:
                 text = remove_lhml(tna)
                 if len(text) > 5:
                     docs.append(text)
