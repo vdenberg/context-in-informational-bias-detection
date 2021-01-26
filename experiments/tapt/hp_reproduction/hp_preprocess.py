@@ -44,7 +44,7 @@ if __name__ == "__main__":
                 text = remove_lhml(tna)
                 #text = text.replace('\n', ' ')
                 if len(text) > 5:
-                    docs.extend(text)
+                    docs.append(text)
                     count += 1
             else:
                 break
