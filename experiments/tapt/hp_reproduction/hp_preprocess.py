@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 f.write(t)
                 f.write('\n')
 
-        print(f'Eval size: {len(text)}')
+        print(f'Eval size: {len(eval_docs)}')
 
 
 
