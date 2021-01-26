@@ -72,10 +72,6 @@ if __name__ == "__main__":
 
         print(f'Eval size: {len(eval_docs)}')
 
-
-
-
-
     # test
     # cat ../experiments/dont-stop-pretraining/data/hp_reproduction/unlabeled/input.txt | wc -l
 
