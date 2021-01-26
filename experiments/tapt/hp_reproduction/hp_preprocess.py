@@ -21,10 +21,10 @@ if __name__ == "__main__":
 
     if DOCS:
         # fps
-        unlabeled_fp = '../experiments/tapt/data/hyperpartisan/unlabeled/articles-training-bypublisher-20181122.xml'
+        unlabeled_fp = '../data/hyperpartisan/unlabeled/articles-training-bypublisher-20181122.xml'
         if not os.path.exists(unlabeled_fp):
-            print(f""" Please download unlabeed semeval hyperpartisan data from zenodo to {unlabeled_fp}""")
-        doc_fp = '../experiments/tapt/data/hyperpartisan/docs.txt'
+            print(f""" Please download unlabeled semeval hyperpartisan data from zenodo to {unlabeled_fp}""")
+        doc_fp = '../data/hyperpartisan/docs.txt'
 
         # read documents
         with open(unlabeled_fp, 'r') as f:
@@ -55,8 +55,8 @@ if __name__ == "__main__":
 
     if EVAL:
         # fps
-        eval_fp = '../experiments/tapt/data/hyperpartisan/dev.jsonl'
-        out_eval_fp = '../experiments/tapt/data/hyperpartisan/unlabeled/eval.txt'
+        eval_fp = '../data/hyperpartisan/dev.jsonl'
+        out_eval_fp = '../data/hyperpartisan/unlabeled/eval.txt'
 
         with open(eval_fp) as f:
             content = json.load(f)
