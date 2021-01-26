@@ -72,7 +72,7 @@ if __name__ == "__main__":
         nlp = spacy.load('en_core_web_sm')
         with open(out_eval_fp, 'w') as f:
             for t in eval_docs:
-                doc = nlp(text)
+                doc = nlp(t)
                 for sentence in doc.sents:
                     t = sentence.text
                     t = t.strip()
