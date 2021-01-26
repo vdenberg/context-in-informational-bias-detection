@@ -42,6 +42,7 @@ if __name__ == "__main__":
         for tna in tags_n_articles:
             if count < SIZE:
                 text = remove_lhml(tna)
+                text = text.replace('\n', ' ')
                 if len(text) > 5:
                     docs.append(text)
                     count += 1
