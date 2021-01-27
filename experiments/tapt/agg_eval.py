@@ -20,6 +20,7 @@ if __name__ == "__main__":
             agg.append(mets)
 
     agg_df = pd.DataFrame(agg)
+    f1_col = [i for i in agg_df.columns if 'f1' in i]
     print(agg_df.iloc[:,10:-2])
 
 
