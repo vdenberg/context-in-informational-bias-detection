@@ -21,7 +21,6 @@ if __name__ == "__main__":
 
     # split df
     all_df = pd.DataFrame(agg)
-    print(all_df)
     best_val_df = all_df[all_df.best_validation_f1 > 0.75]
 
     # interesting col
@@ -35,8 +34,6 @@ if __name__ == "__main__":
     all_result = test_m + ' +- ' + test_std
 
     best_val_descr = best_val_df[test_col].groupby('seed').mean().describe()
-    print(best_val_df[test_col])
-    print(best_val_descr)
     test_m = best_val_descr.loc['mean'].round(2).astype(str)
     test_std = best_val_descr.loc['std'].round(2).astype(str)
     best_val_result = test_m + ' +- ' + test_std
