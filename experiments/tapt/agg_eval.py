@@ -20,6 +20,6 @@ if __name__ == "__main__":
             agg.append(mets)
 
     agg_df = pd.DataFrame(agg)
-    print(agg_df.iloc[:,6:])
+    print(agg_df.iloc[:,10:])
 
 
