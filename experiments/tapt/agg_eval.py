@@ -29,12 +29,12 @@ if __name__ == "__main__":
     best_val_df[test_col] = best_val_df[test_col].round(4) * 100
 
     # m and std
-    all_descr = all_df[test_col].groupby('seed').mean().describe()
+    all_descr = all_df[int_col].groupby('seed').mean().describe()
     test_m = all_descr.loc['mean'].round(2).astype(str)
     test_std = all_descr.loc['std'].round(2).astype(str)
     all_result = test_m + ' +- ' + test_std
 
-    best_val_descr = best_val_df[test_col].groupby('seed').mean().describe()
+    best_val_descr = best_val_df[int_col].groupby('seed').mean().describe()
     test_m = best_val_descr.loc['mean'].round(2).astype(str)
     test_std = best_val_descr.loc['std'].round(2).astype(str)
     best_val_result = test_m + ' +- ' + test_std
