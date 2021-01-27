@@ -21,6 +21,6 @@ if __name__ == "__main__":
 
     agg_df = pd.DataFrame(agg)
     f1_col = [i for i in agg_df.columns if 'f1' in i]
-    print(agg_df[f1_col])
+    print(agg_df[f1_col].sort_values('best_validation_f1'))
 
 
