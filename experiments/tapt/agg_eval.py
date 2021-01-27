@@ -34,8 +34,8 @@ if __name__ == "__main__":
     all_result = test_m + ' +- ' + test_std
 
     best_val_descr = best_val_df[test_col].mean().describe()
-    test_m = all_descr.loc['mean'].round(2).astype(str)
-    test_std = all_descr.loc['std'].round(2).astype(str)
+    test_m = best_val_df.loc['mean'].round(2).astype(str)
+    test_std = best_val_df.loc['std'].round(2).astype(str)
     best_val_result = test_m + ' +- ' + test_std
 
     print(f"\n{model} results:")
