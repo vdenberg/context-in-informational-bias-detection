@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     # split df
     all_df = pd.DataFrame(agg)
-    best_val_df = all_df[all_df.best_validation_f1 > 0.80]
+    best_val_df = all_df[all_df.best_validation_f1 > 0.75]
 
     # interesting col
     test_col = [i for i in all_df.columns if 'test' in i]
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     print(f"\n{model} results:")
     print(all_result)
-    print(f"\n{model} results if best_val > .80:")
+    print(f"\n{model} results if best_val > .75:")
     print(best_val_result)
 
 
