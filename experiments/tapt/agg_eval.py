@@ -24,7 +24,7 @@ if __name__ == "__main__":
     best_val_df = all_df[all_df.best_validation_f1 > 0.75]
 
     # interesting col
-    test_col = [i for i in all_df.columns if 'test' in i]
+    test_col = ['seed'] + [i for i in all_df.columns if 'test' in i]
     # test_f1_col = [i for i in test_col if 'f1' in i]
 
     # m and std
