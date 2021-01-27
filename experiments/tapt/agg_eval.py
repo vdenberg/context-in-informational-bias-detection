@@ -28,12 +28,12 @@ if __name__ == "__main__":
     # test_f1_col = [i for i in test_col if 'f1' in i]
 
     # m and std
-    all_descr = all_df[test_col].mean().describe()
+    all_descr = all_df[test_col].groupby('seed').mean().describe()
     test_m = all_descr.loc['mean'].round(2).astype(str)
     test_std = all_descr.loc['std'].round(2).astype(str)
     all_result = test_m + ' +- ' + test_std
 
-    best_val_descr = best_val_df[test_col].mean().describe()
+    best_val_descr = best_val_df[test_col].groupby('seed').mean().describe()
     print(best_val_df[test_col])
     print(best_val_descr)
     test_m = best_val_descr.loc['mean'].round(2).astype(str)
