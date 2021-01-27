@@ -19,13 +19,28 @@ if __name__ == "__main__":
             mets.update({'model': model, 'seed': seed})
             agg.append(mets)
 
-    agg_df = pd.DataFrame(agg)
-    f1_col = [i for i in agg_df.columns if 'f1' in i]
+    # split df
+    all_df = pd.DataFrame(agg)
+    best_val_df = all_df[all_df.best_validation_f1 > 0.80]
 
-    print(agg_df[f1_col])
-    print(agg_df.mean())
-    agg_df = agg_df[agg_df.best_validation_f1 > 0.80]
-    print(agg_df[f1_col])
-    print(agg_df.mean())
+    # interesting col
+    test_col = [i for i in all_df.columns if 'test' in i]
+    # test_f1_col = [i for i in test_col if 'f1' in i]
+
+    # m and std
+    all_descr = all_df[test_col].mean().describe()
+    test_m = all_descr.loc['mean'].round(2).astype(str)
+    test_std = all_descr.loc['std'].round(2).astype(str)
+    all_result = test_m + ' +- ' + test_std
+
+    best_val_descr = best_val_df[test_col].mean().describe()
+    test_m = all_descr.loc['mean'].round(2).astype(str)
+    test_std = all_descr.loc['std'].round(2).astype(str)
+    best_val_result = test_m + ' +- ' + test_std
+
+    print(f"\n{model} results:")
+    print(all_result)
+    print(f"\n{model} results if best_val > .80:")
+    print(best_val_result)
 
 
