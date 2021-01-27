@@ -14,7 +14,7 @@ if __name__ == "__main__":
     for fn in os.listdir(results_dir): #re_roberta_hp_515_ft_results
         seed = fn.split('_')[-1]
         met_fp = os.path.join(fn, 'metrics.json')
-        with open(met_fp, 'r') as f:
+        with open(os.path.join(results_dir, met_fp), 'r') as f:
             mets = json.load(f)
             mets.update({'model': model, 'seed': seed})
             agg.append(mets)
