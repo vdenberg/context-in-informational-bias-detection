@@ -21,6 +21,8 @@ if __name__ == "__main__":
 
     agg_df = pd.DataFrame(agg)
     f1_col = [i for i in agg_df.columns if 'f1' in i]
-    print(agg_df[f1_col].sort_values('best_validation_f1'))
+    agg_df = agg_df[agg_df.best_validation_f1 > 0.80]
+
+    print(agg_df.mean())
 
 
