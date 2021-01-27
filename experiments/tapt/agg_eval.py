@@ -1,7 +1,6 @@
 import argparse, os, json
 import pandas as pd
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-dir', '--results_dir', type=str, default='hp_reproduction/re_roberta_hp_515_ft_results', help='results file name')
@@ -23,9 +22,11 @@ if __name__ == "__main__":
     all_df = pd.DataFrame(agg)
     best_val_df = all_df[all_df.best_validation_f1 > 0.75]
 
-    # interesting col
-    test_col = ['seed'] + [i for i in all_df.columns if 'test' in i]
-    # test_f1_col = [i for i in test_col if 'f1' in i]
+    # format interesting col
+    test_col = [i for i in all_df.columns if 'test' in i]
+    int_col = ['seed'] + test_col
+    all_df[test_col] = all_df[test_col].round(4) * 100
+    best_val_df[test_col] = best_val_df[test_col].round(4) * 100
 
     # m and std
     all_descr = all_df[test_col].groupby('seed').mean().describe()
