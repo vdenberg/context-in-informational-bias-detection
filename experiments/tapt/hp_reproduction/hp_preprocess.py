@@ -3,12 +3,6 @@ import random, argparse, os, json
 import spacy
 
 
-def remove_lhml(tagged):
-    parsed = bs(tagged, "lxml")
-    text = parsed.text
-    return text
-
-
 def preprocess_labeled(input_fp, output_fp):
     with open(input_fp) as f:
         content = [json.loads(el) for el in f.readlines()]
@@ -27,16 +21,33 @@ def preprocess_labeled(input_fp, output_fp):
     print(f'{len(eval_docs)} item to {output_fp}')
 
 
+def remove_lhml(tagged):
+    parsed = bs(tagged, "lxml")
+    text = parsed.text
+    return text
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-no_curated', '--no_curated', action='store_true', default=False, help='skip prep docs?')
-    parser.add_argument('-no_labeled', '--no_labeled', action='store_true', default=False, help='skip prep eval?')
-    parser.add_argument('-size', '--size', type=int, default=5000)
+    parser.add_argument('-curated', '--curated', action='store_true', default=False, help='prep xml docs?')
+    parser.add_argument('-labeled', '--labeled', action='store_true', default=False, help='prep jsonl files?')
+    parser.add_argument('-cursize', '--curated_size', type=int, default=5000)
     args = parser.parse_args()
 
-    CURATED = not args.no_curated
-    SIZE = args.size
-    LABELED = not args.no_labeled
+    LABELED = args.labeled
+    CURATED = args.curated
+    SIZE = args.curated_size
+
+    if LABELED:
+        # fps
+        train_fp = '../data/hyperpartisan/train.jsonl'
+        train_out_fp = '../data/hyperpartisan/train.txt'
+
+        eval_fp = '../data/hyperpartisan/dev.jsonl'
+        eval_out_fp = '../data/hyperpartisan/eval.txt'
+
+        preprocess_labeled(train_fp, train_out_fp)
+        preprocess_labeled(eval_fp, eval_out_fp)
 
     if CURATED:
         # fps
@@ -77,18 +88,4 @@ if __name__ == "__main__":
                 f.write('\n')
 
         print(f'Size: {count}, sampled: {len(docs)}')
-
-    if LABELED:
-        # fps
-        train_fp = '../data/hyperpartisan/train.jsonl'
-        train_out_fp = '../data/hyperpartisan/train.txt'
-
-        eval_fp = '../data/hyperpartisan/dev.jsonl'
-        eval_out_fp = '../data/hyperpartisan/eval.txt'
-
-        preprocess_labeled(train_fp, train_out_fp)
-        preprocess_labeled(eval_fp, eval_out_fp)
-
-    # test
-    # cat ../experiments/dont-stop-pretraining/data/hp_reproduction/unlabeled/input.txt | wc -l
 
