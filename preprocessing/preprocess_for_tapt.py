@@ -33,7 +33,7 @@ def preprocess_basil_for_lm(basil, eval_size=20, data_dir="data/tapt/basil_and_s
     write_for_dsp_lm(train_df, train_ofp)
     write_for_dsp_lm(eval_df, eval_ofp)
     print(f'Wrote {len(train_df)} to {train_ofp}')
-    print(f'Wrote {len(eval_df)} to {train_ofp}')
+    print(f'Wrote {len(eval_df)} to {eval_ofp}')
 
 
 def load_cc_files(cc_dir):
@@ -57,7 +57,10 @@ def preprocess_cc_for_lm(data_dir, sources=['fox', 'nyt', 'hpo']):
 
     with open(ofp, 'w') as f:
         for fn in cc_fns:
-            content = json.load(open(fn))
+            try:
+                content = json.load(open(fn))
+            except:
+                print(fn)
             text = content['maintext']
             sentences = [s.text for s in nlp(text).sents]
             for s in sentences:
