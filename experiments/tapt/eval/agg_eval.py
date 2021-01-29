@@ -32,15 +32,16 @@ if __name__ == "__main__":
     all_descr = all_df[int_col].groupby('seed').mean().describe()
     test_m = all_descr.loc['mean'].round(2).astype(str)
     test_std = all_descr.loc['std'].round(2).astype(str)
-    all_result = test_m + ' +- ' + test_std + f'({len(all_df.seed.unique())} seeds)'
+    all_result = test_m + ' +- ' + test_std + f' ({len(all_df.seed.unique())} seeds)'
+
+    print(f"\n{model} results:")
+    print(all_result)
 
     best_val_descr = best_val_df[int_col].groupby('seed').mean().describe()
     test_m = best_val_descr.loc['mean'].round(2).astype(str)
     test_std = best_val_descr.loc['std'].round(2).astype(str)
-    best_val_result = test_m + ' +- ' + test_std + f'({len(best_val_df.seed.unique())} seeds)'
+    best_val_result = test_m + ' +- ' + test_std + f' ({len(best_val_df.seed.unique())} seeds)'
 
-    print(f"\n{model} results:")
-    print(all_result)
     print(f"\n{model} results if best_val > .75:")
     print(best_val_result)
 

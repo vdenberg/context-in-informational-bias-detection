@@ -130,7 +130,7 @@ def preprocess_basil_for_dsp_train(data, data_dir, recreate=False, source=None):
         tmp = {"data_dir": stats_dir + "/", "dataset_size": size}
         data_strs[name] = tmp
 
-    with open(data_str_fp, 'a') as f:
+    with open(data_str_fp, 'w') as f:
         json.dump(data_strs, f)
 
     print("Basil for fine-tuning/eval (train):")
@@ -142,7 +142,7 @@ def preprocess_basil_for_dsp_train(data, data_dir, recreate=False, source=None):
 
 if __name__ == '__main__':
 
-    TAPT_DATA_DIR = "experiments/tapt/basil_and_source_tapt/data"
+    TAPT_DATA_DIR = "experiments/tapt/data"
     LM_DATA_DIR = os.path.join(TAPT_DATA_DIR, 'lm')
     FT_DATA_DIR = os.path.join(TAPT_DATA_DIR, 'ft')
 
