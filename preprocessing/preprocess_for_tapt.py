@@ -53,7 +53,7 @@ def preprocess_cc_for_lm(cc_dir, tapt_dir, source):
     """
     Preprocess commoncrawl data for curated tapt
     """
-    sources = (source) if source else ('fox', 'nyt', 'hpo')
+    sources = (source,) if source else ('fox', 'nyt', 'hpo')
 
     cc_fns = []
     for s in sources:
