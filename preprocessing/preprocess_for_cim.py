@@ -2,8 +2,7 @@ import pandas as pd
 import argparse, os
 from lib.handle_data.BasilLoader import LoadBasil
 from lib.handle_data.SplitData import Split
-import spacy
-import json, re
+import json, re, random
 
 
 def tokenize(x):
@@ -154,31 +153,42 @@ def preprocess_for_cim(basil, add_use=False, add_sbert=False, ofp="data/inputs/c
                         f.write('\n')
 
 
-def preprocess_basil_for_tapt(basil, test_size=50, train_ofp="data/tapt/basil_train.txt", test_ofp="data/tapt/basil_test.txt"):
+def write_for_dsp_lm(df, fp):
+    sentences = list(df.sentence.values)
+    with open(fp, 'w') as f:
+        for s in sentences:
+                f.write(s)
+                f.write('\n')
+
+
+def preprocess_basil_for_dsp_lm(basil, eval_size=20, data_dir="data/tapt/basil_and_source_tapt/data", source=None):
     """
-    Split for tapt
+    Preprocess for language modeling
     """
+    if source:
+        train_ofp = os.path.join(data_dir, f'{source}_basil_train.txt')
+        eval_ofp = os.path.join(data_dir, f'{source}_basil_eval.txt')
+        eval_size = int(eval_size/3)
+        basil = [basil['source'] == source]
+    else:
+        train_ofp = os.path.join(data_dir, 'basil_train.txt')
+        eval_ofp = os.path.join(data_dir, 'basil_eval.txt')
 
-    article_counter = 0
+    articles = basil.article.unique()
+    random.shuffle(articles)
+    train_articles = articles[:eval_size]
+    test_articles = articles[eval_size:]
 
-    for n, gr in basil.groupby('article'):
+    train_df = basil[basil.article in train_articles]
+    eval_df = basil[basil.article in test_articles]
 
-        if article_counter <= test_size:
-            file_path = test_ofp
-        else:
-            file_path = train_ofp
-
-        if file_path:
-            with open(file_path, 'a') as f:
-                sentences = gr.sentence.values
-                for s in sentences:
-                    f.write(s)
-                    f.write('\n')
-
-        article_counter += 1
+    write_for_dsp_lm(train_df, train_ofp)
+    write_for_dsp_lm(eval_df, eval_ofp)
+    print(f'Wrote {len(train_df)} to {train_ofp}')
+    print(f'Wrote {len(eval_df)} to {train_ofp}')
 
 
-def write_for_dsp(data, fp):
+def write_for_dsp_train(data, fp):
     with open(fp, 'w') as f:
         ids = data.id.values
         sentences = data.sentence.values
@@ -189,7 +199,7 @@ def write_for_dsp(data, fp):
             f.write('\n')
 
 
-def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
+def preprocess_basil_for_dsp_train(data, data_dir, recreate=False, source=None):
     ''' This function selects those columns which are relevant for creating input for finetuning with DSP
     code our data, and saves them for each fold seperately. '''
     data['id'] = data.index
@@ -197,9 +207,6 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
     # split data into folds
     spl = Split(data, which='both', recreate=False, sv=99)
     folds = spl.apply_split(features=['id', 'label', 'sentence'], source=source)
-
-    if not os.path.exists(data_dir):
-        os.mkdir(data_dir)
 
     data_str_fp = os.path.join(data_dir, 'stats.json')
     data_strs = {}
@@ -215,16 +222,16 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
         test_ofp = os.path.join(fold_dir, f"test.jsonl")
 
         if not os.path.exists(train_ofp) or recreate:
-            write_for_dsp(fold['train'], train_ofp)
+            write_for_dsp_train(fold['train'], train_ofp)
 
         if not os.path.exists(dev_ofp) or recreate:
-            write_for_dsp(fold['dev'], dev_ofp)
+            write_for_dsp_train(fold['dev'], dev_ofp)
 
         if not os.path.exists(test_ofp) or recreate:
-            write_for_dsp(fold['test'], test_ofp)
+            write_for_dsp_train(fold['test'], test_ofp)
 
         if source:
-            name = f"basil_{source}_{fold['name']}"
+            name = f"{source}_basil_{fold['name']}"
         else:
             name = f"basil_{fold['name']}"
 
@@ -239,7 +246,7 @@ def preprocess_basil_for_dsp(data, data_dir, recreate=False, source=None):
     return folds
 
 
-def preprocess_cc_for_tapt(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/tapt/basil_train.txt"):
+def preprocess_cc_for_dsp_lm(train_ifp="data/inputs/tapt/cc/fox", train_ofp="data/tapt/basil_train.txt"):
     """
     Preprocess commoncrawl data for tapt
     """
@@ -276,6 +283,10 @@ if __name__ == '__main__':
     if not os.path.exists('data/inputs/cim'):
         os.makedirs('data/inputs/cim')
 
+    TAPT_DATA_DIR = "experiments/tapt/basil_and_source_tapt/data/"
+    if not os.path.exists(TAPT_DATA_DIR):
+        os.mkdir(TAPT_DATA_DIR)
+
     basil = LoadBasil().load_basil_raw()
     basil.to_csv('data/basil.csv')
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
@@ -290,15 +301,19 @@ if __name__ == '__main__':
     #preprocess_for_cim(basil, add_use=False, add_sbert=False, ofp="data/inputs/cim/cim_basil.tsv")
 
     # DOMAIN CONTEXT
-    # Split for tapt
-    #preprocess_basil_for_tapt(basil, test_size=250, train_ofp="data/inputs/tapt/basil_train.txt", test_ofp="data/inputs/tapt/basil_test.txt")
-    preprocess_basil_for_dsp(basil, data_dir="experiments/dont-stop-pretraining/data/basil/", recreate=True)
+    # Split for tapt-ing
+
+    for src in [None, 'fox', 'nyt', 'hpo']:
+        preprocess_basil_for_dsp_lm(basil, eval_size=20, data_dir=TAPT_DATA_DIR, source=src)
+        preprocess_cc_for_dsp_lm(train_ifp=os.path.join(TAPT_DATA_DIR, source),
+                                 train_ofp=os.path.join(TAPT_DATA_DIR, source + '_train.txt'))
+
+    preprocess_basil_for_dsp_train(basil, data_dir="experiments/tapt/basil_and_source_tapt/data/", recreate=True)
     exit(0)
     # Split for source-specific tapt
     for source in ['fox', 'nyt', 'hpo']:
         #preprocess_basil_for_tapt(basil[basil['source'] == source], test_size=int(250 / 3), train_ofp="", test_ofp="data/inputs/tapt/basil_fox_test.txt")
-        #preprocess_cc_for_tapt(train_ifp=os.path.join("data/inputs/tapt/cc/", source), train_ofp=os.path.join("data/inputs/tapt/", source + '_train.txt'))
-        preprocess_basil_for_dsp(basil[basil['source'] == source],
-                                 data_dir=f"experiments/dont-stop-pretraining/data/basil_{source}",
-                                 recreate=True, source=source)
+        preprocess_basil_for_dsp_train(basil[basil['source'] == source],
+                                       data_dir=f"experiments/dont-stop-pretraining/data/basil_{source}",
+                                       recreate=True, source=source)
 
