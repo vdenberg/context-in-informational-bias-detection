@@ -158,9 +158,9 @@ if __name__ == '__main__':
 
     # BASIL TAPT
     print('BASIL')
-    preprocess_basil_for_lm(basil, eval_size=20, data_dir=LM_DATA_DIR)  # basic TAPT
-    preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=LM_DATA_DIR) # curated TAPT
-    preprocess_basil_for_dsp_train(basil, data_dir=FT_DATA_DIR, recreate=True)  # for eval
+    preprocess_basil_for_lm(basil, eval_size=20, data_dir=LM_DATA_DIR, source=None)  # basic TAPT
+    preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=LM_DATA_DIR, source=None) # curated TAPT
+    preprocess_basil_for_dsp_train(basil, data_dir=FT_DATA_DIR, recreate=True, source=None)  # for eval
 
     # SOURCE TAPT
     for src in ['fox', 'nyt', 'hpo']:
