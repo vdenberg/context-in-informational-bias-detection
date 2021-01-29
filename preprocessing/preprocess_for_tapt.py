@@ -63,15 +63,15 @@ def preprocess_cc_for_lm(cc_dir, tapt_dir, source):
     source_string = '_'.join(sources)
     ofp = os.path.join(tapt_dir, f'{source_string}_cur_train.txt')
 
-    if not os.path.exists(ofp):
-        with open(ofp, 'w') as f:
-            for fn in cc_fns:
-                content = json.load(open(fn))
-                text = content['maintext']
-                sents = sent_tokenize(text) # nlp(text).sents
-                sentences = [s.text.strip() + '\n' for s in sents]  # todo speed up
-                for s in sentences:
-                    f.write(s)
+    #if not os.path.exists(ofp):
+    with open(ofp, 'w') as f:
+        for fn in cc_fns:
+            content = json.load(open(fn))
+            text = content['maintext']
+            sents = sent_tokenize(text) # nlp(text).sents
+            sentences = [s.text.strip() + '\n' for s in sents]  # todo speed up
+            for s in sentences:
+                f.write(s)
 
     print("CC for Cur TAPT (run_language_modeling):")
     print(f'Wrote {len(cc_fns)} files to {ofp}\n')
