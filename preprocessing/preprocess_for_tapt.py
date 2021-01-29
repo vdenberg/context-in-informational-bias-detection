@@ -133,9 +133,9 @@ if __name__ == '__main__':
                         help='placeholder')
     args = parser.parse_args()
 
-    TAPT_DATA_DIR = "experiments/tapt/basil_and_source_tapt/data/"
-    if not os.path.exists(TAPT_DATA_DIR):
-        os.mkdir(TAPT_DATA_DIR)
+    TAPT_DATA_DIR = "experiments/tapt/basil_and_source_tapt/data"
+    #if not os.path.exists(TAPT_DATA_DIR):
+    #    os.mkdir(TAPT_DATA_DIR)
 
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
     nlp = spacy.load("en_core_web_sm")
