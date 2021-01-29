@@ -58,7 +58,10 @@ def preprocess_cc_for_lm(cc_dir, tapt_dir, sources=('fox', 'nyt', 'hpo')):
             cc_fns.extend(load_cc_files(cc_s_dir))
 
     source_string = '_'.join(sources)
-    ofp = os.path.join(tapt_dir, f'{source_string}_cur_train.txt')
+    if source_string:
+        ofp = os.path.join(tapt_dir, f'{source_string}_cur_train.txt')
+    else:
+        ofp = os.path.join(tapt_dir, f'cur_train.txt')
 
     with open(ofp, 'w') as f:
         for fn in cc_fns:
