@@ -68,7 +68,7 @@ def preprocess_cc_for_lm(cc_dir, tapt_dir, source):
         for fn in cc_fns:
             content = json.load(open(fn))
             text = content['maintext']
-            sents = sent_tokenize(text) # nlp(text).sents
+            sents = sent_tokenize(text)  # [s.text for s in nlp(text).sents]
             sentences = [s.text.strip() + '\n' for s in sents]  # todo speed up
             for s in sentences:
                 f.write(s)
