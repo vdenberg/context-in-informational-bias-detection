@@ -94,6 +94,9 @@ def preprocess_basil_for_dsp_train(data, data_dir, recreate=False, source=None):
 
     data['id'] = data.index
     data_dir = os.path.join(data_dir, source)
+    if not os.path.exists(data_dir):
+        os.mkdir(data_dir)
+
     # split data into folds
     spl = Split(data, which='both', recreate=False, sv=99)
     folds = spl.apply_split(features=['id', 'label', 'sentence'], source=source)
