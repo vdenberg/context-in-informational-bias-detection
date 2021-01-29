@@ -27,12 +27,8 @@ def preprocess_basil_for_lm(basil, eval_size=20, data_dir="data/tapt/basil_and_s
 
     articles = basil.article.unique()
     basil = basil.set_index(keys='article', drop=False)
-    print(basil.head())
-    train_articles = basil.loc[articles[:eval_size]]
-    eval_articles = basil.loc[articles[eval_size:]]
-
-    train_df = basil[basil.article in train_articles]
-    eval_df = basil[basil.article in eval_articles]
+    train_df = basil.loc[articles[:eval_size]]
+    eval_df = basil.loc[articles[eval_size:]]
 
     write_for_dsp_lm(train_df, train_ofp)
     write_for_dsp_lm(eval_df, eval_ofp)
