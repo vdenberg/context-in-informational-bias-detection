@@ -146,8 +146,15 @@ def preprocess_basil_for_dsp_train(data, data_dir, recreate=False, source=None):
 if __name__ == '__main__':
 
     TAPT_DATA_DIR = "experiments/tapt/basil_and_source_tapt/data"
+    LM_DATA_DIR = os.path.join(TAPT_DATA_DIR, 'lm')
+    FT_DATA_DIR = os.path.join(TAPT_DATA_DIR, 'ft')
+
     if not os.path.exists(TAPT_DATA_DIR):
         os.mkdir(TAPT_DATA_DIR)
+    if not os.path.exists(LM_DATA_DIR):
+        os.mkdir(LM_DATA_DIR)
+    if not os.path.exists(FT_DATA_DIR):
+        os.mkdir(FT_DATA_DIR)
 
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
     nlp = spacy.load("en_core_web_sm")
@@ -157,6 +164,6 @@ if __name__ == '__main__':
         if src:
             basil = basil[basil['source'] == src]
 
-        preprocess_basil_for_lm(basil, eval_size=20, data_dir=TAPT_DATA_DIR, source=src)  # basic TAPT
-        preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=TAPT_DATA_DIR, source=src)  # curated TAPT
-        preprocess_basil_for_dsp_train(basil, data_dir=TAPT_DATA_DIR, recreate=True, source=src)  # for eval
+        preprocess_basil_for_lm(basil, eval_size=20, data_dir=LM_DATA_DIR, source=src)  # basic TAPT
+        preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=LM_DATA_DIR, source=src)  # curated TAPT
+        preprocess_basil_for_dsp_train(basil, data_dir=FT_DATA_DIR, recreate=True, source=src)  # for eval
