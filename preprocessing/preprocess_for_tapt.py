@@ -1,34 +1,39 @@
+import argparse
+import json
+import os
+
 import pandas as pd
-import argparse, os
-from lib.handle_data.SplitData import Split
-import json, random
 import spacy
+
+from lib.handle_data.SplitData import Split
 
 
 def write_for_dsp_lm(df, fp):
     sentences = list(df.sentence.values)
     with open(fp, 'w') as f:
         for s in sentences:
-                f.write(s)
-                f.write('\n')
+            assert isinstance(s, str)
+
+            f.write(s)
+            f.write('\n')
 
 
-def preprocess_basil_for_lm(basil, eval_size=20, data_dir="data/tapt/basil_and_source_tapt/data", source=None):
+def preprocess_basil_for_lm(basil_df, eval_size=20, data_dir="data/tapt/basil_and_source_tapt/data", source=None):
     """
     Preprocess for language modeling
     """
     if source:
         train_ofp = os.path.join(data_dir, f'{source}_basil_train.txt')
         eval_ofp = os.path.join(data_dir, f'{source}_basil_eval.txt')
-        eval_size = int(eval_size/3)
+        eval_size = int(eval_size / 3)
     else:
         train_ofp = os.path.join(data_dir, 'basil_train.txt')
         eval_ofp = os.path.join(data_dir, 'basil_eval.txt')
 
-    articles = basil.article.unique()
-    basil = basil.set_index(keys='article', drop=False)
-    train_df = basil.loc[articles[:eval_size]]
-    eval_df = basil.loc[articles[eval_size:]]
+    articles = basil_df.article.unique()
+    basil_df = basil_df.set_index(keys='article', drop=False)
+    train_df = basil_df.loc[articles[:eval_size]]
+    eval_df = basil_df.loc[articles[eval_size:]]
 
     write_for_dsp_lm(train_df, train_ofp)
     write_for_dsp_lm(eval_df, eval_ofp)
@@ -42,7 +47,7 @@ def load_cc_files(cc_dir):
     return cc_text_fns
 
 
-def preprocess_cc_for_lm(cc_dir, tapt_dir, sources=['fox', 'nyt', 'hpo']):
+def preprocess_cc_for_lm(cc_dir, tapt_dir, sources=('fox', 'nyt', 'hpo')):
     """
     Preprocess commoncrawl data for curated tapt
     """
@@ -63,11 +68,9 @@ def preprocess_cc_for_lm(cc_dir, tapt_dir, sources=['fox', 'nyt', 'hpo']):
             except:
                 print(fn)
             text = content['maintext']
-            sentences = [s.text for s in nlp(text).sents]
+            sentences = [s.text.strip() + '\n' for s in nlp(text).sents]  # todo speed up
             for s in sentences:
-                s = s.strip()
                 f.write(s)
-                f.write('\n')
 
 
 def write_for_dsp_train(data, fp):
@@ -82,8 +85,9 @@ def write_for_dsp_train(data, fp):
 
 
 def preprocess_basil_for_dsp_train(data, data_dir, recreate=False, source=None):
-    ''' This function selects those columns which are relevant for creating input for finetuning with DSP
-    code our data, and saves them for each fold seperately. '''
+    """ This function selects those columns which are relevant for creating input for fine-tuning with DSP
+    code our data, and saves them for each fold separately. """
+
     data['id'] = data.index
     data_dir = os.path.join(data_dir, source)
     # split data into folds
@@ -145,10 +149,7 @@ if __name__ == '__main__':
     for src in ['', 'fox', 'nyt', 'hpo']:
         if src:
             basil = basil[basil['source'] == src]
-        # basic TAPT
-        preprocess_basil_for_lm(basil, eval_size=20, data_dir=TAPT_DATA_DIR, source=src)
-        # curated TAPT
-        preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=TAPT_DATA_DIR, sources=[src])
-        # for eval
-        preprocess_basil_for_dsp_train(basil, data_dir=TAPT_DATA_DIR, recreate=True, source=src)
 
+        preprocess_basil_for_lm(basil, eval_size=20, data_dir=TAPT_DATA_DIR, source=src)  # basic TAPT
+        preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=TAPT_DATA_DIR, sources=[src])  # curated TAPT
+        preprocess_basil_for_dsp_train(basil, data_dir=TAPT_DATA_DIR, recreate=True, source=src)  # for eval
