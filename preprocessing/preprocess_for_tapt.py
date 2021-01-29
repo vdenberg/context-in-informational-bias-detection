@@ -125,7 +125,7 @@ def preprocess_basil_for_dsp_train(data, data_dir, recreate=False, source=None):
         else:
             name = f"basil_{fold['name']}"
 
-        stats_dir = '/'.join(fold_dir.split('/')[-2:])
+        stats_dir = '../' + '/'.join(fold_dir.split('/')[2:])
         size = sum(fold['sizes'])
         tmp = {"data_dir": stats_dir + "/", "dataset_size": size}
         data_strs[name] = tmp
@@ -156,8 +156,14 @@ if __name__ == '__main__':
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
     # nlp = spacy.load("en_core_web_sm")
 
-    # TAPT
-    for src in ['', 'fox', 'nyt', 'hpo']:
+    # BASIL TAPT
+    print('BASIL')
+    preprocess_basil_for_lm(basil, eval_size=20, data_dir=LM_DATA_DIR)  # basic TAPT
+    preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=LM_DATA_DIR) # curated TAPT
+    preprocess_basil_for_dsp_train(basil, data_dir=FT_DATA_DIR, recreate=True)  # for eval
+
+    # SOURCE TAPT
+    for src in ['fox', 'nyt', 'hpo']:
         ft_src_dir = os.path.join(FT_DATA_DIR, src)
 
         if not os.path.exists(ft_src_dir):
