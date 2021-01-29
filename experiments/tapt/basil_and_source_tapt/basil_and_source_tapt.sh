@@ -3,7 +3,7 @@
 # TAPT
 
 # preprocess
-/opt/slurm/bin/srun --partition compute --mem 20GB python hp_preprocess.py -labeled
+/opt/slurm/bin/srun --partition compute --mem 20GB python ../../../preprocessing/preprocess_for_tapt.py
 
 # run lm on train.txt
 cd ../dont-stop-pretraining
