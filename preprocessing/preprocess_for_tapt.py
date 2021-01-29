@@ -1,4 +1,3 @@
-import argparse
 import json
 import os
 
@@ -63,10 +62,7 @@ def preprocess_cc_for_lm(cc_dir, tapt_dir, sources=('fox', 'nyt', 'hpo')):
 
     with open(ofp, 'w') as f:
         for fn in cc_fns:
-            try:
-                content = json.load(open(fn))
-            except:
-                print(fn)
+            content = json.load(open(fn))
             text = content['maintext']
             sentences = [s.text.strip() + '\n' for s in nlp(text).sents]  # todo speed up
             for s in sentences:
@@ -133,10 +129,6 @@ def preprocess_basil_for_dsp_train(data, data_dir, recreate=False, source=None):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-tmp', '--tmp', action='store_true', default=False,
-                        help='placeholder')
-    args = parser.parse_args()
 
     TAPT_DATA_DIR = "experiments/tapt/basil_and_source_tapt/data"
     if not os.path.exists(TAPT_DATA_DIR):
