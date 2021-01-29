@@ -36,8 +36,10 @@ def preprocess_basil_for_lm(basil_df, eval_size=20, data_dir="data/tapt/basil_an
 
     write_for_dsp_lm(train_df, train_ofp)
     write_for_dsp_lm(eval_df, eval_ofp)
-    print(f'Wrote {len(train_df)} to {train_ofp}')
-    print(f'Wrote {len(eval_df)} to {eval_ofp}')
+
+    print("Basil for TAPT (run_language_modeling):")
+    print(f'Wrote {len(train_df)} sentences to {train_ofp}')
+    print(f'Wrote {len(eval_df)} sentences to {eval_ofp}')
 
 
 def load_cc_files(cc_dir):
@@ -63,13 +65,17 @@ def preprocess_cc_for_lm(cc_dir, tapt_dir, sources=('fox', 'nyt', 'hpo')):
     else:
         ofp = os.path.join(tapt_dir, f'cur_train.txt')
 
-    with open(ofp, 'w') as f:
-        for fn in cc_fns:
-            content = json.load(open(fn))
-            text = content['maintext']
-            sentences = [s.text.strip() + '\n' for s in nlp(text).sents]  # todo speed up
-            for s in sentences:
-                f.write(s)
+    if not os.path.exists(ofp):
+        with open(ofp, 'w') as f:
+            for fn in cc_fns:
+                content = json.load(open(fn))
+                text = content['maintext']
+                sentences = [s.text.strip() + '\n' for s in nlp(text).sents]  # todo speed up
+                for s in sentences:
+                    f.write(s)
+
+    print("CC for Cur TAPT (run_language_modeling):")
+    print(f'Wrote {len(cc_fns)} files to {ofp}')
 
 
 def write_for_dsp_train(data, fp):
@@ -127,6 +133,10 @@ def preprocess_basil_for_dsp_train(data, data_dir, recreate=False, source=None):
 
     with open(data_str_fp, 'a') as f:
         json.dump(data_strs, f)
+
+    print("Basil for fine-tuning/eval (train):")
+    print(f'Wrote {len(folds)} folds to {data_dir}')
+    print(f'Wrote {len(data_strs.keys())} folds stats to {data_str_fp}')
 
     return folds
 
