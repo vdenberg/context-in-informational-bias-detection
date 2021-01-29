@@ -26,12 +26,12 @@ def preprocess_basil_for_lm(basil, eval_size=20, data_dir="data/tapt/basil_and_s
         eval_ofp = os.path.join(data_dir, 'basil_eval.txt')
 
     articles = basil.article.unique()
-    random.shuffle(articles)
-    train_articles = articles[:eval_size]
-    test_articles = articles[eval_size:]
+    basil.set_index('article')
+    train_articles = basil.loc[articles[:eval_size]]
+    eval_articles = basil.loc[articles[eval_size:]]
 
     train_df = basil[basil.article in train_articles]
-    eval_df = basil[basil.article in test_articles]
+    eval_df = basil[basil.article in eval_articles]
 
     write_for_dsp_lm(train_df, train_ofp)
     write_for_dsp_lm(eval_df, eval_ofp)
@@ -134,8 +134,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     TAPT_DATA_DIR = "experiments/tapt/basil_and_source_tapt/data"
-    #if not os.path.exists(TAPT_DATA_DIR):
-    #    os.mkdir(TAPT_DATA_DIR)
+    if not os.path.exists(TAPT_DATA_DIR):
+        os.mkdir(TAPT_DATA_DIR)
 
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
     nlp = spacy.load("en_core_web_sm")
