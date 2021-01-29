@@ -172,6 +172,7 @@ if __name__ == '__main__':
         if src:
             basil = basil[basil['source'] == src]
 
+        print(src.upper())
         preprocess_basil_for_lm(basil, eval_size=20, data_dir=lm_src_dir, source=src)  # basic TAPT
         preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=lm_src_dir, source=src)  # curated TAPT
         preprocess_basil_for_dsp_train(basil, data_dir=ft_src_dir, recreate=True, source=src)  # for eval
