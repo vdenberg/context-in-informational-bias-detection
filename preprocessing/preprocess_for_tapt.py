@@ -3,6 +3,7 @@ import os
 
 import pandas as pd
 import spacy
+from nltk.tokenize import sent_tokenize
 
 from lib.handle_data.SplitData import Split
 
@@ -42,7 +43,7 @@ def preprocess_basil_for_lm(basil_df, eval_size=20, data_dir="data/tapt/basil_an
     print(f'Wrote {len(eval_df)} sentences to {eval_ofp}\n')
 
 
-def load_cc_files(cc_dir):
+def list_cc_files(cc_dir):
     cc_fns = os.listdir(cc_dir)
     cc_text_fns = [os.path.join(cc_dir, fn) for fn in cc_fns if not fn == 'stat.json']
     return cc_text_fns
@@ -57,20 +58,18 @@ def preprocess_cc_for_lm(cc_dir, tapt_dir, source):
     cc_fns = []
     for s in sources:
         cc_s_dir = os.path.join(cc_dir, s)
-        cc_fns.extend(load_cc_files(cc_s_dir))
+        cc_fns.extend(list_cc_files(cc_s_dir))
 
     source_string = '_'.join(sources)
-    if source_string:
-        ofp = os.path.join(tapt_dir, f'{source_string}_cur_train.txt')
-    else:
-        ofp = os.path.join(tapt_dir, f'cur_train.txt')
+    ofp = os.path.join(tapt_dir, f'{source_string}_cur_train.txt')
 
     if not os.path.exists(ofp):
         with open(ofp, 'w') as f:
             for fn in cc_fns:
                 content = json.load(open(fn))
                 text = content['maintext']
-                sentences = [s.text.strip() + '\n' for s in nlp(text).sents]  # todo speed up
+                sents = sent_tokenize(text) # nlp(text).sents
+                sentences = [s.text.strip() + '\n' for s in sents]  # todo speed up
                 for s in sentences:
                     f.write(s)
 
