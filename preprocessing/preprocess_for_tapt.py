@@ -161,9 +161,17 @@ if __name__ == '__main__':
 
     # TAPT
     for src in ['', 'fox', 'nyt', 'hpo']:
+        lm_src_dir = os.path.join(LM_DATA_DIR, src)
+        ft_src_dir = os.path.join(FT_DATA_DIR, src)
+
+        if not os.path.exists(lm_src_dir):
+            os.mkdir(lm_src_dir)
+        if not os.path.exists(ft_src_dir):
+            os.mkdir(ft_src_dir)
+
         if src:
             basil = basil[basil['source'] == src]
 
-        preprocess_basil_for_lm(basil, eval_size=20, data_dir=LM_DATA_DIR, source=src)  # basic TAPT
-        preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=LM_DATA_DIR, source=src)  # curated TAPT
-        preprocess_basil_for_dsp_train(basil, data_dir=FT_DATA_DIR, recreate=True, source=src)  # for eval
+        preprocess_basil_for_lm(basil, eval_size=20, data_dir=lm_src_dir, source=src)  # basic TAPT
+        preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=lm_src_dir, source=src)  # curated TAPT
+        preprocess_basil_for_dsp_train(basil, data_dir=ft_src_dir, recreate=True, source=src)  # for eval
