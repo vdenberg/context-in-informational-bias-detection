@@ -154,7 +154,7 @@ if __name__ == '__main__':
         os.mkdir(FT_DATA_DIR)
 
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
-    nlp = spacy.load("en_core_web_sm")
+    # nlp = spacy.load("en_core_web_sm")
 
     # TAPT
     for src in ['', 'fox', 'nyt', 'hpo']:
