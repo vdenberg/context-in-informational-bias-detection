@@ -42,18 +42,18 @@ def load_cc_files(cc_dir):
     return cc_text_fns
 
 
-def preprocess_cc_for_lm(data_dir, sources=['fox', 'nyt', 'hpo']):
+def preprocess_cc_for_lm(cc_dir, tapt_dir, sources=['fox', 'nyt', 'hpo']):
     """
     Preprocess commoncrawl data for curated tapt
     """
 
     cc_fns = []
     for s in sources:
-        cc_dir = os.path.join(data_dir, s)
+        cc_dir = os.path.join(cc_dir, s)
         cc_fns.extend(load_cc_files(cc_dir))
 
     source_string = '_'.join(sources)
-    ofp = os.path.join(data_dir, f'{source_string}_cur_train.txt')
+    ofp = os.path.join(tapt_dir, f'{source_string}_cur_train.txt')
 
     with open(ofp, 'w') as f:
         for fn in cc_fns:
@@ -147,7 +147,7 @@ if __name__ == '__main__':
         # basic TAPT
         preprocess_basil_for_lm(basil, eval_size=20, data_dir=TAPT_DATA_DIR, source=src)
         # curated TAPT
-        preprocess_cc_for_lm(data_dir=TAPT_DATA_DIR, sources=[src])
+        preprocess_cc_for_lm(cc_dir='data/inputs/tapt/cc', tapt_dir=TAPT_DATA_DIR, sources=[src])
         # for eval
         preprocess_basil_for_dsp_train(basil, data_dir=TAPT_DATA_DIR, recreate=True, source=src)
 
