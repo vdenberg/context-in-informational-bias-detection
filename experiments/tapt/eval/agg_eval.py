@@ -10,7 +10,7 @@ if __name__ == "__main__":
     result_dirn = os.path.basename(results_dir)
     info = result_dirn[:-len('_ft_results')]
     info = info.split('_')
-    model, split_type = '_'.join(info[:-1]), info[-1]
+    model, split_type = '_'.join(info[:-2]), '_'.join(info[-2:])
 
     agg = []
     for fn in os.listdir(results_dir): #re_roberta_hp_515_ft_results
