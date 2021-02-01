@@ -10,7 +10,7 @@ if __name__ == "__main__":
     result_dirn = os.path.basename(results_dir)
     info = result_dirn[:-len('_ft_results')]
     info = info.split('_')
-    model, split_type = info[:-1], info[-1]
+    model, split_type = '_'.join(info[:-1]), info[-1]
 
     agg = []
     for fn in os.listdir(results_dir): #re_roberta_hp_515_ft_results
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     test_std = best_val_descr.loc['std'].round(2).astype(str)
     best_val_result = test_m + ' +- ' + test_std + f' ({len(best_val_df.seed.unique())} seeds)'
 
-    print(f"\n{model} {split_type}  results if best_val > .75:")
+    print(f"\n{model} {split_type} results if best_val > .75:")
     print(best_val_result)
 
 
