@@ -5,7 +5,7 @@
                 --serialization_dir model_logs/basil/bert_sentence_split \
                 --dataset basil_sentence_split \
                 --model bert-base-cased \
-                -x 11
+                -x 11 22 33 44 55
 
 # RoBERTa-base on BASIL
 /opt/slurm/bin/srun --partition kama --gres=gpu:1  --mem 20GB python -m scripts.train --device 0 --perf +f1 --evaluate_on_test \

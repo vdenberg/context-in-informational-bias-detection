@@ -3,11 +3,13 @@ import pandas as pd
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-dir', '--results_dir', type=str, default='hp_reproduction/re_roberta_hp_515_ft_results', help='results file name')
+    parser.add_argument('-dir', '--results_dir', type=str, default='../../hp_reproduction/re_roberta_hp_515_ft_results', help='results file name')
     args = parser.parse_args()
 
     results_dir = args.results_dir
-    model = '_'.join(results_dir.split('_')[:-2])
+    info = results_dir[:-len('_ft_results')]
+    info = info.split('_')
+    model, fold = info[:-1], info[-1]
 
     agg = []
     for fn in os.listdir(results_dir): #re_roberta_hp_515_ft_results
