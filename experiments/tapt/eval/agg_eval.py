@@ -7,7 +7,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     results_dir = args.results_dir
-    info = results_dir[:-len('_ft_results')]
+    result_dirn = os.path.basename(results_dir)
+    info = result_dirn[:-len('_ft_results')]
     info = info.split('_')
     model, fold = info[:-1], info[-1]
 
