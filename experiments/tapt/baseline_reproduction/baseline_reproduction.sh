@@ -15,7 +15,7 @@ do
 /opt/slurm/bin/srun --partition kama --gres=gpu:1  --mem 20GB python -m scripts.train --device 0 --perf +f1 --evaluate_on_test \
                 --hyperparameters BERT_CLASSIFIER_MINI \
                 --config training_config/classifier.jsonnet \
-                --serialization_dir '../baseline_reproduction/bert_'$ITER'_ft_results/bert_'$ITER' \
+                --serialization_dir '../baseline_reproduction/bert_berg_ft_results/bert_'$ITER \
                 --dataset basil_$ITER \
                 --model bert-base-cased \
                 -x 11 22 33 44 55

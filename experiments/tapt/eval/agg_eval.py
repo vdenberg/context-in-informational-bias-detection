@@ -10,7 +10,7 @@ if __name__ == "__main__":
     result_dirn = os.path.basename(results_dir)
     info = result_dirn[:-len('_ft_results')]
     info = info.split('_')
-    model, fold = info[:-1], info[-1]
+    model, split_type = info[:-1], info[-1]
 
     agg = []
     for fn in os.listdir(results_dir): #re_roberta_hp_515_ft_results
@@ -18,7 +18,7 @@ if __name__ == "__main__":
         met_fp = os.path.join(fn, 'metrics.json')
         with open(os.path.join(results_dir, met_fp), 'r') as f:
             mets = json.load(f)
-            mets.update({'model': model, 'seed': seed})
+            mets.update({'model': model, 'seed': seed, 'fold': fold})
             agg.append(mets)
 
     # split df
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     test_std = all_descr.loc['std'].round(2).astype(str)
     all_result = test_m + ' +- ' + test_std + f' ({len(all_df.seed.unique())} seeds)'
 
-    print(f"\n{model} results:")
+    print(f"\n{model} {split_type} results:")
     print(all_result)
 
     best_val_descr = best_val_df[int_col].groupby('seed').mean().describe()
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     test_std = best_val_descr.loc['std'].round(2).astype(str)
     best_val_result = test_m + ' +- ' + test_std + f' ({len(best_val_df.seed.unique())} seeds)'
 
-    print(f"\n{model} results if best_val > .75:")
+    print(f"\n{model} {split_type}  results if best_val > .75:")
     print(best_val_result)
 
 
