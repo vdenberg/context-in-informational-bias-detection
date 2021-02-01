@@ -1,4 +1,5 @@
-# BERT on Sentence split
+cd ../dont-stop-pretraining
+# BERT on Sentence Split
 #/opt/slurm/bin/srun --partition kama --gres=gpu:1  --mem 20GB python -m scripts.train --device 0 --perf +f1 --evaluate_on_test \
 #                --hyperparameters BERT_CLASSIFIER_MINI \
 #                --config training_config/classifier.jsonnet \
