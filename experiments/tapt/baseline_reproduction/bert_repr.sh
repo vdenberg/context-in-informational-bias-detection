@@ -25,3 +25,4 @@ do
 ITER=$((ITER+1));
 done
 
+python ../eval/agg_eval.py -dir bert_sentence_split_ft_results bert_story_split_ft_results
