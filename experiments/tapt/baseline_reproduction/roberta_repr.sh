@@ -24,3 +24,5 @@ do
                 -x 11 22 33 44 55
 ITER=$((ITER+1));
 done
+
+python ../eval/agg_eval.py -dir ../../baseline_reproduction/roberta_story_split_ft_results

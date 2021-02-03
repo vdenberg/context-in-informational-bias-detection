@@ -6,6 +6,7 @@ if __name__ == "__main__":
     parser.add_argument('-dir', '--results_dir', type=str, default='../../hp_reproduction/re_roberta_hp_515_ft_results', help='results file name')
     args = parser.parse_args()
 
+    print(os.getcwd())
     results_dir = args.results_dir
     result_dirn = os.path.basename(results_dir)
     info = result_dirn[:-len('_ft_results')]
