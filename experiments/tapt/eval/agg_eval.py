@@ -6,7 +6,6 @@ if __name__ == "__main__":
     parser.add_argument('-dir', '--results_dir', type=str, default='../../hp_reproduction/re_roberta_hp_515_ft_results', help='results file name')
     args = parser.parse_args()
 
-    print(os.getcwd())
     results_dir = args.results_dir
     result_dirn = os.path.basename(results_dir)
     info = result_dirn[:-len('_ft_results')]
@@ -42,12 +41,12 @@ if __name__ == "__main__":
     print(f"\n{model} {split_type} results:")
     print(all_result)
 
-    best_val_descr = best_val_df[int_col].groupby('seed').mean().describe()
-    test_m = best_val_descr.loc['mean'].round(2).astype(str)
-    test_std = best_val_descr.loc['std'].round(2).astype(str)
-    best_val_result = test_m + ' +- ' + test_std + f' ({len(best_val_df.seed.unique())} seeds)'
+    #best_val_descr = best_val_df[int_col].groupby('seed').mean().describe()
+    #test_m = best_val_descr.loc['mean'].round(2).astype(str)
+    #test_std = best_val_descr.loc['std'].round(2).astype(str)
+    #best_val_result = test_m + ' +- ' + test_std + f' ({len(best_val_df.seed.unique())} seeds)'
 
-    print(f"\n{model} {split_type} results if best_val > .75:")
-    print(best_val_result)
+    #print(f"\n{model} {split_type} results if best_val > .75:")
+    #print(best_val_result)
 
 

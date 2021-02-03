@@ -25,4 +25,5 @@ do
 ITER=$((ITER+1));
 done
 
-python ../eval/agg_eval.py -dir ../../baseline_reproduction/roberta_story_split_ft_results
+python ../eval/agg_eval.py -dir roberta_sentence_split_ft_results
+python ../eval/agg_eval.py -dir roberta_story_split_ft_results
