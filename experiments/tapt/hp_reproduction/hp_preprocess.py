@@ -23,14 +23,18 @@ def load_labeled(in_dir):
 
 
 def sentence_split(docs):
+    stats = {}
     output = []
     for el in docs:
         sents = sent_tokenize(el['text'])
         for s in sents:
             o = el.copy()
             o['text'] = s
+            stats.setdefault(el['set_type'], 0)
+            stats[el['set_type']] += 1
             output.extend(o)
     print(f'Turned {len(docs)} doc instances into {len(output)} sentence instances')
+    print(stats)
     return output
 
 
