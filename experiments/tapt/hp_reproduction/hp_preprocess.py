@@ -23,6 +23,7 @@ def load_labeled(in_dir):
 
 
 def sentence_split(docs):
+    print(docs[:10])
     stats = {}
     output = []
     for el in docs:
