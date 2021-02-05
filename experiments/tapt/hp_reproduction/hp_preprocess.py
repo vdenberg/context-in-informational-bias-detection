@@ -14,7 +14,9 @@ def load_labeled(in_dir):
     for set_type in ['train', 'dev', 'test']:
         fp = os.path.join(in_dir, f'{set_type}.jsonl')
         with open(fp) as f:
-            content = [json.loads(el).update({'set_type': set_type}) for el in f.readlines()]
+            content = [json.loads(el) for el in f.readlines()]
+            for el in content:
+                el.update({'set_type': set_type})
             labeled.extend(content)
     print(f'Loaded {len(labeled)} instances')
     return labeled
@@ -22,9 +24,7 @@ def load_labeled(in_dir):
 
 def sentence_split(docs):
     output = []
-    print(len(docs))
     for el in docs:
-        print(el)
         sents = sent_tokenize(el['text'])
         for s in sents:
             o = el.copy()
