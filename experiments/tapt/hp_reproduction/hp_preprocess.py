@@ -76,7 +76,7 @@ if __name__ == "__main__":
     parser.add_argument('-labeled', '--dsp_labeled', action='store_true', default=False, help='prep jsonl files?')
     parser.add_argument('-cur', '--dsp_curated', action='store_true', default=False, help='prep xml docs?')
     parser.add_argument('-cursize', '--curated_size', type=int, default=5000)
-    parser.add_argument('-plm', '--plm', type='str', default=None, help='bert|roberta')
+    parser.add_argument('-plm', '--plm', type=str, default=None, help='bert|roberta')
     args = parser.parse_args()
 
     LABELED = args.labeled
