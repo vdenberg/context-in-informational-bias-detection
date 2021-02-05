@@ -27,7 +27,7 @@ rm pretrained_models/re_roberta_hp_515 && mkdir pretrained_models/re_roberta_hp_
                                         --logging_steps 50 \
                                         --seed 11
 
-# ft reproduced lm on jsonls
+# Basil-TAPT on Story Split
 mkdir ../hp_reproduction/re_roberta_hp_515_ft_results/results
 rm -r ../hp_reproduction/re_roberta_hp_515_ft_results/results*
 /opt/slurm/bin/srun --partition kama --gres=gpu:1  --mem 20GB python -m scripts.train --device 0 --perf +f1 --evaluate_on_test \
@@ -36,6 +36,9 @@ rm -r ../hp_reproduction/re_roberta_hp_515_ft_results/results*
                 --dataset hyperpartisan_news \
                 --model $(pwd)/pretrained_models/dsp_roberta_base_dapt_news_tapt_hyperpartisan_news_515 \
                 --seed 11 22 33 44 55 --jackknife
+
+python ../eval/agg_eval.py -dir bert_sentence_split_ft_results bert_story_split_ft_results
+
 
 # CURATED TAPT
 
