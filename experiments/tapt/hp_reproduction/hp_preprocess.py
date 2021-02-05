@@ -79,8 +79,8 @@ if __name__ == "__main__":
     parser.add_argument('-plm', '--plm', type=str, default=None, help='bert|roberta')
     args = parser.parse_args()
 
-    LABELED = args.labeled
-    CURATED = args.curated
+    LABELED = args.dsp_labeled
+    CURATED = args.dsp_curated
     SIZE = args.curated_size
     PLM = args.plm
 
