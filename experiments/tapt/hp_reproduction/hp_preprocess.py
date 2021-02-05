@@ -15,9 +15,8 @@ def load_labeled(in_dir):
         fp = os.path.join(in_dir, f'{set_type}.jsonl')
         with open(fp) as f:
             content = [json.loads(el) for el in f.readlines()]
-            print(content)
             for el in content:
-                el.update({'set_type': set_type})
+                el['set_type'] = set_type
             labeled.extend(content)
     print(f'Loaded {len(labeled)} instances')
     return labeled
