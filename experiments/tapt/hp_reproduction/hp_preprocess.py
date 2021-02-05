@@ -22,6 +22,7 @@ def load_labeled(in_dir):
 
 def sentence_split(docs):
     output = []
+    print(len(docs))
     for el in docs:
         print(el)
         sents = sent_tokenize(el['text'])
