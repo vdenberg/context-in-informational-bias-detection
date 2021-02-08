@@ -95,7 +95,7 @@ if __name__ == "__main__":
         # fps
         labeled = load_labeled(DATA_DIR)
         all_labeled = sentence_split(labeled)
-
+        print(all_labeled[:10])
         train_docs = [el['text'] for el in all_labeled if el['set_type'] == 'train']
         eval_docs = [el['text'] for el in all_labeled if el['set_type'] == 'dev']
         print(train_docs)
