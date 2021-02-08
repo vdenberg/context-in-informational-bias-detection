@@ -108,7 +108,7 @@ if __name__ == "__main__":
             all_feat_ofp = os.path.join(DATA_DIR, 'all_features.pkl')
 
             FORCE = True
-            if not os.path.exists(all_tsv_ifp) or FORCE:
+            if not os.path.exists(all_tsv_ifp):
                 df = pd.DataFrame(all_labeled)
                 df['alpha'] = ['a'] * len(df)
                 df['label'] = [0 if el == 'false' else 1 for el in df['label']]
