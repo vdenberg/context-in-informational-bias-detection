@@ -105,9 +105,7 @@ if __name__ == "__main__":
             all_feat_ofp = os.path.join(DATA_DIR, 'all_features.pkl')
 
             if not os.path.exists(all_tsv_ifp):
-                print(all_labeled)
                 df = pd.DataFrame(all_labeled)
-                print(df.head())
                 df['alpha'] = ['a'] * len(df)
                 df['label'] = [0 if el == 'false' else 1 for el in df['label']]
                 df[['id', 'label', 'alpha', 'text']].to_csv(all_tsv_ifp, sep='\t', index=False, header=False)
