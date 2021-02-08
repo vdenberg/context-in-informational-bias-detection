@@ -32,7 +32,7 @@ def sentence_split(docs):
             o['text'] = s
             stats.setdefault(el['set_type'], 0)
             stats[el['set_type']] += 1
-            output.extend(o)
+            output.append(o)
     print(f'Turned {len(docs)} doc instances into {len(output)} sentence instances')
     return output
 
@@ -95,7 +95,6 @@ if __name__ == "__main__":
         # fps
         labeled = load_labeled(DATA_DIR)
         all_labeled = sentence_split(labeled)
-        print(all_labeled[:10])
         train_docs = [el['text'] for el in all_labeled if el['set_type'] == 'train']
         eval_docs = [el['text'] for el in all_labeled if el['set_type'] == 'dev']
         print(train_docs)
