@@ -269,7 +269,7 @@ class BinaryClassificationProcessor(DataProcessor):
         examples = []
         for (i, line) in enumerate(lines):
             guid = "%s-%s" % (set_type, i)
-            my_id = standardise_id(line[0]) if dataset == 'basil' else line[0]
+            my_id = standardise_id(line[0])
             text_a = line[3]
             label = line[1]
             examples.append(
