@@ -97,7 +97,6 @@ if __name__ == "__main__":
         all_labeled = sentence_split(labeled)
         train_docs = [el['text'] for el in all_labeled if el['set_type'] == 'train']
         eval_docs = [el['text'] for el in all_labeled if el['set_type'] == 'dev']
-        print(train_docs)
         preprocess_for_dsp_run_ml(train_docs, os.path.join(DATA_DIR, 'train.txt'))
         preprocess_for_dsp_run_ml(eval_docs, os.path.join(DATA_DIR, 'eval.txt'))
 
@@ -111,11 +110,11 @@ if __name__ == "__main__":
                 print(df.head())
                 df['alpha'] = ['a'] * len(df)
                 df['label'] = [0 if el == 'false' else 1 for el in df['label']]
-                df[['id', 'label', 'alpha', 'sentence']].to_csv(all_tsv_ifp, sep='\t', index=False, header=False)
+                df[['id', 'label', 'alpha', 'text']].to_csv(all_tsv_ifp, sep='\t', index=False, header=False)
 
                 for st in ['train', 'dev', 'test']:
                     tsv_fp = os.path.join(DATA_DIR, f'{st}.tsv')
-                    df[df.set_type == st][['id', 'label', 'alpha', 'sentence']].to_csv(tsv_fp, sep='\t', index=False, header=False)
+                    df[df.set_type == st][['id', 'label', 'alpha', 'text']].to_csv(tsv_fp, sep='\t', index=False, header=False)
 
             dataloader = BinaryClassificationProcessor()
             label_list = dataloader.get_labels(output_mode='sent_clf')  # [0, 1] for binary classification
