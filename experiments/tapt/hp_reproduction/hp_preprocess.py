@@ -31,7 +31,7 @@ def sentence_split(docs):
         for i, s in enumerate(sents):
             o = el.copy()
             o['text'] = s
-            o[['id'] = str(o['id']) + 'hp' + str(i)
+            o['id'] = str(o['id']) + 'hp' + str(i)
             stats.setdefault(el['set_type'], 0)
             stats[el['set_type']] += 1
             output.append(o)
