@@ -16,7 +16,7 @@ ITER=1
 MAXITER=11
 while [ "$ITER" -lt "$MAXITER" ];
 do
-/opt/slurm/bin/srun --partition kama --gres=gpu:1  --mem 20GB python -m scripts.train --device 0 --perf +f1 --evaluate_on_test \
+/opt/slurm/bin/srun --partition kama --gres=gpu:1 --mem 20GB python -m scripts.train --device 0 --perf +f1 --evaluate_on_test \
                 --hyperparameters BERT_CLASSIFIER_MINI \
                 --config training_config/classifier.jsonnet \
                 --serialization_dir '../baseline_reproduction/bert_story_split_ft_results/bert_'$ITER \

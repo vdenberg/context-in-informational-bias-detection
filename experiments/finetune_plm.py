@@ -52,11 +52,11 @@ def select_model(model, clf_task):
 # locations of models or name of model as recognised by huggingface transformers library
 model_mapping = {'bert': 'bert-base-cased',
                  'rob_base': 'roberta-base',
-                 'rob_dapt': 'experiments/adapt_dapt_tapt/pretrained_models/news_roberta_base',
-                 'rob_basil_tapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-basil-tapt',
-                 'rob_basil_dapttapt': 'experiments/adapt_dapt_tapt/dont-stop-pretraining/roberta-basil-dapttapt',
-                 'rob_fox_tapt_w20': 'experiments/dont-stop-pretraining/roberta-fox-tapt-2020',
-                 'rob_fox_tapt_no20': 'experiments/dont-stop-pretraining/roberta-fox-tapt'
+                 'rob_dapt': 'experiments/tapt/pretrained_models/news_roberta_base',
+                 'rob_basil_tapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta-basil-tapt',
+                 'rob_basil_dapttapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta-basil-dapttapt',
+                 'rob_fox_tapt_w20': 'experiments/dont-stop-pretraining/pretrained_models/roberta-fox-tapt-2020',
+                 'rob_fox_tapt_no20': 'experiments/dont-stop-pretraining/pretrained_models/roberta-fox-tapt'
                 }
 
 # hyperparameters for reproduction of COLING 'Context in Informational Bias' paper
@@ -84,7 +84,7 @@ parser.add_argument('-ep', '--n_epochs', type=int, default=10) #2,3,4
 parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-clf_task', '--clf_task', help='tok_clf|sent_clf', type=str, default='sent_clf')
-parser.add_argument('-spl', '--split', type=str, default='story_split')  # sentence or story
+parser.add_argument('-spl', '--split', type=str, default='story_split', help='story_split|sentence_split|hyp515')  # sentence or story
 parser.add_argument('-model', '--model', help='bert|rob_base',type=str, default='rob_base')
 parser.add_argument('-source', '--source', type=str, default='all', help='all|fox|nyt|hpo')
 parser.add_argument('-lr', '--lr', type=float, default=None)
@@ -126,8 +126,10 @@ lrs = [args.lr] if args.lr else [model_hyperparams[CLF_TASK][MODEL]['lr']]
 
 if SPLIT == 'story_split':
     folds = [str(el) for el in range(1,11)]
-else:
+elif SPLIT == 'sentence_split':
     folds = ['sentence_split']
+elif SPLIT == 'hyp515':
+    folds = ['hyp515']
 
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
@@ -161,6 +163,10 @@ elif CLF_TASK == 'sent_clf':
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
     else:
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta_{SOURCE}'
+
+# FEAT_DIR = 'experiments/tapt/data/hyperpartisan/'
+
+FEAT_DIR = 'experiments/tapt/data/hyperpartisan/'
 
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
