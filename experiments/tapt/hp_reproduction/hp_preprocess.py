@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
             for set_type in ['train', 'dev', 'test']:
                 infp = os.path.join(DATA_DIR, f"{set_type}.tsv")
-                FEAT_OFP = os.path.join(DATA_DIR, f"{set_type}_features.pkl")
+                FEAT_OFP = os.path.join(DATA_DIR, f"hyp515_{set_type}_features.pkl")
 
                 if not os.path.exists(FEAT_OFP):
                     examples = dataloader.get_examples(infp, set_type, sep='\t')
