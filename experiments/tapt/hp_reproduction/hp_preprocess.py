@@ -95,6 +95,8 @@ if __name__ == "__main__":
         # fps
         labeled = load_labeled(DATA_DIR)
         all_labeled = sentence_split(labeled)
+
+        print(all_labeled[:10])
         train_docs = [el['text'] for el in all_labeled if el['set_type'] == 'train']
         eval_docs = [el['text'] for el in all_labeled if el['set_type'] == 'dev']
         preprocess_for_dsp_run_ml(train_docs, os.path.join(DATA_DIR, 'train.txt'))
