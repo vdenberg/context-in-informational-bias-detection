@@ -13,6 +13,7 @@ def load_labeled(in_dir):
     labeled = []
     for set_type in ['train', 'dev', 'test']:
         fp = os.path.join(in_dir, f'{set_type}.jsonl')
+        print(f'Loading from {fp}')
         with open(fp) as f:
             for el in f.readlines():
                 instance = json.loads(el)
