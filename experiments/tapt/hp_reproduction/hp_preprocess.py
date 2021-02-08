@@ -96,8 +96,8 @@ if __name__ == "__main__":
         labeled = load_labeled(DATA_DIR)
         all_labeled = sentence_split(labeled)
 
-        train_docs = [el['text'] for el in labeled if el['set_type'] == 'train']
-        eval_docs = [el['text'] for el in labeled if el['set_type'] == 'dev']
+        train_docs = [el['text'] for el in all_labeled if el['set_type'] == 'train']
+        eval_docs = [el['text'] for el in all_labeled if el['set_type'] == 'dev']
         print(train_docs)
         preprocess_for_dsp_run_ml(train_docs, os.path.join(DATA_DIR, 'train.txt'))
         preprocess_for_dsp_run_ml(eval_docs, os.path.join(DATA_DIR, 'eval.txt'))
