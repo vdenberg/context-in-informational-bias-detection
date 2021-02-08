@@ -26,7 +26,7 @@ def load_labeled(in_dir):
 def sentence_split(docs):
     stats = {}
     output = []
-    for el in docs[:10]:
+    for el in docs:
         sents = sent_tokenize(el['text'])
         for s in sents:
             o = el.copy()
