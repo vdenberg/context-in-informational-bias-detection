@@ -34,6 +34,7 @@ def sentence_split(docs):
             stats[el['set_type']] += 1
             output.append(o)
     print(f'Turned {len(docs)} doc instances into {len(output)} sentence instances')
+    print(stats)
     return output
 
 
