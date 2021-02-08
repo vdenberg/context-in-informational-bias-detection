@@ -23,7 +23,6 @@ def load_labeled(in_dir):
 
 
 def sentence_split(docs):
-    print(docs[:10])
     stats = {}
     output = []
     for el in docs[:10]:
@@ -139,10 +138,12 @@ if __name__ == "__main__":
 
                 with open(all_feat_ofp, "wb") as f:
                     pickle.dump(features, f)
+                    print(f'Saved {len(features)} features.')
                 time.sleep(15)
             else:
                 with open(all_feat_ofp, "rb") as f:
                     features = pickle.load(f)
+                    print(f'Loaded {len(features)} features.')
                     features_dict = {feat.my_id: feat for feat in features}
 
             for set_type in ['train', 'dev', 'test']:
