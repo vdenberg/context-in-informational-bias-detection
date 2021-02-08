@@ -98,7 +98,6 @@ if __name__ == "__main__":
         labeled = load_labeled(DATA_DIR)
         all_labeled = sentence_split(labeled)
 
-        print(all_labeled[:10])
         train_docs = [el['text'] for el in all_labeled if el['set_type'] == 'train']
         eval_docs = [el['text'] for el in all_labeled if el['set_type'] == 'dev']
         preprocess_for_dsp_run_ml(train_docs, os.path.join(DATA_DIR, 'train.txt'))
@@ -108,7 +107,8 @@ if __name__ == "__main__":
             all_tsv_ifp = os.path.join(DATA_DIR, 'all.tsv')
             all_feat_ofp = os.path.join(DATA_DIR, 'all_features.pkl')
 
-            if not os.path.exists(all_tsv_ifp):
+            FORCE = True
+            if not os.path.exists(all_tsv_ifp) or FORCE:
                 df = pd.DataFrame(all_labeled)
                 df['alpha'] = ['a'] * len(df)
                 df['label'] = [0 if el == 'false' else 1 for el in df['label']]
@@ -128,7 +128,7 @@ if __name__ == "__main__":
             label_map = {label: i for i, label in enumerate(label_list)}
             MAX_SEQ_LEN = 124 #124
 
-            if not os.path.exists(all_feat_ofp):
+            if not os.path.exists(all_feat_ofp) or FORCE:
                 examples = dataloader.get_examples(all_tsv_ifp, 'train', sep='\t')
                 examples = [(ex, label_map, MAX_SEQ_LEN, tokenizer, None, 'sent_clf') for ex in examples if ex.text_a]
                 features = preprocess_for_plm(examples, model=PLM)
