@@ -128,8 +128,8 @@ if __name__ == "__main__":
             label_map = {label: i for i, label in enumerate(label_list)}
             MAX_SEQ_LEN = 124 #124
 
-            FORCE = False
-            if not os.path.exists(all_feat_ofp) or FORCE:
+            FORCE = True
+            if not os.path.exists(all_feat_ofp):
                 examples = dataloader.get_examples(all_tsv_ifp, 'train', sep='\t')
                 examples = [(ex, label_map, MAX_SEQ_LEN, tokenizer, None, 'sent_clf') for ex in examples if ex.text_a]
                 features = preprocess_for_plm(examples, model=PLM)
@@ -149,7 +149,7 @@ if __name__ == "__main__":
                 infp = os.path.join(DATA_DIR, f"{set_type}.tsv")
                 FEAT_OFP = os.path.join(DATA_DIR, f"hyp515_{set_type}_features.pkl")
 
-                if not os.path.exists(FEAT_OFP):
+                if not os.path.exists(FEAT_OFP) or FORCE:
                     examples = dataloader.get_examples(infp, set_type, sep='\t')
 
                     features = [features_dict[example.my_id] for example in examples
