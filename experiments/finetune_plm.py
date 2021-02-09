@@ -321,7 +321,7 @@ if __name__ == '__main__':
 
                                     av_loss = tr_loss / len(train_batches)
 
-                                    dev_mets, dev_perf = inferencer.git (model, dev_batches, dev_labels,
+                                    dev_mets, dev_perf = inferencer.evaluate(model, dev_batches, dev_labels,
                                                                                 av_loss=av_loss, set_type='dev',
                                                                                 name=epoch_name, output_mode=CLF_TASK)
 
