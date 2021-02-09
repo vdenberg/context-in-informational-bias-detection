@@ -682,8 +682,6 @@ class Inferencer():
             print(name)
             exit(0)
 
-        print(labels, preds)
-        exit(0)
         metrics_dict, metrics_string = my_eval(labels, preds, set_type=set_type, av_loss=av_loss, name=name, opmode=output_mode)
         return metrics_dict, metrics_string
 
