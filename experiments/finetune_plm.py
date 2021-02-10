@@ -55,9 +55,9 @@ model_mapping = {'bert': 'bert-base-cased',
                  'rob_dapt': 'experiments/tapt/pretrained_models/news_roberta_base',
                  'rob_basil_tapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta-basil-tapt',
                  'rob_basil_dapttapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta-basil-dapttapt',
-                 'rob_fox_tapt_w20': 'experiments/dont-stop-pretraining/pretrained_models/roberta-fox-tapt-2020',
-                 'rob_fox_tapt_no20': 'experiments/dont-stop-pretraining/pretrained_models/roberta-fox-tapt',
-                 'rob_hyp_tapt': 'experiments/dont-stop-pretraining/pretrained_models/dsp_roberta_base_dapt_news_tapt_hyperpartisan_news_515'
+                 'rob_fox_tapt_w20': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta-fox-tapt-2020',
+                 'rob_fox_tapt_no20': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta-fox-tapt',
+                 'rob_hyp_tapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/dsp_roberta_base_dapt_news_tapt_hyperpartisan_news_515'
                  }
 
 # hyperparameters for reproduction of COLING 'Context in Informational Bias' paper
