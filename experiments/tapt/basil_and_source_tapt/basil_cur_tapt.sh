@@ -2,8 +2,8 @@ mkdir basil_cur_tapt_story_split_ft_results
 cd ../dont-stop-pretraining
 mkdir pretrained_models/roberta_basil_cur_tapt
 
+'''
 # CurTAPT pretraining
-#todo fix fox_nyt_hpo_cur_train.txt
 /opt/slurm/bin/srun --partition kama --gres=gpu:1 --mem 20GB python -m scripts.run_language_modeling \
                                         --line_by_line \
                                         --model_type roberta-base \
@@ -19,9 +19,10 @@ mkdir pretrained_models/roberta_basil_cur_tapt
                                         --learning_rate 0.0001 \
                                         --logging_steps 50 \
                                         --seed 11 \
-                                        --eval_data_file ../basil_and_source_tapt/data/lm/basil_eval.txt \
-                                        --train_data_file '../basil_and_source_tapt/data/lm/fox_nyt_hpo_cur_train.txt' \
-                                        --output_dir 'pretrained_models/roberta_basil_cur_tapt' \
+                                        --eval_data_file ../data/lm/basil_eval.txt \
+                                        --train_data_file "../data/lm/fox_nyt_hpo_cur_train.txt" \
+                                        --output_dir "pretrained_models/roberta_basil_cur_tapt" \
+'''
 
 # CurTAPT on Story Split
 ITER=1

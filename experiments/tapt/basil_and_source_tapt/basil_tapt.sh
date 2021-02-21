@@ -2,6 +2,7 @@ mkdir basil_tapt_story_split_ft_results
 cd ../dont-stop-pretraining
 mkdir pretrained_models/roberta_basil_tapt
 
+'''
 # TAPT pretraining
 /opt/slurm/bin/srun --partition kama --gres=gpu:1 --mem 20GB python -m scripts.run_language_modeling \
                                         --line_by_line \
@@ -18,9 +19,10 @@ mkdir pretrained_models/roberta_basil_tapt
                                         --learning_rate 0.0001 \
                                         --logging_steps 50 \
                                         --seed 11 \
-                                        --eval_data_file ../basil_and_source_tapt/data/lm/basil_eval.txt \
-                                        --train_data_file '../basil_and_source_tapt/data/lm/basil_train.txt' \
-                                        --output_dir 'pretrained_models/roberta_basil_tapt' \
+                                        --eval_data_file "../data/lm/basil_eval.txt"  \
+                                        --train_data_file "../data/lm/basil_train.txt" \
+                                        --output_dir "pretrained_models/roberta_basil_tapt" \
+'''
 
 # Basil-TAPT on Story Split
 ITER=1
@@ -33,7 +35,7 @@ do
                 --serialization_dir '../basil_and_source_tapt/basil_tapt_story_split_ft_results/basil_tapt_'$ITER \
                 --dataset basil_$ITER \
                 --model 'pretrained_models/roberta_basil_tapt' \
-                -x 11 22 33 44 55
+                -x 11 22 33 44 55 66 77 88 99 1010
 ITER=$((ITER+1));
 done
 
