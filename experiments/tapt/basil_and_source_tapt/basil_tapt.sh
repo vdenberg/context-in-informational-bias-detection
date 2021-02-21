@@ -1,6 +1,6 @@
-mkdir basil_tapt_story_split_ft_results
-cd ../dont-stop-pretraining
-mkdir pretrained_models/roberta_basil_tapt
+# mkdir basil_tapt_story_split_ft_results
+# cd ../dont-stop-pretraining
+# mkdir pretrained_models/roberta_basil_tapt
 
 '''
 # TAPT pretraining
