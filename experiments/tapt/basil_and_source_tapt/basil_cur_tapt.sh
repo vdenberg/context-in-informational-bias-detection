@@ -1,5 +1,5 @@
 # mkdir basil_cur_tapt_story_split_ft_results
-# cd ../dont-stop-pretraining
+cd ../dont-stop-pretraining
 # mkdir pretrained_models/roberta_basil_cur_tapt
 
 '''
