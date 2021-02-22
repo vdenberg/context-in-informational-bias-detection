@@ -35,8 +35,8 @@ if __name__ == "__main__":
         all_df[test_col] = all_df[test_col].round(4) * 100
         best_val_df[test_col] = best_val_df[test_col].round(4) * 100
 
-        print(all_df)
-        print(best_val_df)
+        print(all_df[test_col])
+        print(best_val_df[test_col])
 
         # m and std
         all_descr = all_df[int_col].groupby('seed').mean().describe()
