@@ -27,6 +27,7 @@ if __name__ == "__main__":
 
         # split df
         all_df = pd.DataFrame(agg)
+        print(all_df.best_validation_f1)
         best_val_df = all_df[all_df.best_validation_f1 > 0.75]
 
         # format interesting col
