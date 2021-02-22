@@ -30,8 +30,9 @@ if __name__ == "__main__":
 
         # split df
         all_df = pd.DataFrame(agg)
-        print(all_df.best_validation_f1)
+        print(all_df.best_validation_f1.head())
         best_val_df = all_df[all_df.best_validation_f1 > VAL_CUTOFF]
+        print(best_val_df.best_validation_f1.head())
 
         # format interesting col
         test_col = [i for i in all_df.columns if 'test' in i]
@@ -39,8 +40,8 @@ if __name__ == "__main__":
         all_df[test_col] = all_df[test_col].round(4) * 100
         best_val_df[test_col] = best_val_df[test_col].round(4) * 100
 
-        print(all_df[test_col])
-        print(best_val_df[test_col])
+        print(all_df[test_col].head())
+        print(best_val_df[test_col].head())
 
         # m and std
         all_descr = all_df[int_col].groupby('seed').mean().describe()
@@ -56,7 +57,7 @@ if __name__ == "__main__":
         test_std = best_val_descr.loc['std'].round(2).astype(str)
         best_val_result = test_m + ' +- ' + test_std + f' ({len(best_val_df.seed.unique())} seeds)'
 
-        print(f"\n{model} {split_type} results if best_val > .75:")
+        print(f"\n{model} {split_type} results if best_val > {VAL_CUTOFF}:")
         print(best_val_result)
 
 
