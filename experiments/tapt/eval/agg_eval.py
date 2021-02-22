@@ -17,11 +17,13 @@ if __name__ == "__main__":
         for fn in os.listdir(loc): #re_roberta_hp_515_ft_results
             seed = fn.split('_')[-1]
             fold = '_'.join(fn.split('_')[1:-1])
-            met_fp = os.path.join(fn, 'metrics.json')
-            with open(os.path.join(loc, met_fp), 'r') as f:
-                mets = json.load(f)
-                mets.update({'model': model, 'seed': seed, 'fold': fold})
-                agg.append(mets)
+            met_fn = os.path.join(fn, 'metrics.json')
+            met_fp = os.path.join(loc, met_fn)
+            if os.path.exists(met_fp):
+                with open(met_fp, 'r') as f:
+                    mets = json.load(f)
+                    mets.update({'model': model, 'seed': seed, 'fold': fold})
+                    agg.append(mets)
 
         # split df
         all_df = pd.DataFrame(agg)
