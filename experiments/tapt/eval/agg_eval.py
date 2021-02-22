@@ -3,8 +3,11 @@ import pandas as pd
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument('-minval', '--minval', type=float, defailt=0.75, help='minimum validation value for jackknifing')
     parser.add_argument('-dirs', '--results_dirs', nargs="+", type=str, default=['../../hp_reproduction/re_roberta_hp_515_ft_results'], help='results file name')
     args = parser.parse_args()
+
+    VAL_CUTOFF = args.minval
 
     locations = args.results_dirs
     for loc in locations:
@@ -28,7 +31,7 @@ if __name__ == "__main__":
         # split df
         all_df = pd.DataFrame(agg)
         print(all_df.best_validation_f1)
-        best_val_df = all_df[all_df.best_validation_f1 > 0.75]
+        best_val_df = all_df[all_df.best_validation_f1 > VAL_CUTOFF]
 
         # format interesting col
         test_col = [i for i in all_df.columns if 'test' in i]
