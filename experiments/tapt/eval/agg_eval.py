@@ -19,7 +19,7 @@ if __name__ == "__main__":
         agg = []
         for fn in os.listdir(loc): #re_roberta_hp_515_ft_results
             seed = fn.split('_')[-1]
-            fold = '_'.join(fn.split('_')[1:-1])
+            fold = fn.split('_')[-2] #'_'.join(fn.split('_')[1:-1])
             met_fn = os.path.join(fn, 'metrics.json')
             met_fp = os.path.join(loc, met_fn)
             if os.path.exists(met_fp):
