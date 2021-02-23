@@ -30,6 +30,8 @@ if __name__ == "__main__":
 
         # split df
         all_df = pd.DataFrame(agg)
+
+        pd.set_option('display.max_rows', 500)
         print(all_df.groupby(['seed', 'fold'])['best_validation_f1'].mean())
 
         best_val_df = all_df[all_df.best_validation_f1 > VAL_CUTOFF]
