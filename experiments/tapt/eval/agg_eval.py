@@ -30,9 +30,10 @@ if __name__ == "__main__":
 
         # split df
         all_df = pd.DataFrame(agg)
-        print(all_df.best_validation_f1.head())
+        print(all_df.groupby(['seed', 'fold'])['best_validation_f1'].mean())
+
         best_val_df = all_df[all_df.best_validation_f1 > VAL_CUTOFF]
-        print(best_val_df.best_validation_f1.head())
+
 
         # format interesting col
         test_col = [i for i in all_df.columns if 'test' in i]
@@ -40,14 +41,11 @@ if __name__ == "__main__":
         all_df[test_col] = all_df[test_col].round(4) * 100
         best_val_df[test_col] = best_val_df[test_col].round(4) * 100
 
-        print(all_df[test_col].head())
-        print(best_val_df[test_col].head())
-
         # m and std
         all_descr = all_df[int_col].groupby('seed').mean().describe()
         test_m = all_descr.loc['mean'].round(2).astype(str)
         test_std = all_descr.loc['std'].round(2).astype(str)
-        all_result = test_m + ' +- ' + test_std + f' ({len(all_df.seed.unique())} seeds) ({len(all_df.fold.unique())})'
+        all_result = test_m + ' +- ' + test_std + f' ({len(all_df.seed.unique())} seeds) ({len(all_df.fold.unique())} folds)'
 
         print(f"\n{model} {split_type} results:")
         print(all_result)
@@ -55,7 +53,7 @@ if __name__ == "__main__":
         best_val_descr = best_val_df[int_col].groupby('seed').mean().describe()
         test_m = best_val_descr.loc['mean'].round(2).astype(str)
         test_std = best_val_descr.loc['std'].round(2).astype(str)
-        best_val_result = test_m + ' +- ' + test_std + f' ({len(best_val_df.seed.unique())} seeds) ({len(all_df.fold.unique())})'
+        best_val_result = test_m + ' +- ' + test_std + f' ({len(best_val_df.seed.unique())} seeds) ({len(all_df.fold.unique())} folds)'
 
         print(f"\n{model} {split_type} results if best_val > {VAL_CUTOFF}:")
         print(best_val_result)
