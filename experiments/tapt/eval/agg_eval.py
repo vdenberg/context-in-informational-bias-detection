@@ -36,7 +36,6 @@ if __name__ == "__main__":
         pd.set_option('display.max_rows', 500)
         #print(all_df.groupby(['seed', 'fold'])['best_validation_f1'].mean())
 
-
         # format interesting col
         test_col = [i for i in all_df.columns if 'test' in i]
         int_col = ['seed', 'test_f1']
@@ -50,6 +49,9 @@ if __name__ == "__main__":
         all_result = test_m + ' +- ' + test_std + f' ({len(all_df.seed.unique())} seeds) ({len(all_df.fold.unique())} folds)'
 
         print(f"\n--- {model} {split_type} results ---")
+        for n, gr in all_df.groupby(['fold']):
+            print(n, gr.seed.unique())
+
         print("\nAll results:")
         print(all_result)
 
