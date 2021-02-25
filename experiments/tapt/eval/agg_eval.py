@@ -49,7 +49,8 @@ if __name__ == "__main__":
         test_std = all_descr.loc['std'].round(2).astype(str)
         all_result = test_m + ' +- ' + test_std + f' ({len(all_df.seed.unique())} seeds) ({len(all_df.fold.unique())} folds)'
 
-        print(f"\n{model} {split_type} results:")
+        print(f"--- \n{model} {split_type} results ---")
+        print("\nAll results:")
         print(all_result)
 
         best_val_descr = best_val_df[int_col].groupby('seed').mean().describe()
@@ -57,7 +58,7 @@ if __name__ == "__main__":
         test_std = best_val_descr.loc['std'].round(2).astype(str)
         best_val_result = test_m + ' +- ' + test_std + f' ({len(best_val_df.seed.unique())} seeds) ({len(all_df.fold.unique())} folds)'
 
-        print(f"\n{model} {split_type} results if best_val > {VAL_CUTOFF}:")
+        print(f"\nResults if best_val > {VAL_CUTOFF}:")
         print(best_val_result)
 
 
