@@ -49,8 +49,10 @@ if __name__ == "__main__":
         all_result = test_m + ' +- ' + test_std + f' ({len(all_df.seed.unique())} seeds) ({len(all_df.fold.unique())} folds)'
 
         print(f"\n--- {model} {split_type} results ---")
-        for n, gr in all_df.groupby(['fold']):
-            print(n, gr.seed.unique())
+
+        if (len(best_val_df.seed.unique()) != 10) or (len(all_df.fold.unique()) != 10):
+            for n, gr in all_df.groupby(['fold']):
+                print(n, sorted(gr.seed.unique()))
 
         print("\nAll results:")
         print(all_result)
