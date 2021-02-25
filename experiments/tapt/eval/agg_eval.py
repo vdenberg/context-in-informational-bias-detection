@@ -12,9 +12,9 @@ if __name__ == "__main__":
     locations = args.results_dirs
     for loc in locations:
         result_dirn = os.path.basename(loc)
+        print(result_dirn)
         info = result_dirn[:-len('_ft_results')]
         info = info.split('_')
-        print(info)
         model, split_type = '_'.join(info[:-2]), '_'.join(info[-2:])
 
         agg = []
