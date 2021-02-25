@@ -14,6 +14,7 @@ if __name__ == "__main__":
         result_dirn = os.path.basename(loc)
         info = result_dirn[:-len('_ft_results')]
         info = info.split('_')
+        print(info)
         model, split_type = '_'.join(info[:-2]), '_'.join(info[-2:])
 
         agg = []
