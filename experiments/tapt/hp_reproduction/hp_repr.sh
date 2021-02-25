@@ -1,5 +1,19 @@
 # start in experiments/tapt/hp_reproduction
 
+# BASELINE
+
+mkdir roberta_base_ft_results
+cd ../dont-stop-pretraining
+
+# RoBERTa on Sentence Split
+/opt/slurm/bin/srun --partition kama --gres=gpu:1  --mem 20GB python -m scripts.train --device 0 --perf +f1 --evaluate_on_test \
+                --hyperparameters ROBERTA_CLASSIFIER_MINI \
+                --config training_config/classifier.jsonnet \
+                --serialization_dir ../hp_reproduction/roberta_base_ft_results/results \
+                --dataset hyperpartisan_news \
+                --model roberta-base \
+                -x 11 22 33 44 55
+
 # TAPT
 
 # preprocess
@@ -27,7 +41,7 @@ rm pretrained_models/re_roberta_hp_515 && mkdir pretrained_models/re_roberta_hp_
                                         --logging_steps 50 \
                                         --seed 11
 
-# Basil-TAPT on Story Split
+# TAPT on Story Split
 mkdir ../hp_reproduction/re_roberta_hp_515_ft_results/results
 rm -r ../hp_reproduction/re_roberta_hp_515_ft_results/results*
 /opt/slurm/bin/srun --partition kama --gres=gpu:1  --mem 20GB python -m scripts.train --device 0 --perf +f1 --evaluate_on_test \
