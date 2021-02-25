@@ -11,8 +11,7 @@ if __name__ == "__main__":
 
     locations = args.results_dirs
     for loc in locations:
-        result_dirn = os.path.basename(loc)
-        print('loc:', loc)
+        result_dirn = os.path.basename(loc.strip('/'))
         info = result_dirn[:-len('_ft_results')]
         info = info.split('_')
         model, split_type = '_'.join(info[:-2]), '_'.join(info[-2:])
