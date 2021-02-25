@@ -39,8 +39,8 @@ if __name__ == "__main__":
         # format interesting col
         test_col = [i for i in all_df.columns if 'test' in i]
         int_col = ['seed', 'test_f1']
-        all_df[test_col] = all_df[test_col].round(4) * 100
-        best_val_df[test_col] = best_val_df[test_col].round(4) * 100
+        all_df[test_col] = all_df.loc[test_col].round(4) * 100
+        best_val_df[test_col] = best_val_df.loc[test_col].round(4) * 100
 
         # m and std
         all_descr = all_df[int_col].groupby('seed').mean().describe()
