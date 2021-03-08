@@ -37,10 +37,10 @@ with neural approaches that take into account context beyond the sentence.
    conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
    ```
    
-    Also make sure your the project directory is included in the pythonpath:
+    Additionally, append the project directory to your python path:
    
     ```shell script
-    export PYTHONPATH="/path/to/context-in-informational-bias-detection"
+    export PYTHONPATH=$PYTHONPATH:/your/path/to/context-in-informational-bias-detection"
     ```
   
 
