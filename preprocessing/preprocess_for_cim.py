@@ -96,7 +96,7 @@ def convert_to_cim_instance(group, art_sent_ids, all_ev_ids):
         uniq_id = art_sent_ids[index].lower()
 
         # get target label
-        label = str(group.bias.values[index])
+        label = str(group.label.values[index])
 
         # complete string
         full_string = [uniq_id, art_string]
