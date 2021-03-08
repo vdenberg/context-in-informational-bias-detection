@@ -36,6 +36,13 @@ with neural approaches that take into account context beyond the sentence.
    python -m spacy download en_core_web_sm   
    conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
    ```
+   
+    Also make sure your the project directory is included in the pythonpath:
+   
+    ```shell script
+    export export PYTHONPATH="/path/to/context-in-informational-bias-detection"
+    ```
+  
 
 2. Download and unzip BASIL Corpus from: https://github.com/marshallwhiteorg/emnlp19-media-bias/blob/master/emnlp19-BASIL.zip
    to **context-in-informational-bias-detection/data/emnlp19-BASIL**
