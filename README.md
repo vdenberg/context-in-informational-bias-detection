@@ -40,7 +40,7 @@ with neural approaches that take into account context beyond the sentence.
     Also make sure your the project directory is included in the pythonpath:
    
     ```shell script
-    export export PYTHONPATH="/path/to/context-in-informational-bias-detection"
+    export PYTHONPATH="/path/to/context-in-informational-bias-detection"
     ```
   
 
