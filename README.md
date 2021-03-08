@@ -83,6 +83,9 @@ python experiments/finetune_plm.py -clf_task seq_sent_clf -seq_len 10 -win
 ### Article and Event Context
 
 ```shell script
+# prepare embeddings
+python experiments/finetune_plm.py -clf_task sent_clf -model rob_base -sv 49 -embeds
+
 # ArtCIM
 python experiments/context_inclusive.py -context art -cim_type cim
 
@@ -102,11 +105,11 @@ python experiments/context_inclusive.py -context ev -cim_type cim*
 
 2. Follow install instructions of https://github.com/allenai/dont-stop-pretraining.
 
-3. Run following commands to get basil-adapted models:
+3. Run following command to get basil-adapted models:
 
     ##### TAPT
     ```shell script
-    python -m scripts.run_language_modeling --train_data_file data/inputs/tapt/basil_train.txt \
+    python -m scripts.run_language_modeling --train_data_file ../../data/inputs/tapt/basil_train.txt \
                                             --line_by_line \
                                             --output_dir roberta-basil-tapt \
                                             --model_type roberta-base \
@@ -116,7 +119,7 @@ python experiments/context_inclusive.py -context ev -cim_type cim*
                                             --gradient_accumulation_steps 6  \
                                             --model_name_or_path roberta-base \
                                             --do_eval \
-                                            --eval_data_file data/inputs/tapt/basil_test.txt \
+                                            --eval_data_file ../../data/inputs/tapt/basil_test.txt \
                                             --evaluate_during_training  \
                                             --do_train \
                                             --num_train_epochs 100  \
@@ -125,7 +128,7 @@ python experiments/context_inclusive.py -context ev -cim_type cim*
     ```
     ##### DAPTTAPT
     ```shell script
-    python -m scripts.run_language_modeling --train_data_file data/inputs/tapt/basil_train.txt \
+    python -m scripts.run_language_modeling --train_data_file ../../data/inputs/tapt/basil_train.txt \
                                             --line_by_line \
                                             --output_dir roberta-basil-dapttapt \
                                             --model_type roberta-base \
@@ -135,7 +138,7 @@ python experiments/context_inclusive.py -context ev -cim_type cim*
                                             --gradient_accumulation_steps 6  \
                                             --model_name_or_path ../pretrained_models/news_roberta_base \
                                             --do_eval \
-                                            --eval_data_file data/inputs/tapt/basil_test.txt \
+                                            --eval_data_file ../../data/inputs/tapt/basil_test.txt \
                                             --evaluate_during_training  \
                                             --do_train \
                                             --num_train_epochs 100  \
@@ -143,3 +146,38 @@ python experiments/context_inclusive.py -context ev -cim_type cim*
                                             --logging_steps 50
     ```
             
+3. Run following commands to get source-adapted models: 
+(For DAPTTAPT specify ```--output_dir  roberta-fox-daptapt``` and ```--model_name_or_path ../pretrained_models/news_roberta_base```)
+
+    ```shell script
+    python -m scripts.run_language_modeling --train_data_file ../../data/inputs/tapt/fox_train.txt \
+                                            --line_by_line \
+                                            --output_dir roberta-fox-tapt \
+                                            --model_type roberta-base \
+                                            --tokenizer_name roberta-base \
+                                            --mlm \
+                                            --per_gpu_train_batch_size 6 \
+                                            --gradient_accumulation_steps 6  \
+                                            --model_name_or_path roberta-base \
+                                            --do_eval \
+                                            --eval_data_file ../../data/inputs/tapt/basil_fox_test.txt \
+                                            --evaluate_during_training  \
+                                            --do_train \
+                                            --num_train_epochs 150  \
+                                            --learning_rate 0.0001 \
+                                            --logging_steps 50 \ 
+                                            --save_total_limit 2 \
+                                            --overwrite_output_dir
+    ```
+   --overwrite_output_dir
+   --should_continue
+   
+   python -m scripts.train \
+        --config training_config/classifier.jsonnet \
+        --serialization_dir model_logs/hyperpartisan_base \
+        --hyperparameters ROBERTA_CLASSIFIER_SMALL \
+        --dataset hyperpartisan_news \
+        --model roberta-base \
+        --device 0 \
+        --perf +f1 \
+        --evaluate_on_test
