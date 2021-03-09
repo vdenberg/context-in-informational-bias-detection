@@ -169,8 +169,6 @@ elif CLF_TASK == 'sent_clf':
 
 # FEAT_DIR = 'experiments/tapt/data/hyperpartisan/'
 
-FEAT_DIR = 'experiments/tapt/data/hyperpartisan/'
-
 CHECKPOINT_DIR = f'models/checkpoints/{TASK_NAME}'
 REPORTS_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/logs'
 TABLE_DIR = f'reports/{CLF_TASK}/{TASK_NAME}/tables'
