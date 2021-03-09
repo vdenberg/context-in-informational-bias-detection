@@ -163,7 +163,7 @@ if CLF_TASK == 'seq_sent_clf':
 
 elif CLF_TASK == 'sent_clf':
     if MODEL == 'bert':
-        FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert'
+        FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_bert_{SOURCE}'
     else:
         FEAT_DIR = f'data/inputs/{CLF_TASK}/features_for_roberta_{SOURCE}'
 
