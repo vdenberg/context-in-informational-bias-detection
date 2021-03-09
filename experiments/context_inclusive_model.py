@@ -121,6 +121,7 @@ parser.add_argument('-inf', '--step_info_every', type=int, default=250)
 parser.add_argument('-context', '--context_type', type=str, help='Options: art|ev', default='ev')
 parser.add_argument('-cim_type', '--cim_type', type=str, help='Options: cim|cim*', default='cim')
 parser.add_argument('-emb_base', '--emb_base', type=str, help='Options: rob_base|bert|bert_un|distilbert|rob_dapt', default='rob_base')
+parser.add_argument('-source', '--source', type=str, default='all', help='all|fox|nyt|hpo')
 parser.add_argument('-emb', '--embedding_type', type=str, help='Options: avbert|sbert|poolbert|use|crossbert', default='cross4bert')
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 
@@ -161,6 +162,7 @@ PRINT_STEP_EVERY = args.step_info_every
 CONTEXT_TYPE = args.context_type
 CIM_TYPE = args.cim_type
 EMB_BASE = args.emb_base
+SOURCE = args.source
 EMB_TYPE = args.embedding_type
 EMB_DIM = 512 if EMB_TYPE == 'use' else 768
 SAMPLER = args.sampler
@@ -320,7 +322,7 @@ for fold in folds:
     for v in range(len(fold['train'])):
         # read embeddings file
         if EMB_TYPE not in ['use', 'sbert']:
-            embed_fp = f"data/embeddings/sent_clf_story_split_{EMB_BASE}/{EMB_BASE}_sequential_49_bs16_lr1e-05_f{fold['name']}_{EMB_TYPE}.csv"
+            embed_fp = f"data/embeddings/sent_clf_story_split_{EMB_BASE}_{SOURCE}/{EMB_BASE}_sequential_49_bs16_lr1e-05_f{fold['name']}_{EMB_TYPE}.csv"
             weights_matrix = get_weights_matrix(data, embed_fp, emb_dim=EMB_DIM)
             logger.info(f" --> Loaded from {embed_fp}, shape: {weights_matrix.shape}")
             weights_matrices.append(weights_matrix)
