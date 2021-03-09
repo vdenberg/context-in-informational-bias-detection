@@ -1,18 +1,22 @@
 # GENERAL
 # python -m spacy download en_core_web_sm
 
-# CIM & DOMAIN
-touch data/inputs/tapt/basil_train.tsv
-touch data/inputs/tapt/basil_test.tsv
-python3 preprocessing/preprocess_for_cim_and_tapt.py # --add_use --add_sbert
+# CIM
+python3 preprocessing/preprocess_for_cim.py # --add_use --add_sbert
+
+# DOMAIN
+python3 preprocessing/preprocess_for_tapt.py
 
 # BASELINES
 # sentence classification, BERT
 #todo check out why length of preprocessed features is not the same as length of basil
 python3 preprocessing/preprocess_for_plm.py --clf_task sent_clf -plm bert
 
-# sentence classification, RoBERTa
+# sentence classification, RoBERTa, three sources
 python3 preprocessing/preprocess_for_plm.py --clf_task sent_clf -plm roberta
+python3 preprocessing/preprocess_for_plm.py --clf_task sent_clf -plm roberta -source fox
+python3 preprocessing/preprocess_for_plm.py --clf_task sent_clf -plm roberta -source nyt
+python3 preprocessing/preprocess_for_plm.py --clf_task sent_clf -plm roberta -source hpo
 
 # baseline, token classification, BERT
 python3 preprocessing/preprocess_for_plm.py --clf_task tok_clf -plm bert
