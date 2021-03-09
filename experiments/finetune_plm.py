@@ -276,6 +276,8 @@ if __name__ == '__main__':
                             logger.info(f"  Details: {best_val_res}")
                             logger.info(f"  Logging to {LOG_FP}")
 
+                            exit(0)
+
                             selected_model = select_model(MODEL, CLF_TASK)
 
                             if not os.path.exists(best_model_loc) or FORCE_TRAIN:
