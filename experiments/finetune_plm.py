@@ -51,12 +51,9 @@ def select_model(model, clf_task):
 
 # locations of models or name of model as recognised by huggingface transformers library
 model_mapping = {'bert': 'bert-base-cased',
-                 'bert_un': 'bert-base-cased',
-                 'distilbert': 'distilbert-base-cased',
                  'rob_base': 'roberta-base',
-                 'rob_dapt': 'experiments/tapt/pretrained_models/news_roberta_base',
-                 'rob_basil_tapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta-basil-tapt',
-                 'rob_basil_dapttapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta-basil-dapttapt',
+                 'rob_basil_tapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta_basil_tapt',
+                 'rob_basil_plus_cur_tapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta_basil_plus_cur_tapt',
                  'rob_fox_tapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/roberta-fox-tapt',
                  'rob_hyp_tapt': 'experiments/tapt/dont-stop-pretraining/pretrained_models/dsp_roberta_base_dapt_news_tapt_hyperpartisan_news_515'
                  }
@@ -88,7 +85,7 @@ parser.add_argument('-debug', '--debug', action='store_true', default=False)
 parser.add_argument('-sampler', '--sampler', type=str, default='sequential')
 parser.add_argument('-clf_task', '--clf_task', help='tok_clf|sent_clf', type=str, default='sent_clf')
 parser.add_argument('-spl', '--split', type=str, default='story_split', help='story_split|sentence_split|hyp515')  # sentence or story
-parser.add_argument('-model', '--model', help='bert|rob_base',type=str, default='rob_base')
+parser.add_argument('-model', '--model', help='bert|rob_base', type=str, default='rob_base')
 parser.add_argument('-source', '--source', type=str, default='all', help='all|fox|nyt|hpo')
 parser.add_argument('-lr', '--lr', type=float, default=None)
 parser.add_argument('-bs', '--bs', type=int, default=None)
