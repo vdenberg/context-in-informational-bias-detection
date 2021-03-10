@@ -166,7 +166,7 @@ SOURCE = args.source
 EMB_TYPE = args.embedding_type
 EMB_DIM = 512 if EMB_TYPE == 'use' else 768
 SAMPLER = args.sampler
-TASK_NAME = '_'.join([CONTEXT_TYPE, CIM_TYPE, BASE])
+TASK_NAME = '_'.join([CONTEXT_TYPE, CIM_TYPE, EMB_BASE])
 
 N_EPOCHS = args.epochs if not DEBUG else 5
 PATIENCE = args.patience
