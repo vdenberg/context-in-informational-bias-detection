@@ -176,15 +176,3 @@ python experiments/context_inclusive.py -context ev -cim_type cim*
                                             --save_total_limit 2 \
                                             --overwrite_output_dir
     ```
-   --overwrite_output_dir
-   --should_continue
-   
-   python -m scripts.train \
-        --config training_config/classifier.jsonnet \
-        --serialization_dir model_logs/hyperpartisan_base \
-        --hyperparameters ROBERTA_CLASSIFIER_SMALL \
-        --dataset hyperpartisan_news \
-        --model roberta-base \
-        --device 0 \
-        --perf +f1 \
-        --evaluate_on_test
