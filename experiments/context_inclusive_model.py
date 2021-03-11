@@ -45,11 +45,11 @@ class Processor():
             numeric_context_docs.append(doc)
         return numeric_context_docs
 
-    def to_numeric_sentences(self, sentence_ids):
+    def to_numeric_sentences(self, sentence_ids, source='all'):
         """
         Collects numerical representations (token ids) for sentences
         """
-        with open("data/inputs/sent_clf/features_for_bert/all_features.pkl", "rb") as f:
+        with open(f"data/inputs/sent_clf/features_for_bert_{source}/all_features.pkl", "rb") as f:
             features = pickle.load(f)
         feat_dict = {f.my_id.lower(): f for f in features}
         token_ids = [feat_dict[i].input_ids for i in sentence_ids]
@@ -266,7 +266,7 @@ if not os.path.exists(DATA_FP):
     raw_data['art_context_doc_num'] = processor.to_numeric_documents(raw_data.art_context_document.values)
     raw_data['ev1_context_doc_num'] = processor.to_numeric_documents(raw_data.ev1_context_document.values)
     raw_data['ev2_context_doc_num'] = processor.to_numeric_documents(raw_data.ev2_context_document.values)
-    token_ids, token_mask = processor.to_numeric_sentences(raw_data.sentence_ids)
+    token_ids, token_mask = processor.to_numeric_sentences(raw_data.sentence_ids, source=SOURCE)
     raw_data['token_ids'], raw_data['token_mask'] = token_ids, token_mask
     raw_data.to_json(DATA_FP)
 
