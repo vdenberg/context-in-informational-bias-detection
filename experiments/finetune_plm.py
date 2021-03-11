@@ -64,7 +64,7 @@ model_hyperparams = {'sent_clf': {
                         'rob_base': {'lr': 1e-5, 'bs': 16, 'seeds': [49, 57, 33, 297, 181]},
                         'rob_dapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 22, 33, 34, 49]},
                         'rob_basil_tapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]},
-                        'rob_basil_dapttapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]},
+                        'rob_basil_plus_cur_tapt':  {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]},
                         'rob_fox_tapt': {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]},
                         'rob_fox_tapt_no20': {'lr': 1e-5, 'bs': 16, 'seeds': [6, 33, 34, 49, 181]},
                         'rob_hyp_tapt': {'lr': 1e-5, 'bs': 16, 'seeds': [49, 57, 33, 297, 181]}},
