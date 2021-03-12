@@ -258,7 +258,7 @@ class ContextAwareModel(nn.Module):
             self.context_rep_dim = self.emb_size + self.hidden_size * 6  # size of target sentences + 3 articles
 
         if self.cam_type == 'cim*':
-            self.context_rep_dim += src_dim  #  add representation of source
+            self.context_rep_dim += src_dim  # add representation of source
 
         self.half_context_rep_dim = int(self.context_rep_dim*0.5)
         self.dense = nn.Linear(self.context_rep_dim, self.half_context_rep_dim)
@@ -326,7 +326,7 @@ class ContextAwareModel(nn.Module):
                 art_representations[:, seq_idx] = encoded
             final_article_reps = art_representations[:, -1, :]
 
-            if self.cam_type == 'cnm':
+            if self.context == 'ev':
                 # embedding first event context piece
                 hidden = self.init_hidden(batch_size)
                 for seq_idx in range(article.shape[0]):
@@ -343,6 +343,7 @@ class ContextAwareModel(nn.Module):
                     ev2_representations[:, seq_idx] = encoded
                 final_ev2_reps = ev2_representations[:, -1, :]
 
+                # combining the three representations
                 context_reps = torch.cat((final_article_reps, final_ev1_reps, final_ev2_reps), dim=-1)
             else:
                 context_reps = final_article_reps
@@ -359,6 +360,7 @@ class ContextAwareModel(nn.Module):
                 #                                         value=sentence_representations, mask=mask)
                 # context_and_target_rep = torch.cat((target_sent_reps, context_and_target_rep), dim=-1)
             elif self.cam_type == 'cim*':
+                # add source embedding
                 context_and_target_rep = torch.cat((target_sent_reps, context_reps, embedded_src), dim=-1)
 
         # Linear classification
