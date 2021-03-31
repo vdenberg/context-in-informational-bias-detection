@@ -3,7 +3,7 @@ import argparse, os
 from lib.handle_data.BasilLoader import LoadBasil
 from lib.handle_data.SplitData import Split
 import json, re, random
-import spacy
+#import spacy
 
 def tokenize(x):
     global nlp
@@ -174,9 +174,9 @@ if __name__ == '__main__':
     basil = pd.read_csv('data/basil.csv', index_col=0).fillna('')
 
     # tokenize
-    nlp = spacy.load("en_core_web_sm")
-    basil['tokens'] = basil.sentence.apply(tokenize)
-    basil.to_csv('data/inputs/basil_w_tokens.csv')
+    #nlp = spacy.load("en_core_web_sm")
+    #basil['tokens'] = basil.sentence.apply(tokenize)
+    #basil.to_csv('data/inputs/basil_w_tokens.csv')
 
     # ARTICLE & EVENT CONTEXT
     # Groups basil instances by story and source, and write .tsv lines
