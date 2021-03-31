@@ -7,7 +7,6 @@ import numpy as np
 import json
 from transformers import BertTokenizer
 import re
-import spacy
 
 
 def standardise_id(basil_id):

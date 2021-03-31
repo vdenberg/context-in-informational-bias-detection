@@ -16,7 +16,7 @@ do
 ITER=$((ITER+1));
 done
 
-python ../eval/agg_eval.py -dir l
+python ../eval/agg_eval.py -minval 0.675 -dirs ../basil_and_source_tapt/basil_tapt_story_split_ft_results
 
 /opt/slurm/bin/srun --partition kama --gres=gpu:1  --mem 20GB python -m scripts.train --device 0 --perf +f1 --evaluate_on_test \
                 --hyperparameters ROBERTA_CLASSIFIER_MINI \
