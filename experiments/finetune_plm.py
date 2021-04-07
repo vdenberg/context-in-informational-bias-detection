@@ -136,7 +136,10 @@ torch.backends.cudnn.benchmark = False
 
 DEBUG = args.debug
 FORCE_TRAIN = args.force_train
-FORCE_PRED = args.force_pred if not FORCE_TRAIN else True
+if FORCE_TRAIN or STORE_EMBEDS:
+    FORCE_PRED = True
+else:
+    FORCE_PRED = args.force_pred
 
 if DEBUG:
     FORCE_PRED = True
@@ -343,6 +346,9 @@ if __name__ == '__main__':
                             fold_test_predictions = inferencer.predict(best_model, test_batches, output_mode=CLF_TASK)
                             test_predictions.extend(fold_test_predictions)
 
+                            dev_mets, dev_perf = inferencer.evaluate(model, dev_batches, dev_labels, av_loss=av_loss, set_type='dev', name=epoch_name, output_mode=CLF_TASK)
+                            best_val_res.update(dev_mets)
+
                             # get embeddings
                             if STORE_EMBEDS:
                                 for EMB_TYPE in ['cross4bert']:
@@ -405,7 +411,9 @@ if __name__ == '__main__':
         df = main_results_table
         df[['prec', 'rec', 'f1']] = df[['prec', 'rec', 'f1']].round(4) * 100
         df = df.fillna(0)
-        print(df[['model', 'seed', 'set_type', 'seed', 'prec', 'rec', 'f1']])
+        degenerate_seeds = df[(df.set_type == 'dev') & (df.f1 <= 30)].seed.unique()
+        df = df[~df.seed.isin(degenerate_seeds)]
+        print(df[['model', 'seed', 'set_type', 'prec', 'rec', 'f1']])
 
         view = clean_mean(df, grby=['model', 'seed'], set_type='test')
         view = view.fillna(0)
@@ -419,7 +427,7 @@ if __name__ == '__main__':
         test_std = test.loc['std'].round(2).astype(str)
         result = test_m + ' \pm ' + test_std
         print(f"\n{TASK_NAME} results on {SPLIT}:")
-        print(main_results_table.seed.unique())
+        print(df.seed.unique())
         print(result)
 
         logger.info(f"  Log in {LOG_FP}")
