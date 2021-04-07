@@ -354,8 +354,9 @@ if __name__ == '__main__':
                                 for EMB_TYPE in ['cross4bert']:
                                     emb_fp = os.path.join(EMBEDDING_DIR, f'{name}_{EMB_TYPE}.csv')
 
-                                    PREFERRED_EMB_SV = 49
-                                    if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
+                                    #PREFERRED_EMB_SV = 49
+                                    #if SEED_VAL == PREFERRED_EMB_SV and not os.path.exists(emb_fp):
+                                    if not os.path.exists(emb_fp):
                                         logging.info(f'Generating {EMB_TYPE} embeddings ({emb_fp})')
                                         embs = inferencer.predict(best_model, all_batches, return_embeddings=True, emb_type=EMB_TYPE)
                                         basil_w_BERT = pd.DataFrame(index=all_ids)
